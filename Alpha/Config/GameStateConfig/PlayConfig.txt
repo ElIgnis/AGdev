@@ -1,0 +1,25 @@
+# Interface Config #
+# Init all scene variables here (etc. camera, buttons) #
+{
+	[NAME] PlayConfig
+	# Menu interface
+	{
+		[NAME] Camera
+		# Types available FP, TP
+		[Type] TP
+		[CameraPos] 0, 0, 10
+		[CameraTarget] 0, 0, 0
+		[CameraUp] 0, 1, 0
+		[LockPitch] false
+		[LockYaw] false
+	}
+	{
+		[NAME] Font
+		[Default] 75
+		#[Special] 50
+	}
+	{
+		[NAME] Light
+		[Enable] true
+	}
+}

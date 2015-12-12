@@ -1,0 +1,53 @@
+# Scenesetup #
+# Init all the textures#
+{
+	[NAME] TextureConfig
+	{
+		[NAME] FONT
+		[Directory] Config\\Resources\\Texture\\Font.tga
+	}
+	{
+		[NAME] CURSOR
+		[Directory] Config\\Resources\\Texture\\Cursor.tga
+	}
+	{
+		[NAME] SKYPLANE_TOP
+		[Directory] Config\\Resources\\Texture\\top.tga
+	}
+	{
+		[NAME] MENU_BG
+		[Directory] Config\\Resources\\Texture\\menuBG.tga
+	}
+	{
+		[NAME] GRASS
+		[Directory] Config\\Resources\\Texture\\grass.tga
+	}
+	{
+		[NAME] WARRIOR
+		[Directory] Config\\Resources\\Texture\\AI\\Warrior.tga
+	}
+	{
+		[NAME] MAGE
+		[Directory] Config\\Resources\\Texture\\AI\\Mage.tga
+	}
+	{
+		[NAME] HEALER
+		[Directory] Config\\Resources\\Texture\\AI\\Healer.tga
+	}
+	{
+		[NAME] BOSS
+		[Directory] Config\\Resources\\Texture\\AI\\Boss.tga
+	}
+	{
+		[NAME] WEAPONS
+		[Directory] Config\\Resources\\Texture\\AI\\Weapons.tga
+	}
+	{
+		[NAME] FIREBALL_SPRITE
+		[Directory] Config\\Resources\\Texture\\FireballSprite.tga
+	}
+	{
+		[NAME] ALPHA
+		[Directory] Config\\Resources\\Texture\\alpha.tga
+	}
+}
