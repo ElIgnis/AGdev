@@ -224,12 +224,12 @@ void SceneManagerCMPlay::Update(double dt)
 
 		if (inputManager->getKey("Left"))
 		{
-			Player->SetAngle(tpCamera.GetCamAngle() - 45.f);
+			Player->SetAngle(tpCamera.GetCamAngle() + 45.f);
 		}
 
-		if (inputManager->getKey("Right"))
+		else if (inputManager->getKey("Right"))
 		{
-			Player->SetAngle(tpCamera.GetCamAngle() + 45.f);
+			Player->SetAngle(tpCamera.GetCamAngle() - 45.f);
 		}
 		Player->UpdateMovement(dt);
 		std::cout << Player->GetAngle() << std::endl;
@@ -244,18 +244,18 @@ void SceneManagerCMPlay::Update(double dt)
 			0);
 	}
 
-	if (inputManager->getKey("Down"))
+	else if (inputManager->getKey("Down"))
 	{
 		Player->SetAngle(tpCamera.GetCamAngle() + 180.f);
 
 		if (inputManager->getKey("Left"))
 		{
-			Player->SetAngle(tpCamera.GetCamAngle() - 135.f);
+			Player->SetAngle(tpCamera.GetCamAngle() + 135.f);
 		}
 
-		if (inputManager->getKey("Right"))
+		else if (inputManager->getKey("Right"))
 		{
-			Player->SetAngle(tpCamera.GetCamAngle() + 135.f);
+			Player->SetAngle(tpCamera.GetCamAngle() - 135.f);
 		}
 		Player->UpdateMovement(dt);
 
@@ -270,7 +270,7 @@ void SceneManagerCMPlay::Update(double dt)
 			0);
 	}
 
-	if (inputManager->getKey("Left"))
+	else if (inputManager->getKey("Left"))
 	{
 		Player->SetAngle(tpCamera.GetCamAngle() + 90.f);
 
@@ -287,7 +287,7 @@ void SceneManagerCMPlay::Update(double dt)
 			0);
 	}
 
-	if (inputManager->getKey("Right"))
+	else if (inputManager->getKey("Right"))
 	{
 		Player->SetAngle(tpCamera.GetCamAngle() - 90.f);
 
