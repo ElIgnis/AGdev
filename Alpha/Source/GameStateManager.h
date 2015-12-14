@@ -4,9 +4,9 @@
 #include <vector>
 #include <string>
 
-#include "SceneManagerSelection.h"
-#include "SceneManagerGameplay.h"
-#include "SceneManagerInfo.h"
+#include "../Source/SceneManager/SceneManagerSelection.h"
+#include "../Source/SceneManager/SceneManagerGameplay.h"
+#include "../Source/SceneManager/SceneManagerInfo.h"
 #include "ResourcePool.h"
 
 using std::vector;

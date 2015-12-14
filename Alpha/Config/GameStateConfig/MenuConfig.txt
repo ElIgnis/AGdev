@@ -26,31 +26,61 @@
 			[NAME] Play
 			[Type] Text
 			[Text] Play
-			[Pos] 800, 550
+			[Pos] 900, 650
+			[Rotation] 0
+			[Scale] 90, 75
+			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] LevelSelect
+			[Type] Text
+			[Text] LevelSelect
+			[Pos] 830, 550
+			[Rotation] 0
+			[Scale] 265, 75
+			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] Options
+			[Type] Text
+			[Text] Options
+			[Pos] 870, 450
+			[Rotation] 0
+			[Scale] 160, 75
+			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] HighScore
+			[Type] Text
+			[Text] HighScore
+			[Pos] 845, 350
+			[Rotation] 0
+			[Scale] 210, 75
+			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] Help
+			[Type] Text
+			[Text] Help..?
+			[Pos] 880, 250
 			[Rotation] 0
 			[Scale] 150, 75
 			[Mesh] FONT
-			[Color] 0, 0, 0
-		}
-		{
-			[NAME] Instruction
-			[Type] Text
-			[Text] Instruction
-			[Pos] 725, 450
-			[Rotation] 0
-			[Scale] 375, 75
-			[Mesh] FONT
-			[Color] 0, 0, 0
+			[Color] 1, 1, 1
 		}
 		{
 			[NAME] Quit
 			[Type] Text
 			[Text] Quit
-			[Pos] 800, 350
+			[Pos] 900, 150
 			[Rotation] 0
-			[Scale] 150, 75
+			[Scale] 95, 75
 			[Mesh] FONT
-			[Color] 0, 0, 0
+			[Color] 1, 1, 1
 		}
 	}
 }

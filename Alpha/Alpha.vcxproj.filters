@@ -58,9 +58,6 @@
     <Filter Include="States\StatesCM">
       <UniqueIdentifier>{fc4ca3ca-de21-4a4c-8871-7fd23e346f67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Managers\SceneManagers\SceneCM">
-      <UniqueIdentifier>{e9c0f355-df36-4cc8-99af-f74284032ec0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Managers\SceneManagers\Template">
       <UniqueIdentifier>{aec86a7c-17fd-4684-a116-c50137580834}</UniqueIdentifier>
     </Filter>
@@ -84,6 +81,9 @@
     </Filter>
     <Filter Include="Managers\ProjectileManager">
       <UniqueIdentifier>{e9da1ca3-bba1-4393-8ba6-2a92c6756c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\SceneManagers\Managers">
+      <UniqueIdentifier>{e9c0f355-df36-4cc8-99af-f74284032ec0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -177,29 +177,8 @@
     <ClCompile Include="Source\LoadHmap.cpp">
       <Filter>Loaders</Filter>
     </ClCompile>
-    <ClCompile Include="Source\MenuStateCM.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\PlayStateCM.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SceneManagerCMMenu.cpp">
-      <Filter>Managers\SceneManagers\SceneCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SceneManager.cpp">
-      <Filter>Managers\SceneManagers\Template</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SoundPool.cpp">
       <Filter>Handlers\Resource Handler</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SceneManagerCMPlay.cpp">
-      <Filter>Managers\SceneManagers\SceneCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\PauseStateCM.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SceneManagerCMPause.cpp">
-      <Filter>Managers\SceneManagers\SceneCM</Filter>
     </ClCompile>
     <ClCompile Include="Source\SpatialPartitionManager.cpp">
       <Filter>Managers\SpatialPartitionManager</Filter>
@@ -222,12 +201,6 @@
     <ClCompile Include="Source\Projectile.cpp">
       <Filter>GameObjects\ChildObject</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SceneManagerCMSplash.cpp">
-      <Filter>Managers\SceneManagers\SceneCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SplashStateCM.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Weapon.cpp">
       <Filter>GameObjects\ChildObject</Filter>
     </ClCompile>
@@ -236,6 +209,57 @@
     </ClCompile>
     <ClCompile Include="Source\PlayerSingleton.cpp">
       <Filter>GameObjects\ChildObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_HighScore.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_LevelSelect.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_Menu.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_Options.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_Pause.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_Play.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_Splash.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\HighScoreState.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\LevelSelectState.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\MenuState.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\OptionState.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\PauseState.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\PlayState.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\SplashState.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_Help.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\HelpState.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager.cpp">
+      <Filter>Managers\SceneManagers\Template</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -338,47 +362,14 @@
     <ClInclude Include="Source\LoadHmap.h">
       <Filter>Loaders</Filter>
     </ClInclude>
-    <ClInclude Include="Source\MenuStateCM.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\PlayStateCM.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneManagerCMMenu.h">
-      <Filter>Managers\SceneManagers\SceneCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneManager.h">
-      <Filter>Managers\SceneManagers\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneManagerGameplay.h">
-      <Filter>Managers\SceneManagers\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneManagerInfo.h">
-      <Filter>Managers\SceneManagers\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneManagerSelection.h">
-      <Filter>Managers\SceneManagers\Template</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SoundPool.h">
       <Filter>Handlers\Resource Handler</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene.h">
       <Filter>Managers\SceneManagers\Template</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneManagerCMPlay.h">
-      <Filter>Managers\SceneManagers\SceneCM</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GameState.h">
       <Filter>States</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\PauseStateCM.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneManagerCMPause.h">
-      <Filter>Managers\SceneManagers\SceneCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneManagerTransition.h">
-      <Filter>Managers\SceneManagers\Template</Filter>
     </ClInclude>
     <ClInclude Include="Source\SpatialPartitionManager.h">
       <Filter>Managers\SpatialPartitionManager</Filter>
@@ -401,12 +392,6 @@
     <ClInclude Include="Source\Projectile.h">
       <Filter>GameObjects\ChildObject</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneManagerCMSplash.h">
-      <Filter>Managers\SceneManagers\SceneCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SplashStateCM.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Weapon.h">
       <Filter>GameObjects\ChildObject</Filter>
     </ClInclude>
@@ -415,6 +400,69 @@
     </ClInclude>
     <ClInclude Include="Source\PlayerSingleton.h">
       <Filter>GameObjects\ChildObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_HighScore.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_LevelSelect.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_Menu.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_Options.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_Pause.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_Play.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_Splash.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\HighScoreState.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\LevelSelectState.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\MenuState.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\OptionState.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\PauseState.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\PlayState.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\SplashState.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_Help.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\HelpState.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager.h">
+      <Filter>Managers\SceneManagers\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManagerGameplay.h">
+      <Filter>Managers\SceneManagers\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManagerInfo.h">
+      <Filter>Managers\SceneManagers\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManagerSelection.h">
+      <Filter>Managers\SceneManagers\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManagerTransition.h">
+      <Filter>Managers\SceneManagers\Template</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

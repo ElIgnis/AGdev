@@ -1,0 +1,56 @@
+# Interface Config #
+# Init all scene variables here (etc. camera, buttons) #
+{
+	[NAME] MenuConfig
+	# Menu interface
+	{
+		[NAME] Camera
+		# Types available FP, TP
+		[Type] FP
+		[CameraPos] 0, 0, 10
+		[CameraTarget] 0, 0, 0
+		[CameraUp] 0, 1, 0
+	}
+	{
+		[NAME] Font
+		[Default] 75
+		#[Special] 50
+	}
+	{
+		[NAME] Light
+		[Enable] false
+	}
+	{
+		[NAME] Buttons
+		{
+			[NAME] LevelOne
+			[Type] Text
+			[Text] Level One
+			[Pos] 830, 550
+			[Rotation] 0
+			[Scale] 200, 75
+			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] LevelTwo
+			[Type] Text
+			[Text] Level Two
+			[Pos] 830, 450
+			[Rotation] 0
+			[Scale] 210, 75
+			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] Back
+			[Type] Text
+			[Text] Back
+			[Pos] 900, 250
+			[Rotation] 0
+			[Scale] 90, 75
+			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+	}
+}
