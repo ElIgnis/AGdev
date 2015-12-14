@@ -18,12 +18,29 @@ SceneManager::~SceneManager()
 
 void SceneManager::Init(const int width, const int height, ResourcePool* RM, InputManager* controls)
 {
+	//Monospacing
+	TextCount = 0;
+	std::string data = " ";
+
+	//File reading
+	ifstream inFile;
+	inFile.open("Config//TextSpacing.txt");
+	if (inFile.good())
+	{
+		while (getline(inFile, data))
+		{
+			textWidth[TextCount] = stoi(data);
+			TextCount++;
+		}
+		inFile.close();
+	}
+
 	this->sceneWidth = (float)width;
 	this->sceneHeight = (float)height;
 	this->resourceManager.Init(RM);
 	this->inputManager = controls;
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
@@ -76,6 +93,16 @@ void SceneManager::Update(double dt)
 
 	this->inputManager->Update();
 
+	if (inputManager->getKey("ToggleWireFrame"))
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	else if (inputManager->getKey("ToggleFill"))
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 	if (inputManager->getKey("EnableDebugInfo"))
 	{
 		this->debugInfo = true;
@@ -123,7 +150,6 @@ void SceneManager::RenderPop()
 	modelStack.PopMatrix();
 }
 
-
 /********************************************************************************
 Render text onto the screen with reference position in the middle of the image
 ********************************************************************************/
@@ -143,13 +169,15 @@ void SceneManager::RenderText(Mesh* mesh, std::string text, Color color)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	glUniform1i(parameters[U_COLOR_TEXTURE], 0);
+	float temp = 0;
+	float widthDivide = 0.01f;
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 0.8f, 0, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(temp * 1.5f, 0, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
+		temp += textWidth[text[i]] * widthDivide;
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -192,13 +220,15 @@ void SceneManager::RenderTextOnScreen(Mesh* mesh, std::string text, Color color,
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	glUniform1i(parameters[U_COLOR_TEXTURE], 0);
+	float temp = 0;
+	float widthDivide = 0.01f;
 	for (unsigned i = 0; i < text.length(); ++i)
 	{
 		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 1.0f + 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
+		characterSpacing.SetToTranslation(temp * 1.5f + 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-
+		temp += textWidth[text[i]] * widthDivide;
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);

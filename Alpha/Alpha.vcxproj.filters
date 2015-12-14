@@ -222,6 +222,21 @@
     <ClCompile Include="Source\Projectile.cpp">
       <Filter>GameObjects\ChildObject</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SceneManagerCMSplash.cpp">
+      <Filter>Managers\SceneManagers\SceneCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SplashStateCM.cpp">
+      <Filter>States\StatesCM</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Weapon.cpp">
+      <Filter>GameObjects\ChildObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player.cpp">
+      <Filter>GameObjects\ChildObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PlayerSingleton.cpp">
+      <Filter>GameObjects\ChildObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Utility.h">
@@ -384,6 +399,21 @@
       <Filter>Managers\ProjectileManager</Filter>
     </ClInclude>
     <ClInclude Include="Source\Projectile.h">
+      <Filter>GameObjects\ChildObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManagerCMSplash.h">
+      <Filter>Managers\SceneManagers\SceneCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SplashStateCM.h">
+      <Filter>States\StatesCM</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Weapon.h">
+      <Filter>GameObjects\ChildObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player.h">
+      <Filter>GameObjects\ChildObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PlayerSingleton.h">
       <Filter>GameObjects\ChildObject</Filter>
     </ClInclude>
   </ItemGroup>

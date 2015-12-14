@@ -22,7 +22,8 @@ public:
 	void Init(const Vector3& pos, const Vector3& target, const Vector3& up, const bool lockPitch, const bool lockYaw);
 	virtual void Update(double dt);
 	// For third person camera
-	virtual void UpdatePosition(Vector3 position, Vector3 newDirection);
+	
+	virtual void UpdatePosition(Vector3 position, Vector3 newDirection, Vector3 ShoulderPos, double dt);
 	// Update Camera status
 	virtual void UpdateStatus(const unsigned char key, const bool status = true);
 	virtual void Reset();
@@ -57,6 +58,7 @@ public:
 
 	void calcZoom(void);
 	void calcPitch(void);
+	void calcZoomPitch(void);
 	void calcRotation(void);
 
 	float calcHDist(void);
@@ -65,6 +67,9 @@ public:
 
 	void TogglePitchLock(void);
 	void ToggleYawLock(void);
+
+	void SetAimMode(bool newAimMode);
+	void ToggleAimMode(void);
 
 private:
 	bool myKeys[255];
@@ -81,15 +86,20 @@ private:
 	float CAMERA_ACCEL;
 
 	//Offset distance for the camera from the target
-	float m_fTPVCameraOffset = 50.0f;
+	float m_fTPVCameraOffsetX = 50.0f;
+	float m_fTPVCameraOffsetY = 50.0f;
 	float m_fTPVCameraAngle = 0.f;
 	float m_fTPVCameraPitch = 45.f;
-
+	
+	float translateSpeed = 100.f;
 	float pitchChange;
 	float angleChange;
 
 	bool LockPitch;
 	bool LockYaw;
+	bool aimMode;
+	bool aimView;
+	bool normalView;
 };
 
 #endif

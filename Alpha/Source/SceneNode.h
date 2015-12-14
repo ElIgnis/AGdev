@@ -27,6 +27,9 @@ public:
 	void Draw(SceneManager *sceneManager);
 	void DrawChild(SceneManager *sceneManager);
 
+	void SetWorldPosition(Vector3 pos);
+	Vector3 GetWorldPosition(void);
+
 	SceneNode* GetParentNode(void);
 
 	void setActive(bool active);
@@ -45,6 +48,7 @@ public:
 	NODE_TYPE nodeType;
 protected:
 	GameObject3D* gameObject3D;
+	Vector3 WorldPosition;
 	bool active;
 };
 

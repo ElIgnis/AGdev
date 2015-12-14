@@ -80,6 +80,16 @@ void SceneNode::DrawChild(SceneManager *sceneManager)
 	sceneManager->RenderPop();
 }
 
+void SceneNode::SetWorldPosition(Vector3 pos)
+{
+	this->WorldPosition = pos;
+}
+
+Vector3 SceneNode::GetWorldPosition(void)
+{
+	return this->WorldPosition;
+}
+
 SceneNode* SceneNode::GetChildNode(string childName)
 {
 	static SceneNode *resultNode = NULL;

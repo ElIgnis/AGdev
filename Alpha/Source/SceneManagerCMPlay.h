@@ -2,6 +2,7 @@
 #define SCENE_MANAGER_CM_PLAY_H
 
 #include "SceneManagerGameplay.h"
+#include "Player.h"
 
 class SceneManagerCMPlay : public SceneManagerGameplay
 {
@@ -12,6 +13,8 @@ private:
 	SceneNode* staticSceneGraph;
 	SceneNode* dynamicSceneGraph;
 	// MiniMap* miniMap;
+
+	GameObject3D testProjectile;
 
 	Mesh* textMesh;
 public:
@@ -25,8 +28,8 @@ public:
 	void Render();
 	void Exit();
 
-	void BindShaders();
 	void InitShader();
+	void BindShaders();
 
 	void InitSceneGraph();
 	void FSMApplication();
@@ -40,6 +43,7 @@ public:
 	void RenderGUI();
 
 	SceneNode* getNode(void);
+	CPlayer* player;
 };
 
 #endif

@@ -13,6 +13,11 @@ void GameObject3D::setHitbox(OBB3D hitbox)
 	this->obbHitbox = hitbox;
 }
 
+void GameObject3D::setHitbox(Vector3 midPoint, float length, float height, float depth, const string name)
+{
+	this->obbHitbox.create3Dhitbox(midPoint, length, height, depth, name);
+}
+
 OBB3D GameObject3D::getHitbox(void)
 {
 	return this->obbHitbox;

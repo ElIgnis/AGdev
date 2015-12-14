@@ -2,8 +2,10 @@
 #include "Application.h"
 #include "Mtx44.h"
 
-#define CAM_TPS_HEIGHT_MAX 60.f
-#define CAM_TPS_HEIGHT_MIN -10.f
+#define CAM_TPS_HEIGHT_MAX 50.f
+#define CAM_TPS_HEIGHT_MIN -30.f
+#define CAM_SHOULDER_HEIGHT_MAX 50.f
+#define CAM_SHOULDER_HEIGHT_MIN -30.f
 #define CAM_ROTATION_SPEED_LIMIT 3.f
 #define CAM_PITCH_SPEED_LIMIT 3.f
 #define CAM_ZOOM_SPEED_LIMIT 15.f
@@ -21,6 +23,9 @@ TPCamera::TPCamera()
 	, MoveVel_A(0)
 	, MoveVel_D(0)
 	, CAMERA_ACCEL(0)
+	, aimMode(false)
+	, normalView(true)
+	, aimView(false)
 {
 }
 
@@ -178,15 +183,8 @@ void TPCamera::Update(double dt)
 Update the camera for third person view
 Vector3 newPosition is the new position which the camera is to be based on
 ********************************************************************************/
-void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir)
+void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir, Vector3 ShoulderPos, double dt)
 {
-	//Controls zoom with MMB
-	if (myKeys[VK_MBUTTON])
-		calcZoom();
-
-	//Rotate and adjust pitch with RMB
-	//if (myKeys[VK_RBUTTON])
-
 	if (!LockPitch)
 	{
 		calcPitch();
@@ -195,33 +193,84 @@ void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir)
 	{
 		calcRotation();
 	}
-	//else
-	//{
-		//pitchChange = 0.f;
-		//angleChange = 0.f;
-	//}
 
 	float theta = m_fTPVCameraAngle;
 	float offSet_X = calcHDist() * sin(Math::DegreeToRadian(theta));
 	float offSet_Z = calcHDist() * cos(Math::DegreeToRadian(theta));
 
-	//Target is at player
 	target.x = newPos.x + offSet_X * 2;
-	target.y = newPos.y + 5.f;
+	target.y = newPos.y + 5.f - m_fTPVCameraPitch;
 	target.z = newPos.z + offSet_Z * 2;
 
-	//Focus mode
-	//if (myKeys[VK_RBUTTON])
-	//{
-	//	position.x = newPos.x - offSet_X * 0.5f;
-	//	position.y = newPos.y + calcVDist() * 0.5f;
-	//	position.z = newPos.z - offSet_Z * 0.5f;
-	//}
-	//else
+	//Update focused view
+	if (aimMode)
 	{
-		position.x = newPos.x - offSet_X;
-		position.y = newPos.y + calcVDist();
-		position.z = newPos.z - offSet_Z;
+		normalView = false;
+		//Set the height
+		m_fTPVCameraOffsetY = 10.f;
+
+		//Transition
+		if (aimView == false)
+		{
+			Vector3 shoulderView;
+			shoulderView.x = ShoulderPos.x - 15 * sin(Math::DegreeToRadian(theta + 35));
+			shoulderView.y = ShoulderPos.y + (m_fTPVCameraPitch * 0.1f) + m_fTPVCameraOffsetY;
+			shoulderView.z = ShoulderPos.z - 15 * cos(Math::DegreeToRadian(theta + 35));
+
+			Vector3 direction = shoulderView - position;
+			float distance = direction.LengthSquared();
+
+			if ((translateSpeed * dt) * (translateSpeed * dt) < distance)
+			{
+				position += direction.Normalized() * (translateSpeed * dt);
+			}
+			else
+			{
+				aimView = true;
+			}
+		}
+		else
+		{
+			position.x = ShoulderPos.x - 15 * sin(Math::DegreeToRadian(theta + 35));
+			position.y = ShoulderPos.y + (m_fTPVCameraPitch * 0.1f) + m_fTPVCameraOffsetY;
+			position.z = ShoulderPos.z - 15 * cos(Math::DegreeToRadian(theta + 35));
+		}
+	}
+	//Update normal view
+	else
+	{
+		aimView = false;
+		//Set the height
+		m_fTPVCameraOffsetY = 50;
+
+		//Transition
+		if (normalView == false)
+		{
+			Vector3 defaultView;
+			defaultView.x = newPos.x - offSet_X;
+			defaultView.y = newPos.y + calcVDist();
+			defaultView.z = newPos.z - offSet_Z;
+
+			Vector3 direction = defaultView - position;
+			float distance = direction.LengthSquared();
+
+			if ((translateSpeed * dt) * (translateSpeed * dt) < distance)
+			{
+				position += direction.Normalized() * (translateSpeed * dt);
+			}
+			else
+			{
+				normalView = true;
+			}
+		}
+		else
+		{
+			position.x = newPos.x - offSet_X;
+			position.y = newPos.y + calcVDist();
+			position.z = newPos.z - offSet_Z;
+		}
+		if (position.y <= 0.f)
+			position.y = 0.f;
 	}
 }
 
@@ -259,10 +308,16 @@ void TPCamera::calcZoom(void)
 	}
 	//Zoom in
 	if (zoomLevel > 0.0 && m_fTPVCameraOffset > 50.f)
-		m_fTPVCameraOffset -= zoomLevel;
+	{
+		m_fTPVCameraOffsetX -= zoomLevel;
+		m_fTPVCameraOffsetY -= zoomLevel;
+	}
 	//Zoom out
 	else if (zoomLevel < 0.0 && m_fTPVCameraOffset < 200.f)
-		m_fTPVCameraOffset -= zoomLevel;
+	{
+		m_fTPVCameraOffsetX -= zoomLevel;
+		m_fTPVCameraOffsetY -= zoomLevel;
+	}
 }
 
 void TPCamera::calcPitch(void)
@@ -279,19 +334,34 @@ void TPCamera::calcPitch(void)
 	//Prevent cam from going too low
 	if (Application::getMouse()->getMousePitch() > 0.0)
 	{
-		m_fTPVCameraPitch -= pitchChange;
+		m_fTPVCameraPitch += pitchChange;
+		if (aimMode)
+		{
+			if (m_fTPVCameraPitch > CAM_SHOULDER_HEIGHT_MAX)
+				m_fTPVCameraPitch = CAM_SHOULDER_HEIGHT_MAX;
+		}
+		else
+		{
 
-		if (m_fTPVCameraPitch < CAM_TPS_HEIGHT_MIN)
-			m_fTPVCameraPitch = CAM_TPS_HEIGHT_MIN;
+			if (m_fTPVCameraPitch > CAM_TPS_HEIGHT_MAX)
+				m_fTPVCameraPitch = CAM_TPS_HEIGHT_MAX;
+		}
 	}
 	else if (Application::getMouse()->getMousePitch() < 0.0)
 	{
-		m_fTPVCameraPitch -= pitchChange;
-
-		if (m_fTPVCameraPitch > CAM_TPS_HEIGHT_MAX)
-			m_fTPVCameraPitch = CAM_TPS_HEIGHT_MAX;
+		m_fTPVCameraPitch += pitchChange;
+		
+		if (aimMode)
+		{
+			if (m_fTPVCameraPitch < CAM_SHOULDER_HEIGHT_MIN)
+				m_fTPVCameraPitch = CAM_SHOULDER_HEIGHT_MIN;
+		}
+		else
+		{
+			if (m_fTPVCameraPitch < CAM_TPS_HEIGHT_MIN)
+				m_fTPVCameraPitch = CAM_TPS_HEIGHT_MIN;
+		}
 	}
-
 }
 
 void TPCamera::calcRotation(void)
@@ -303,7 +373,7 @@ void TPCamera::calcRotation(void)
 
 	//Slowing down
 	if (angleChange != 0.0f && Application::getMouse()->getDiffPos().x == 0.f)
-		angleChange -= angleChange * 0.25f;
+		angleChange -= angleChange * 0.5f;
 
 	m_fTPVCameraAngle -= angleChange;
 	//360/0 limiter
@@ -315,18 +385,28 @@ void TPCamera::calcRotation(void)
 
 float TPCamera::calcHDist(void)
 {
-	return (float)(m_fTPVCameraOffset * cos(Math::DegreeToRadian(m_fTPVCameraPitch)));
+	return (float)(m_fTPVCameraOffsetX * cos(Math::DegreeToRadian(m_fTPVCameraPitch)));
 }
 
 float TPCamera::calcVDist(void)
 {
-	return (float)(m_fTPVCameraOffset * sin(Math::DegreeToRadian(m_fTPVCameraPitch)));
+	return (float)(m_fTPVCameraOffsetY * sin(Math::DegreeToRadian(m_fTPVCameraPitch)));
 }
 
 float TPCamera::GetCamAngle(void)
 {
 	return m_fTPVCameraAngle;
 }
+
+void TPCamera::SetAimMode(bool newAimMode)
+{
+	this->aimMode = newAimMode;
+}
+void TPCamera::ToggleAimMode(void)
+{
+	
+}
+
 /********************************************************************************
 Update the camera status
 ********************************************************************************/

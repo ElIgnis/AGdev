@@ -244,6 +244,7 @@ void Application::Init(string config)
 	this->gameStateManager->Init(windowTitle, windowWidth, windowHeight);
 	this->gameStateManager->InitResources(resourceConfig);
 	this->gameStateManager->InitControls(inputConfig);
+	//this->gameStateManager->PushState(SplashStateCM::GetInstance());
 	this->gameStateManager->PushState(MenuStateCM::Instance());
 }
 

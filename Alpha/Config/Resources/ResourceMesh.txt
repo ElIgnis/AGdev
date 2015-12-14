@@ -15,6 +15,11 @@
 		[Texture] CURSOR
 	}
 	{
+		[NAME] SPLASH
+		[Type] Quad
+		[Texture] SPLASH
+	}
+	{
 		[NAME] MENU_BG
 		[Type] Quad
 		[Texture] MENU_BG
@@ -105,6 +110,12 @@
 		[Type] Obj
 		[Directory] Config\\Resources\\Obj\\AI\\BossArm.obj
 		[Texture] BOSS
+	}
+	{
+		[NAME] TREE_OBJ
+		[Type] Obj
+		[Directory] Config\\Resources\\Obj\\Static\\OBJ_Tree.obj
+		[Texture] TREE
 	}
 	{
 		[NAME] FIREBALL_SPRITE

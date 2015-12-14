@@ -36,7 +36,7 @@ void SceneManagerCMPause::Update(double dt)
 {
 	SceneManagerSelection::Update(dt);
 
-	if (inputManager->getKey("Select"))
+	if (inputManager->getKey("LMB"))
 	{
 		fireball->Update(dt);
 	}
@@ -174,7 +174,7 @@ void SceneManagerCMPause::RenderSelection()
 	// Render mouse
 	Render2DMesh(mouseMesh, false, Vector2(50, 50), Vector2(mousePos.x, mousePos.y), 90.f);
 
-	if (inputManager->getKey("Select"))
+	if (inputManager->getKey("LMB"))
 	{
 		Render2DMesh(fireball, false, Vector2(100, 100), Vector2(mousePos.x + 50, mousePos.y));
 	}
@@ -200,7 +200,7 @@ void SceneManagerCMPause::UpdateSelection()
 
 			else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_IDLE)
 			{
-				interactiveButtons[i].setColor(resourceManager.retrieveColor("White"));
+				interactiveButtons[i].setColor(resourceManager.retrieveColor("Black"));
 			}
 		}
 	}
