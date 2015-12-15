@@ -300,7 +300,7 @@ void SceneManager::Render2DMesh(Mesh *mesh, const bool enableLight, const Vector
 		std::cout << "Unable to render 2D mesh!" << std::endl;
 		return;
 	}
-
+	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
 	ortho.SetToOrtho(0, double(sceneWidth), 0, double(sceneHeight), -100, 100);
 	projectionStack.PushMatrix();
@@ -340,6 +340,7 @@ void SceneManager::Render2DMesh(Mesh *mesh, const bool enableLight, const Vector
 	modelStack.PopMatrix();
 	viewStack.PopMatrix();
 	projectionStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
 }
 
 void SceneManager::Exit()

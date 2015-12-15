@@ -101,7 +101,10 @@ void SoundPool::retrieveSound2D(string soundName, bool loop)
 
 	if (it != soundContainer.end())
 	{
-		engine->play2D(it->second.soundDirectory.c_str(), loop);
+		if (!engine->isCurrentlyPlaying(it->second.soundDirectory.c_str()))
+		{
+			engine->play2D(it->second.soundDirectory.c_str(), loop);
+		}
 	}
 	else
 	{

@@ -34,7 +34,7 @@ void SceneManager_Play::Init(const int width, const int height, ResourcePool *RM
 	textMesh = resourceManager.retrieveMesh("FONT");
 
 	testProjectile.setCollidable(true);
-	testProjectile.setMesh(resourceManager.retrieveMesh("WARRIOR_OBJ"));
+	testProjectile.setMesh(resourceManager.retrieveMesh("WARRIOR_SWORD_OBJ"));
 	testProjectile.setName("testprojectile");
 	testProjectile.setReflectLight(true);
 	testProjectile.setHitbox(Vector3(0, 0, 0), 10, 10, 10, "testprojectile");
@@ -172,11 +172,56 @@ void SceneManager_Play::Config(string directory)
 void SceneManager_Play::Update(double dt)
 {
 	SceneManagerGameplay::Update(dt);
-	FSMApplication();
 
 	//spatialPartitionManager->Update();
 	spatialPartitionManager->removeNode(dynamicSceneGraph);
 	spatialPartitionManager->addNode(dynamicSceneGraph, this->spatialPartitionManager->type);
+
+	// loop through partitions
+	for (unsigned i = 0; i < spatialPartitionManager->partitions.size(); ++i)
+	{
+		// check if partitions contain more than 1 node ( can further optimize by checking if contains dynamic nodes)
+		if (spatialPartitionManager->partitions[i]->nodes.size() > 0)
+		{
+			for (vector<SceneNode*>::iterator j = spatialPartitionManager->partitions[i]->nodes.begin(); j != spatialPartitionManager->partitions[i]->nodes.end(); ++j)
+			{
+				SceneNode* firstNode = *j;
+
+				for (vector<SceneNode*>::iterator k = j + 1; k != spatialPartitionManager->partitions[i]->nodes.end(); ++k)
+				{
+					SceneNode* secondNode = *k;
+					string boxName = "";
+
+					if (firstNode->getActive() && secondNode->getActive())
+					{
+						if (firstNode->GetGameObject()->getName() != "Player" && secondNode->GetGameObject()->getName() != "Player" && firstNode->GetGameObject()->getName() != "LeftHand" && secondNode->GetGameObject()->getName() != "LeftHand" && firstNode->GetGameObject()->getName() != "RightHand" && secondNode->GetGameObject()->getName() != "RightHand")
+						{
+							if (check3DCollision(firstNode->GetGameObject()->getHitbox(), secondNode->GetGameObject()->getHitbox(), boxName))
+							{
+								if (firstNode->GetGameObject()->getName() == "testprojectile")
+								{
+									//projectileManager.RemoveProjectile(firstNode->GetGameObject());
+									spatialPartitionManager->removeNode(secondNode);
+									dynamicSceneGraph->RemoveChildNode(secondNode);
+									break;
+								}
+								else if (secondNode->GetGameObject()->getName() == "testprojectile")
+								{
+									//projectileManager.RemoveProjectile(firstNode->GetGameObject());
+									spatialPartitionManager->removeNode(firstNode);
+									dynamicSceneGraph->RemoveChildNode(firstNode);
+									break;
+								}
+								//spatialPartitionManager->removeNode(secondNode);
+								//secondNode->setActive(false);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	projectileManager.Update(dt);
 
@@ -608,106 +653,8 @@ void SceneManager_Play::InitSceneGraph()
 	//Adds the player node
 	dynamicSceneGraph->AddChildNode(Player->GetNode());
 
-	// Add all mobile node into dynamicSceneGraph
-	//**********//
-	//Warrior	//
-	//**********//
-	drawMesh = resourceManager.retrieveMesh("WARRIOR_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("WARRIOR");
-	dynamicSceneGraph->AddChildNode(node);
-
-	drawMesh = resourceManager.retrieveMesh("WARRIOR_SWORD_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("WARRIOR_SWORD");
-	dynamicSceneGraph->AddChildToChildNode("WARRIOR", node);
-
-	drawMesh = resourceManager.retrieveMesh("WARRIOR_SHIELD_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("WARRIOR_SHIELD");
-	dynamicSceneGraph->AddChildToChildNode("WARRIOR", node);
-
-	//**********//
-	//Healer	//
-	//**********//
-	drawMesh = resourceManager.retrieveMesh("HEALER_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("HEALER");
-	dynamicSceneGraph->AddChildNode(node);
-
-	drawMesh = resourceManager.retrieveMesh("HEALER_ROD_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("HEALER_ROD");
-	dynamicSceneGraph->AddChildToChildNode("HEALER", node);
-
-
-	////**********//
-	////Mage		//
-	////**********//
-	drawMesh = resourceManager.retrieveMesh("MAGE_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("MAGE");
-	dynamicSceneGraph->AddChildNode(node);
-
-	drawMesh = resourceManager.retrieveMesh("MAGE_STAFF_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("MAGE_STAFF");
-	dynamicSceneGraph->AddChildToChildNode("MAGE", node);
-
-	////**********//
-	////Boss		//
-	////**********//
-	drawMesh = resourceManager.retrieveMesh("BOSS_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("BOSS");
-	dynamicSceneGraph->AddChildNode(node);
-
-	drawMesh = resourceManager.retrieveMesh("BOSS_ARM_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("BOSS_R_ARM");
-	dynamicSceneGraph->AddChildToChildNode("BOSS", node);
-
-	drawMesh = resourceManager.retrieveMesh("BOSS_ARM_OBJ");
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("BOSS_L_ARM");
-	dynamicSceneGraph->AddChildToChildNode("BOSS", node);
-
 	// Rmb to init static nodes position first
-
 	spatialPartitionManager->addNode(sceneGraph, spatialPartitionManager->type);
-}
-
-void SceneManager_Play::FSMApplication()
-{
-	Vector3 newPosition;
-	dynamicSceneGraph->GetChildNode("WARRIOR_SWORD")->GetGameObject()->setPosition(Vector3(0, 0, -5));
-	dynamicSceneGraph->GetChildNode("WARRIOR_SHIELD")->GetGameObject()->setPosition(Vector3(0, 0, 5));
-
-
-	newPosition.Set(-40, 0, -20);
-	dynamicSceneGraph->GetChildNode("HEALER")->GetGameObject()->setPosition(newPosition);
-	dynamicSceneGraph->GetChildNode("HEALER_ROD")->GetGameObject()->setPosition(Vector3(0, 0, -5));
-
-
-	newPosition.Set(-40, 0, 20);
-	dynamicSceneGraph->GetChildNode("MAGE")->GetGameObject()->setPosition(newPosition);
-	dynamicSceneGraph->GetChildNode("MAGE_STAFF")->GetGameObject()->setPosition(Vector3(0, 0, -5));
-
-
-	newPosition.Set(-60, 0, 0);
-	dynamicSceneGraph->GetChildNode("BOSS")->GetGameObject()->setPosition(newPosition);
-	dynamicSceneGraph->GetChildNode("BOSS_L_ARM")->GetGameObject()->setPosition(Vector3(0, 0, -5));
-	dynamicSceneGraph->GetChildNode("BOSS_R_ARM")->GetGameObject()->setPosition(Vector3(0, 0, 5));
 }
 
 void SceneManager_Play::UpdateMouse()
@@ -734,6 +681,7 @@ SceneNode* SceneManager_Play::getNode()
 		node = new SceneNode;
 
 		node->SetGameObject(object);
+		node->setActive(false);
 
 		nodeList.push_back(node);
 	}

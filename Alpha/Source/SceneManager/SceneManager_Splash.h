@@ -6,11 +6,11 @@
 class SceneManager_Splash : public SceneManagerTransition
 {
 private:
-	Mesh* splashTexture;
-	Vector2 textureScale;
-	float pauseTimer;
+	Mesh* handPrintTexture;
+	float handPrintTimer;
+
 	bool startTransition;
-	float splashTimer;
+	float delayTimer;
 	
 public:
 	SceneManager_Splash();

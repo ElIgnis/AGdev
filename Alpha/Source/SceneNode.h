@@ -24,8 +24,11 @@ public:
 	void AddChildNode(SceneNode *childNode);
 	void AddChildToChildNode(string childName, SceneNode *childNode);
 
-	void Draw(SceneManager *sceneManager);
-	void DrawChild(SceneManager *sceneManager);
+	void Draw(SceneManager *sceneManager, Mesh* debugMesh = NULL);
+	void DrawChild(SceneManager *sceneManager, Mesh* debugMesh);
+
+	void RemoveChildNode(SceneNode *childNode);
+	void RemoveChildFromChild(string childName, SceneNode *childNode);
 
 	void SetWorldPosition(Vector3 pos);
 	Vector3 GetWorldPosition(void);

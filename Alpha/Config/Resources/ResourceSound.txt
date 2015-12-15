@@ -2,8 +2,19 @@
 # Init all the sounds#
 {
 	[NAME] SoundConfig
+	#Splash
 	{
-		[NAME] MenuFeedback
-		[Directory] Config\\Resources\\Sound\\MenuFeedback.mp3
+		[NAME] Splash_Opening
+		[Directory] Config\\Resources\\Sound\\Splash_Opening.wav
+	}
+	#Menu BGM
+	{
+		[NAME] Menu_BGM
+		[Directory] Config\\Resources\\Sound\\BGM_Menu.wav
+	}
+	#Menu Hover
+	{
+		[NAME] Menu_Hover
+		[Directory] Config\\Resources\\Sound\\Button_Hover.wav
 	}
 }

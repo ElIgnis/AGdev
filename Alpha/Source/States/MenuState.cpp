@@ -64,7 +64,7 @@ void MenuState::HandleEvents(GameStateManager* gameStateManager)
 			}
 			else if(scene->interactiveButtons[i].getName() == "LevelSelect")
 			{
-				gameStateManager->ChangeState(LeveSelectState::Instance());
+				gameStateManager->PushState(LeveSelectState::Instance());
 			}
 			else if(scene->interactiveButtons[i].getName() == "Options")
 			{

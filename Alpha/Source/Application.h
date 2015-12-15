@@ -15,7 +15,7 @@
 #include "GameStateManager.h"
 
 //#include "SplashStateCM.h"
-#include "../Source/States/MenuState.h"
+#include "../Source/States/SplashState.h"
 
 #define FIRST 0
 

@@ -245,7 +245,7 @@ void Application::Init(string config)
 	this->gameStateManager->InitResources(resourceConfig);
 	this->gameStateManager->InitControls(inputConfig);
 	//this->gameStateManager->PushState(SplashStateCM::GetInstance());
-	this->gameStateManager->PushState(MenuState::Instance());
+	this->gameStateManager->PushState(SplashState::Instance());
 }
 
 // main game loop

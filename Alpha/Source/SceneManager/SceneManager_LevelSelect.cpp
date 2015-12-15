@@ -156,7 +156,10 @@ void SceneManager_LevelSelect::RenderLight()
 
 void SceneManager_LevelSelect::RenderBG()
 {
-
+	Mesh* drawMesh;
+	drawMesh = resourceManager.retrieveMesh("Background");
+	drawMesh->textureID = resourceManager.retrieveTexture("LVLSELECT_BG");
+	Render2DMesh(drawMesh, false, Vector2(1920, 1080), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
 }
 
 void SceneManager_LevelSelect::RenderStaticObject()
@@ -201,11 +204,14 @@ void SceneManager_LevelSelect::UpdateSelection()
 			else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_IDLE)
 			{
 				interactiveButtons[i].setColor(resourceManager.retrieveColor("White"));
+				interactiveButtons[i].setRotation(0.f);
 			}
 
 			else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_HOVER)
 			{
 				interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
+				interactiveButtons[i].setRotation(-10.f);
+				resourceManager.retrieveSoundas2D("Menu_Hover", false);
 			}
 		}
 	}

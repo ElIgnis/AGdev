@@ -22,11 +22,11 @@ void SceneManager_Splash::Init(const int width, const int height, ResourcePool *
 	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
 	projectionStack.LoadMatrix(perspective);
 
-	splashTexture = resourceManager.retrieveMesh("SPLASH");
-	textureScale.Set(sceneWidth * 0.5f, sceneHeight * 0.5f);
-	pauseTimer = 2.f;
+	handPrintTexture = resourceManager.retrieveMesh("HANDPRINT");
+	handPrintTimer = 1.5f;
+	
 	startTransition = false;
-	splashTimer = 5.f;
+	delayTimer = 1.5f;
 }
 
 void SceneManager_Splash::Config()
@@ -150,7 +150,23 @@ void SceneManager_Splash::RenderLight()
 
 void SceneManager_Splash::RenderTransition()
 {
-	Render2DMesh(splashTexture, false, Vector2(sceneHeight * 0.1f, sceneHeight * 0.1f) * splashTimer, Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
+	//BG
+	Mesh* drawMesh;
+	drawMesh = resourceManager.retrieveMesh("Background");
+	drawMesh->textureID = resourceManager.retrieveTexture("SPLASH_BG");
+	Render2DMesh(drawMesh, false, Vector2(1920, 1080), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
+
+	//HandPrint
+	if (handPrintTimer <= 0)
+	{
+		Render2DMesh(handPrintTexture, false, Vector2(sceneHeight * 0.75f, sceneHeight * 0.75f), Vector2(sceneWidth * 0.45f, sceneHeight * 0.5f));	
+	}
+	if (handPrintTimer <= 0)
+	{
+		drawMesh = resourceManager.retrieveMesh("FONT");
+		drawMesh->textureID = resourceManager.retrieveTexture("FONT");
+		RenderTextOnScreen(drawMesh, "Ignis Productions", Color(1, 1, 1), 200, sceneWidth * 0.25f, sceneHeight * 0.4f);
+	}
 }
 
 void SceneManager_Splash::UpdateMouse()
@@ -165,9 +181,10 @@ void SceneManager_Splash::UpdateTransition(double dt)
 	// update
 	if (!complete)
 	{
-		if (pauseTimer > 0)
+		if (handPrintTimer > 0)
 		{
-			pauseTimer -= dt;
+			handPrintTimer -= dt;
+			resourceManager.retrieveSoundas2D("Splash_Opening", false);
 		}
 
 		else
@@ -177,9 +194,9 @@ void SceneManager_Splash::UpdateTransition(double dt)
 
 		if (startTransition)
 		{
-			splashTimer -= (float)dt;
+			delayTimer -= (float)dt;
 
-			if (splashTimer <= 0)
+			if (delayTimer <= 0)
 				complete = true;
 		}
 	}

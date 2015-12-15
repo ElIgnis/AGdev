@@ -32,7 +32,6 @@ public:
 	void BindShaders();
 
 	void InitSceneGraph();
-	void FSMApplication();
 
 	void UpdateMouse();
 

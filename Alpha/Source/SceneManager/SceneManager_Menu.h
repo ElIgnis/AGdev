@@ -29,6 +29,7 @@ public:
 
 private:
 	SpriteAnimation* fireball;
+	bool playBGM = false;
 };
 
 #endif

@@ -43,6 +43,13 @@ void SceneManager_Menu::Update(double dt)
 
 	UpdateMouse();
 	UpdateSelection();
+
+	if (!playBGM)
+	{
+		playBGM = true;
+		
+	}
+	resourceManager.retrieveSoundas2D("Menu_BGM", true);
 }
 
 void SceneManager_Menu::Render()
@@ -156,7 +163,14 @@ void SceneManager_Menu::RenderLight()
 
 void SceneManager_Menu::RenderBG()
 {
+	Mesh* drawMesh;
+	drawMesh = resourceManager.retrieveMesh("Background");
+	drawMesh->textureID = resourceManager.retrieveTexture("MENU_BG");
+	Render2DMesh(drawMesh, false, Vector2(1920, 1080), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
 
+	drawMesh = resourceManager.retrieveMesh("Background");
+	drawMesh->textureID = resourceManager.retrieveTexture("TITLE");
+	Render2DMesh(drawMesh, false, Vector2(950, 200), Vector2(sceneWidth * 0.5f, sceneHeight * 0.8f));
 }
 
 void SceneManager_Menu::RenderStaticObject()
@@ -201,11 +215,14 @@ void SceneManager_Menu::UpdateSelection()
 			else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_IDLE)
 			{
 				interactiveButtons[i].setColor(resourceManager.retrieveColor("White"));
+				interactiveButtons[i].setRotation(0.f);
 			}
 
 			else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_HOVER)
 			{
 				interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
+				interactiveButtons[i].setRotation(-10.f);
+				resourceManager.retrieveSoundas2D("Menu_Hover", false);
 			}
 		}
 	}

@@ -208,6 +208,7 @@ void SceneManager_Pause::UpdateSelection()
 				else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_HOVER)
 				{
 					interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
+					resourceManager.retrieveSoundas2D("Menu_Hover", false);
 				}
 			}
 		}

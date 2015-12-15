@@ -10,17 +10,43 @@
 		[NAME] CURSOR
 		[Directory] Config\\Resources\\Texture\\Cursor.tga
 	}
+	#Menu Screens---------------------------------------------------------------------------------------------------------
 	{
-		[NAME] SKYPLANE_TOP
-		[Directory] Config\\Resources\\Texture\\top.tga
+		[NAME] TITLE
+		[Directory] Config\\Resources\\Texture\\Menu\\Title.tga
+	}
+	{
+		[NAME] SPLASH_BG
+		[Directory] Config\\Resources\\Texture\\Menu\\Splash_BG.tga
+	}
+	{
+		[NAME] HANDPRINT
+		[Directory] Config\\Resources\\Texture\\Menu\\HandPrint.tga
 	}
 	{
 		[NAME] MENU_BG
-		[Directory] Config\\Resources\\Texture\\menuBG.tga
+		[Directory] Config\\Resources\\Texture\\Menu\\Menu_BG.tga
 	}
 	{
-		[NAME] GRASS
-		[Directory] Config\\Resources\\Texture\\grass.tga
+		[NAME] LVLSELECT_BG
+		[Directory] Config\\Resources\\Texture\\Menu\\LevelSelect_BG.tga
+	}
+	{
+		[NAME] OPTION_BG
+		[Directory] Config\\Resources\\Texture\\Menu\\Option_BG.tga
+	}
+	{
+		[NAME] HELP_BG
+		[Directory] Config\\Resources\\Texture\\Menu\\Help_BG.tga
+	}
+	{
+		[NAME] HIGHSCORE_BG
+		[Directory] Config\\Resources\\Texture\\Menu\\HighScore_BG.tga
+	}
+	#In Game---------------------------------------------------------------------------------------------------------
+	{
+		[NAME] Ground
+		[Directory] Config\\Resources\\Texture\\Environment\\Ground_Tex.tga
 	}
 	{
 		[NAME] WARRIOR
@@ -47,15 +73,11 @@
 		[Directory] Config\\Resources\\Texture\\FireballSprite.tga
 	}
 	{
-		[NAME] SPLASH
-		[Directory] Config\\Resources\\Texture\\Splash.tga
-	}
-	{
-		[NAME] ALPHA
-		[Directory] Config\\Resources\\Texture\\alpha.tga
-	}
-	{
 		[NAME] TREE
 		[Directory] Config\\Resources\\Texture\\Static\OBJ_Tree_Tex.tga
+	}
+	{
+		[NAME] SKYPLANE_TOP
+		[Directory] Config\\Resources\\Texture\\Environment\\Skyplane.tga
 	}
 }

@@ -129,9 +129,6 @@
     <ClCompile Include="Source\TPCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SceneNode.cpp">
-      <Filter>SceneGraph</Filter>
-    </ClCompile>
     <ClCompile Include="Source\AABB2D.cpp">
       <Filter>Collision\AABB</Filter>
     </ClCompile>
@@ -179,12 +176,6 @@
     </ClCompile>
     <ClCompile Include="Source\SoundPool.cpp">
       <Filter>Handlers\Resource Handler</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SpatialPartitionManager.cpp">
-      <Filter>Managers\SpatialPartitionManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Partition.cpp">
-      <Filter>Managers\SpatialPartitionManager</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameStateManager.cpp">
       <Filter>Managers\GameStateManager</Filter>
@@ -261,6 +252,15 @@
     <ClCompile Include="Source\SceneManager\SceneManager.cpp">
       <Filter>Managers\SceneManagers\Template</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SceneNode.cpp">
+      <Filter>SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Partition.cpp">
+      <Filter>Managers\SpatialPartitionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpatialPartitionManager.cpp">
+      <Filter>Managers\SpatialPartitionManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Utility.h">
@@ -317,9 +317,6 @@
     <ClInclude Include="Source\TPCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneNode.h">
-      <Filter>SceneGraph</Filter>
-    </ClInclude>
     <ClInclude Include="Source\AABB2D.h">
       <Filter>Collision\AABB</Filter>
     </ClInclude>
@@ -370,12 +367,6 @@
     </ClInclude>
     <ClInclude Include="Source\GameState.h">
       <Filter>States</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SpatialPartitionManager.h">
-      <Filter>Managers\SpatialPartitionManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Partition.h">
-      <Filter>Managers\SpatialPartitionManager</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameStateManager.h">
       <Filter>Managers\GameStateManager</Filter>
@@ -464,6 +455,15 @@
     <ClInclude Include="Source\SceneManager\SceneManagerTransition.h">
       <Filter>Managers\SceneManagers\Template</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SceneNode.h">
+      <Filter>SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Partition.h">
+      <Filter>Managers\SpatialPartitionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SpatialPartitionManager.h">
+      <Filter>Managers\SpatialPartitionManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Config\AppConfig.txt">
@@ -496,9 +496,6 @@
     <Text Include="Config\GameStateConfig\MenuConfig.txt">
       <Filter>Config\State</Filter>
     </Text>
-    <Text Include="Config\GameStateConfig\OptionConfig.txt">
-      <Filter>Config\State</Filter>
-    </Text>
     <Text Include="Config\GameStateConfig\PauseConfig.txt">
       <Filter>Config\State</Filter>
     </Text>
@@ -507,6 +504,27 @@
     </Text>
     <Text Include="Config\InputConfig.txt">
       <Filter>Config</Filter>
+    </Text>
+    <Text Include="Config\GameStateConfig\CustomPlayConfig.txt">
+      <Filter>Config\State</Filter>
+    </Text>
+    <Text Include="Config\GameStateConfig\HelpConfig.txt">
+      <Filter>Config\State</Filter>
+    </Text>
+    <Text Include="Config\GameStateConfig\HighScoreConfig.txt">
+      <Filter>Config\State</Filter>
+    </Text>
+    <Text Include="Config\GameStateConfig\LevelSelectConfig.txt">
+      <Filter>Config\State</Filter>
+    </Text>
+    <Text Include="Config\GameStateConfig\LoadingConfig.txt">
+      <Filter>Config\State</Filter>
+    </Text>
+    <Text Include="Config\GameStateConfig\OptionsConfig.txt">
+      <Filter>Config\State</Filter>
+    </Text>
+    <Text Include="Config\GameStateConfig\SplashConfig.txt">
+      <Filter>Config\State</Filter>
     </Text>
   </ItemGroup>
 </Project>

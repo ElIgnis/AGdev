@@ -15,14 +15,13 @@
 		[Texture] CURSOR
 	}
 	{
-		[NAME] SPLASH
+		[NAME] HANDPRINT
 		[Type] Quad
-		[Texture] SPLASH
+		[Texture] HANDPRINT
 	}
 	{
 		[NAME] MENU_BG
 		[Type] Quad
-		[Texture] MENU_BG
 	}
 	{
 		[NAME] DEBUG_QUAD
@@ -47,7 +46,7 @@
 	{
 		[NAME] FLOOR
 		[Type] Quad
-		[Texture] GRASS
+		[Texture] Ground
 		[Length] 4000
 		[Width] 4000
 	}
@@ -140,6 +139,11 @@
 		[Type] Circle
 		[Slices] 36
 		[Radius] 10
+	}
+	##Background images
+	{
+		[NAME] Background
+		[Type] Quad
 	}
 }
 
