@@ -199,6 +199,7 @@ void SceneManager_Help::UpdateSelection()
 			if (interactiveButtons[i].getStatus() == Button2D::BUTTON_PRESSED)
 			{
 				interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
+				resourceManager.retrieveSoundas2D("Button_Press");
 			}
 
 			else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_IDLE)
@@ -211,7 +212,7 @@ void SceneManager_Help::UpdateSelection()
 			{
 				interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
 				interactiveButtons[i].setRotation(-10.f);
-				resourceManager.retrieveSoundas2D("Menu_Hover", false);
+				resourceManager.retrieveSoundas2D("Button_Hover");
 			}
 		}
 	}

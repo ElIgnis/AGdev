@@ -184,7 +184,7 @@ void SceneManager_Splash::UpdateTransition(double dt)
 		if (handPrintTimer > 0)
 		{
 			handPrintTimer -= dt;
-			resourceManager.retrieveSoundas2D("Splash_Opening", false);
+			resourceManager.retrieveSoundas2D("Splash_Opening", false, false);
 		}
 
 		else
