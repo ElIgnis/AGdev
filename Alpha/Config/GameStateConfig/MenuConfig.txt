@@ -26,19 +26,9 @@
 			[NAME] Play
 			[Type] Text
 			[Text] Play
-			[Pos] 900, 650
+			[Pos] 900, 550
 			[Rotation] 0
 			[Scale] 90, 75
-			[Mesh] FONT
-			[Color] 1, 1, 1
-		}
-		{
-			[NAME] LevelSelect
-			[Type] Text
-			[Text] LevelSelect
-			[Pos] 830, 550
-			[Rotation] 0
-			[Scale] 265, 75
 			[Mesh] FONT
 			[Color] 1, 1, 1
 		}

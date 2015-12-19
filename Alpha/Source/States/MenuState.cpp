@@ -60,10 +60,6 @@ void MenuState::HandleEvents(GameStateManager* gameStateManager)
 		{
 			if (scene->interactiveButtons[i].getName() == "Play")
 			{
-				gameStateManager->PushState(PlayState::Instance());
-			}
-			else if(scene->interactiveButtons[i].getName() == "LevelSelect")
-			{
 				gameStateManager->PushState(LeveSelectState::Instance());
 			}
 			else if(scene->interactiveButtons[i].getName() == "Options")

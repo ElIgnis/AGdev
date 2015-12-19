@@ -28,7 +28,6 @@ public:
 	void RenderMobileObject();
 
 private:
-	SpriteAnimation* fireball;
 	bool playBGM = false;
 };
 

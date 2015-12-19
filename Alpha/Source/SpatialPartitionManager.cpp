@@ -224,18 +224,37 @@ bool SpatialPartitionManager::addNode(SceneNode* node, SpatialPartitionManager::
 				node->GetGameObject()->getHitbox().getDepth() / 2);
 
 			SceneNode* tempNode = node;
-			boxMidpoint = node->GetGameObject()->getPosition();
+			boxMidpoint = node->GetGameObject()->getHitbox().getMidPoint();
 
-			if (node->parentNode != NULL && node->parentNode->GetGameObject() != NULL)
+			if (node->parentNode != NULL)
 			{
-				Vector3 offset = node->parentNode->GetGameObject()->getPosition() + node->GetGameObject()->getPosition();
+				SceneNode* parent = node->parentNode;
+				Vector3 offset = node->GetGameObject()->getPosition();
+
+				while (parent != NULL && parent->GetGameObject() != NULL)
+				{
+					offset += parent->GetGameObject()->getPosition();
+					parent = parent->parentNode;
+				}
+
 				node->GetGameObject()->updateHitbox(offset);
 			}
+			//if (node->parentNode != NULL && node->parentNode->GetGameObject() != NULL)
+			//{
+			//	Vector3 offset = node->parentNode->GetGameObject()->getPosition() + node->GetGameObject()->getPosition();
+			//	node->GetGameObject()->updateHitbox(offset);
+			//}
 
-			else
-			{
-				node->GetGameObject()->updateHitbox();
-			}
+			//else
+			//{
+			//	node->GetGameObject()->updateHitbox();
+			//}
+
+			//Dont add any node into partitions if they are out of world
+			if (boxMidpoint.x < minWorldDimension.x || boxMidpoint.x > maxWorldDimension.x
+				|| boxMidpoint.y < minWorldDimension.y || boxMidpoint.y > maxWorldDimension.y
+				|| boxMidpoint.z < minWorldDimension.z || boxMidpoint.z > maxWorldDimension.z)
+				return false;
 
 			// calculate the index which the obj is in the world
 			Vector3 topLeftBack, topLeftFront;
@@ -248,34 +267,68 @@ bool SpatialPartitionManager::addNode(SceneNode* node, SpatialPartitionManager::
 			topLeftBack.Set((boxMidpoint.x - nodeBox.x - minWorldDimension.x) / partitionDimension.x,
 							(boxMidpoint.y + nodeBox.y - minWorldDimension.y) / partitionDimension.y,
 							(boxMidpoint.z - nodeBox.z - minWorldDimension.z) / partitionDimension.z);
+			
+
 
 			topLeftFront.Set((boxMidpoint.x - nodeBox.x - minWorldDimension.x) / partitionDimension.x,
 							 (boxMidpoint.y + nodeBox.y - minWorldDimension.y) / partitionDimension.y,
 							 (boxMidpoint.z + nodeBox.z - minWorldDimension.z) / partitionDimension.z);
+			//if (boxMidpoint.x < minWorldDimension.x || boxMidpoint.x > maxWorldDimension.x
+			//	|| boxMidpoint.y < minWorldDimension.y || boxMidpoint.y > maxWorldDimension.y
+			//	|| boxMidpoint.z < minWorldDimension.z || boxMidpoint.z > maxWorldDimension.z)
+			//	return false;
+
 
 			topRightBack.Set((boxMidpoint.x + nodeBox.x - minWorldDimension.x) / partitionDimension.x,
 							 (boxMidpoint.y + nodeBox.y - minWorldDimension.y) / partitionDimension.y,
 							 (boxMidpoint.z - nodeBox.z - minWorldDimension.z) / partitionDimension.z);
+			//if (boxMidpoint.x < minWorldDimension.x || topRightBack.x > maxWorldDimension.x
+			//	|| boxMidpoint.y < minWorldDimension.y || topRightBack.y > maxWorldDimension.y
+			//	|| topRightBack.z < minWorldDimension.z || topRightBack.z > maxWorldDimension.z)
+			//	return false;
+
 
 			topRightFront.Set((boxMidpoint.x + nodeBox.x - minWorldDimension.x) / partitionDimension.x,
 							  (boxMidpoint.y + nodeBox.y - minWorldDimension.y) / partitionDimension.y,
 							  (boxMidpoint.z + nodeBox.z - minWorldDimension.z) / partitionDimension.z);
+			//if (topRightFront.x < minWorldDimension.x || topRightFront.x > maxWorldDimension.x
+			//	|| topRightFront.y < minWorldDimension.y || topRightFront.y > maxWorldDimension.y
+			//	|| topRightFront.z < minWorldDimension.z || topRightFront.z > maxWorldDimension.z)
+			//	return false;
+
 
 			bottomLeftBack.Set((boxMidpoint.x - nodeBox.x - minWorldDimension.x) / partitionDimension.x,
 								(boxMidpoint.y - nodeBox.y - minWorldDimension.y) / partitionDimension.y,
 								(boxMidpoint.z - nodeBox.z - minWorldDimension.z) / partitionDimension.z);
+			//if (bottomLeftBack.x < minWorldDimension.x || bottomLeftBack.x > maxWorldDimension.x
+			//	|| bottomLeftBack.y < minWorldDimension.y || bottomLeftBack.y > maxWorldDimension.y
+			//	|| bottomLeftBack.z < minWorldDimension.z || bottomLeftBack.z > maxWorldDimension.z)
+			//	return false;
+
 
 			bottomLeftFront.Set((boxMidpoint.x - nodeBox.x - minWorldDimension.x) / partitionDimension.x,
 								(boxMidpoint.y - nodeBox.y - minWorldDimension.y) / partitionDimension.y,
 								(boxMidpoint.z + nodeBox.z - minWorldDimension.z) / partitionDimension.z);
+			//if (bottomLeftFront.x < minWorldDimension.x || bottomLeftFront.x > maxWorldDimension.x
+			//	|| bottomLeftFront.y < minWorldDimension.y || bottomLeftFront.y > maxWorldDimension.y
+			//	|| bottomLeftFront.z < minWorldDimension.z || bottomLeftFront.z > maxWorldDimension.z)
+			//	return false;
 
 			bottomRightBack.Set((boxMidpoint.x + nodeBox.x - minWorldDimension.x) / partitionDimension.x,
 								(boxMidpoint.y - nodeBox.y - minWorldDimension.y) / partitionDimension.y,
 								(boxMidpoint.z - nodeBox.z - minWorldDimension.z) / partitionDimension.z);
+			//if (bottomRightBack.x < minWorldDimension.x || bottomRightBack.x > maxWorldDimension.x
+			//	|| bottomRightBack.y < minWorldDimension.y || bottomRightBack.y > maxWorldDimension.y
+			//	|| bottomRightBack.z < minWorldDimension.z || bottomRightBack.z > maxWorldDimension.z)
+			//	return false;
 
 			bottomRightFront.Set((boxMidpoint.x + nodeBox.x - minWorldDimension.x) / partitionDimension.x,
 							 	 (boxMidpoint.y - nodeBox.y - minWorldDimension.y) / partitionDimension.y,
 								 (boxMidpoint.z + nodeBox.z - minWorldDimension.z) / partitionDimension.z);
+			//if (bottomRightFront.x < minWorldDimension.x || bottomRightFront.x > maxWorldDimension.x
+			//	|| bottomRightFront.y < minWorldDimension.y || bottomRightFront.y > maxWorldDimension.y
+			//	|| bottomRightFront.z < minWorldDimension.z || bottomRightFront.z > maxWorldDimension.z)
+			//	return false;
 
 			// check top left back
 			partitionIndex = generatePartitionIndex(topLeftBack);
@@ -357,7 +410,7 @@ bool SpatialPartitionManager::removeNode(SceneNode* node)
 	}
 
 	// only add the node if it has a body (gameObject)
-	if (node->GetGameObject() != NULL)
+	//if (node->GetGameObject() != NULL)
 	{
 		switch (type)
 		{

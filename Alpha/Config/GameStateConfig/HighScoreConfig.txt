@@ -26,7 +26,7 @@
 			[NAME] Back
 			[Type] Text
 			[Text] Back
-			[Pos] 800, 350
+			[Pos] 900, 250
 			[Rotation] 0
 			[Scale] 90, 75
 			[Mesh] FONT

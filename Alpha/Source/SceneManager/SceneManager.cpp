@@ -246,7 +246,7 @@ void SceneManager::Render3DMesh(Mesh* mesh, bool enableLight)
 {
 	if (!mesh)
 	{
-		std::cout << "Unable to render 3D mesh!" << std::endl;
+		//std::cout << "Unable to render 3D mesh!" << std::endl;
 		return;
 	}
 

@@ -3,6 +3,7 @@
 
 #include "SceneManagerGameplay.h"
 #include "..\Player.h"
+#include "..\Joker.h"
 
 class SceneManager_Play : public SceneManagerGameplay
 {
@@ -14,7 +15,7 @@ private:
 	SceneNode* dynamicSceneGraph;
 	// MiniMap* miniMap;
 
-	GameObject3D testProjectile;
+	GameObject3D playerbullet;
 
 	Mesh* textMesh;
 public:
@@ -25,6 +26,7 @@ public:
 	void Config();
 	void Config(string directory);
 	void Update(double dt);
+	void UpdatePlayer(double dt);
 	void Render();
 	void Exit();
 
@@ -32,8 +34,19 @@ public:
 	void BindShaders();
 
 	void InitSceneGraph();
+	void InitStaticNodes();
+	void InitEnvironmentNodes();
+	void InitDynamicNodes();
+	void InitPlayer();
+	void InitAmmo();
+	
+	void SpawnEnemy();
+	void RespawnEnemy();
 
 	void UpdateMouse();
+
+	bool CheckSelfCollide(SceneNode* first, SceneNode* second);
+	//bool ProcessCollision(SceneNode* first, SceneNode* second);
 
 	void RenderLight();
 	void RenderBG();
@@ -43,6 +56,7 @@ public:
 
 	SceneNode* getNode(void);
 	CPlayer* player;
+	vector<CJoker*> enemyList_Joker;
 };
 
 #endif

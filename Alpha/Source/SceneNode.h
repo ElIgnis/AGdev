@@ -30,6 +30,8 @@ public:
 	void RemoveChildNode(SceneNode *childNode);
 	void RemoveChildFromChild(string childName, SceneNode *childNode);
 
+	bool ProcessCollision(SceneNode* dst);
+
 	void SetWorldPosition(Vector3 pos);
 	Vector3 GetWorldPosition(void);
 

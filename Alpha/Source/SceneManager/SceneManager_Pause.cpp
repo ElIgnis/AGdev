@@ -23,8 +23,6 @@ void SceneManager_Pause::Init(const int width, const int height, ResourcePool *R
 	projectionStack.LoadMatrix(perspective);
 
 	mouseMesh = resourceManager.retrieveMesh("CURSOR");
-
-	fireball = (SpriteAnimation*)resourceManager.retrieveMesh("FIREBALL_SPRITE");
 }
 
 void SceneManager_Pause::Config()
@@ -35,11 +33,6 @@ void SceneManager_Pause::Config()
 void SceneManager_Pause::Update(double dt)
 {
 	SceneManagerSelection::Update(dt);
-
-	if (inputManager->getKey("LMB"))
-	{
-		fireball->Update(dt);
-	}
 
 	UpdateMouse();
 	UpdateSelection();
@@ -172,12 +165,7 @@ void SceneManager_Pause::RenderSelection()
 	SceneManagerSelection::RenderSelection();
 
 	// Render mouse
-	Render2DMesh(mouseMesh, false, Vector2(50, 50), Vector2(mousePos.x, mousePos.y), 90.f);
-
-	if (inputManager->getKey("LMB"))
-	{
-		Render2DMesh(fireball, false, Vector2(100, 100), Vector2(mousePos.x + 50, mousePos.y));
-	}
+	Render2DMesh(mouseMesh, false, Vector2(25, 50), Vector2(mousePos.x, mousePos.y - 5.f), 0.f);
 }
 
 void SceneManager_Pause::UpdateMouse()

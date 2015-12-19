@@ -23,8 +23,6 @@ void SceneManager_Options::Init(const int width, const int height, ResourcePool 
 	projectionStack.LoadMatrix(perspective);
 
 	mouseMesh = resourceManager.retrieveMesh("CURSOR");
-
-	fireball = (SpriteAnimation*)resourceManager.retrieveMesh("FIREBALL_SPRITE");
 }
 
 void SceneManager_Options::Config()
@@ -35,11 +33,6 @@ void SceneManager_Options::Config()
 void SceneManager_Options::Update(double dt)
 {
 	SceneManagerSelection::Update(dt);
-
-	if (inputManager->getKey("LMB"))
-	{
-		fireball->Update(dt);
-	}
 
 	UpdateMouse();
 	UpdateSelection();
@@ -160,6 +153,9 @@ void SceneManager_Options::RenderBG()
 	drawMesh = resourceManager.retrieveMesh("Background");
 	drawMesh->textureID = resourceManager.retrieveTexture("OPTION_BG");
 	Render2DMesh(drawMesh, false, Vector2(1920, 1080), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
+
+	drawMesh = resourceManager.retrieveMesh("FONT");
+	RenderTextOnScreen(drawMesh, "Options", Color(1, 0, 0), 200.f, 200, 800, 0.f);
 }
 
 void SceneManager_Options::RenderStaticObject()
@@ -176,11 +172,6 @@ void SceneManager_Options::RenderSelection()
 
 	// Render mouse
 	Render2DMesh(mouseMesh, false, Vector2(25, 50), Vector2(mousePos.x, mousePos.y - 5.f), 0.f);
-
-	if (inputManager->getKey("LMB"))
-	{
-		Render2DMesh(fireball, false, Vector2(100, 100), Vector2(mousePos.x + 50, mousePos.y));
-	}
 }
 
 void SceneManager_Options::UpdateMouse()

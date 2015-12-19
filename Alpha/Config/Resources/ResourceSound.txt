@@ -11,11 +11,27 @@
 		[Directory] Config\\Resources\\Sound\\BGM_Menu.wav
 	}
 	{
+		[NAME] Game_BGM
+		[Directory] Config\\Resources\\Sound\\BGM_Game.wav
+	}
+	{
 		[NAME] Button_Hover
 		[Directory] Config\\Resources\\Sound\\Button_Hover.wav
 	}
 	{
 		[NAME] Button_Press
 		[Directory] Config\\Resources\\Sound\\Button_Press.wav
+	}
+	{
+		[NAME] Pistol_Fire
+		[Directory] Config\\Resources\\Sound\\Pistol_Fire.wav
+	}
+	{
+		[NAME] Pistol_Reload
+		[Directory] Config\\Resources\\Sound\\Pistol_Reload.wav
+	}
+	{
+		[NAME] Player_Walk
+		[Directory] Config\\Resources\\Sound\\Player_Walk.wav
 	}
 }

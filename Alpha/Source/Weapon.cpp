@@ -89,7 +89,7 @@ void Weapon::RefillWeapon()
 	}
 }
 
-bool Weapon::Fire()
+bool Weapon::CanFire()
 {
 	if (this->fire_timer >= FIRE_RATE && !Reloading)
 	{
@@ -98,6 +98,22 @@ bool Weapon::Fire()
 	}
 	return false;
 }
+
+void Weapon::FireWeapon()
+{
+	--Current_Ammo;
+}
+
+bool Weapon::GetReloading()
+{
+	return Reloading;
+}
+
+float Weapon::GetReloadTimer()
+{
+	return (RELOAD_TIME - reload_timer);
+}
+
 
 void Weapon::Reload()
 {

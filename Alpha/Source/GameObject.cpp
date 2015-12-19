@@ -27,7 +27,7 @@ void GameObject::setName(string name)
 void GameObject::setPosition(Vector3 position)
 {
 	this->position = position;
-
+	
 	this->TRS.translation.SetToTranslation(position);
 }
 
@@ -119,4 +119,9 @@ bool GameObject::getUpdate(void) const
 bool GameObject::getCollidable(void) const
 {
 	return this->collidable;
+}
+
+float GameObject::getRotateAngle(void) const
+{
+	return this->rotation;
 }

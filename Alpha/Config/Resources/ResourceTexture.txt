@@ -49,24 +49,28 @@
 		[Directory] Config\\Resources\\Texture\\Environment\\Ground_Tex.tga
 	}
 	{
-		[NAME] WARRIOR
-		[Directory] Config\\Resources\\Texture\\AI\\Warrior.tga
+		[NAME] PLAYER
+		[Directory] Config\\Resources\\Texture\\Human\\OBJ_Player_Tex.tga
 	}
 	{
-		[NAME] MAGE
-		[Directory] Config\\Resources\\Texture\\AI\\Mage.tga
+		[NAME] JOKER
+		[Directory] Config\\Resources\\Texture\\Human\\OBJ_Joker_Tex.tga
 	}
 	{
-		[NAME] HEALER
-		[Directory] Config\\Resources\\Texture\\AI\\Healer.tga
+		[NAME] PISTOL
+		[Directory] Config\\Resources\\Texture\\Weapon\\OBJ_Handgun_Tex.tga
 	}
 	{
-		[NAME] BOSS
-		[Directory] Config\\Resources\\Texture\\AI\\Boss.tga
+		[NAME] BULLET
+		[Directory] Config\\Resources\\Texture\\Weapon\\OBJ_Bullet_Tex.tga
 	}
 	{
-		[NAME] WEAPONS
-		[Directory] Config\\Resources\\Texture\\AI\\Weapons.tga
+		[NAME] AMMO
+		[Directory] Config\\Resources\\Texture\\Weapon\\OBJ_Ammo_Tex.tga
+	}
+	{
+		[NAME] CROSSHAIR
+		[Directory] Config\\Resources\\Texture\\Weapon\\Crosshair.tga
 	}
 	{
 		[NAME] FIREBALL_SPRITE

@@ -99,13 +99,14 @@ void SceneNode::Draw(SceneManager *sceneManager, Mesh* debugMesh)
 #if _DEBUG
 		if (debugMesh != NULL)
 		{
-			MS modelStack;
-			modelStack.PushMatrix();
-			modelStack.Translate(gameObject3D->getHitbox().getMidPoint().x, gameObject3D->getHitbox().getMidPoint().y, gameObject3D->getHitbox().getMidPoint().z);
-			modelStack.MultMatrix(gameObject3D->getProperties().rotation);
-			modelStack.Scale(gameObject3D->getHitbox().getLength(), gameObject3D->getHitbox().getHeight(), gameObject3D->getHitbox().getDepth());
+			Properties trs;
+			Mtx44 overall;
+			overall.SetToIdentity();
+			trs.scale.SetToScale(Vector3(gameObject3D->getHitbox().getLength(), gameObject3D->getHitbox().getHeight(), gameObject3D->getHitbox().getDepth()));
+			trs.modelProperties = overall * trs.translation * trs.rotation * trs.scale;
+			sceneManager->RenderPush(trs.modelProperties);
 			sceneManager->Render3DMesh(debugMesh, false);
-			modelStack.PopMatrix();
+			sceneManager->RenderPop();
 		}
 #endif
 		sceneManager->Render3DMesh(gameObject3D->getMesh(), gameObject3D->getReflectLight());
@@ -129,13 +130,14 @@ void SceneNode::DrawChild(SceneManager *sceneManager, Mesh* debugMesh)
 #if _DEBUG
 	if (debugMesh != NULL)
 	{
-		MS modelStack;
-		modelStack.PushMatrix();
-		modelStack.Translate(gameObject3D->getHitbox().getMidPoint().x, gameObject3D->getHitbox().getMidPoint().y, gameObject3D->getHitbox().getMidPoint().z);
-		modelStack.MultMatrix(gameObject3D->getProperties().rotation);
-		modelStack.Scale(gameObject3D->getHitbox().getLength(), gameObject3D->getHitbox().getHeight(), gameObject3D->getHitbox().getDepth());
+		Properties trs;
+		Mtx44 overall;
+		overall.SetToIdentity();
+		trs.scale.SetToScale(Vector3(gameObject3D->getHitbox().getLength(), gameObject3D->getHitbox().getHeight(), gameObject3D->getHitbox().getDepth()));
+		trs.modelProperties = overall * trs.translation * trs.rotation * trs.scale;
+		sceneManager->RenderPush(trs.modelProperties);
 		sceneManager->Render3DMesh(debugMesh, false);
-		modelStack.PopMatrix();
+		sceneManager->RenderPop();
 	}
 #endif
 
@@ -152,6 +154,16 @@ void SceneNode::DrawChild(SceneManager *sceneManager, Mesh* debugMesh)
 void SceneNode::SetWorldPosition(Vector3 pos)
 {
 	this->WorldPosition = pos;
+}
+
+bool SceneNode::ProcessCollision(SceneNode* dst)
+{
+	bool checkCollide = false;
+	string boxName = "";
+		
+	checkCollide = check3DCollision(this->GetGameObject()->getHitbox(), dst->GetGameObject()->getHitbox(), boxName);
+	
+	return checkCollide;
 }
 
 Vector3 SceneNode::GetWorldPosition(void)

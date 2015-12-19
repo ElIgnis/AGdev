@@ -91,12 +91,14 @@
     <ClCompile Include="Source\Button3D.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\FPCamera.cpp" />
+    <ClCompile Include="Source\Free3DMovement.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\GameObject2D.cpp" />
     <ClCompile Include="Source\GameObject3D.cpp" />
     <ClCompile Include="Source\GameObjectSprite2D.cpp" />
     <ClCompile Include="Source\GameStateManager.cpp" />
     <ClCompile Include="Source\InputManager.cpp" />
+    <ClCompile Include="Source\Joker.cpp" />
     <ClCompile Include="Source\Keyboard.cpp" />
     <ClCompile Include="Source\LoadHmap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
@@ -110,7 +112,7 @@
     <ClCompile Include="Source\OBB3D.cpp" />
     <ClCompile Include="Source\Partition.cpp" />
     <ClCompile Include="Source\Player.cpp" />
-    <ClCompile Include="Source\PlayerSingleton.cpp" />
+    <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\ProjectileManager.cpp" />
     <ClCompile Include="Source\ResourceManager.cpp" />
@@ -152,6 +154,7 @@
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Fog.h" />
     <ClInclude Include="Source\FPCamera.h" />
+    <ClInclude Include="Source\Free3DMovement.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\GameObject2D.h" />
     <ClInclude Include="Source\GameObject3D.h" />
@@ -159,6 +162,7 @@
     <ClInclude Include="Source\GameState.h" />
     <ClInclude Include="Source\GameStateManager.h" />
     <ClInclude Include="Source\InputManager.h" />
+    <ClInclude Include="Source\Joker.h" />
     <ClInclude Include="Source\Keyboard.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadHmap.h" />
@@ -173,7 +177,7 @@
     <ClInclude Include="Source\OBB3D.h" />
     <ClInclude Include="Source\Partition.h" />
     <ClInclude Include="Source\Player.h" />
-    <ClInclude Include="Source\PlayerSingleton.h" />
+    <ClInclude Include="Source\Entity.h" />
     <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\ProjectileManager.h" />
     <ClInclude Include="Source\ResourceManager.h" />

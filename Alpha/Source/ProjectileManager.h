@@ -20,7 +20,7 @@ public:
 
 	int GetNumberOfActiveProjectiles(void);	//Get active projectile count
 
-	void Update(const double dt);	//Update 
+	void Update(const double dt, const float worldLength, const float worldWidth);	//Update 
 	void Draw(SceneManager *sceneManager);	//Render
 
 	void CleanUp();	//Cleans up data

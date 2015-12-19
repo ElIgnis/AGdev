@@ -96,5 +96,15 @@
 		[Key] 0x28
 		# [Key] Arrow Key down
 	}
+	{
+		[NAME] Reload
+		[Key] 0x52
+		# [Key] Reload Key down
+	}
+	{
+		[NAME] Spawn
+		[Key] 0x70
+		# [Key] Spawn Key down
+	}
 }
 # https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx

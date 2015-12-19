@@ -1,8 +1,12 @@
 #pragma once
 
-#include "PlayerSingleton.h"
+#include "Entity.h"
+#include "Free3DMovement.h"
+#include "Weapon.h"
 
-class CPlayer : public CPlayerSingleton
+#define Player CPlayer::GetInstance()
+
+class CPlayer : public Entity
 {
 public:
 	static CPlayer* GetInstance();
@@ -35,6 +39,8 @@ public:
 	virtual float GetMoveSpeedMult(void);
 	//Update Angle
 	virtual void UpdateAngle(float dt);
+	virtual void RotateLimb(string nodeName, float angle, float rotateSpeed, bool playOnce, double dt, float axisX, float axisY, float axisZ);
+	virtual void RevertLimb(bool aimMode, double dt);
 
 	virtual bool GetInAir(void);
 
@@ -42,7 +48,7 @@ public:
 
 	//Update
 	virtual void Update(double dt, float CamAngle);
-	virtual void UpdateMovement(double dt);
+	virtual void UpdateMovement(bool aimMode, double dt);
 
 	//Game related
 	virtual void SetHealth(int newHealth);
@@ -50,10 +56,16 @@ public:
 	virtual int GetHealth(void);
 	virtual int GetLives(void);
 
+	Weapon* GetWeapon(void);
+
 private:
 	CPlayer();
 	~CPlayer();
 
+	GameObject3D* GO3D_Object;
+	SceneNode* playerNode;
 	static CPlayer* instance;
+	Free3DMovement LeftHand, RightHand, LeftLeg, RightLeg;
+	Weapon* Pistol;
 };
 

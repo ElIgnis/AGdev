@@ -85,6 +85,15 @@
     <Filter Include="Managers\SceneManagers\Managers">
       <UniqueIdentifier>{e9c0f355-df36-4cc8-99af-f74284032ec0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Movement">
+      <UniqueIdentifier>{9477d494-7b6d-48c5-8700-18bf9aa3178a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\ChildObject\Player">
+      <UniqueIdentifier>{fe09df08-dac9-4ac2-a73b-d02cf762df30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\ChildObject\Enemy">
+      <UniqueIdentifier>{c0237cb5-028e-4ac6-bb79-80d146ff5d59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Utility.cpp">
@@ -195,12 +204,6 @@
     <ClCompile Include="Source\Weapon.cpp">
       <Filter>GameObjects\ChildObject</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Player.cpp">
-      <Filter>GameObjects\ChildObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\PlayerSingleton.cpp">
-      <Filter>GameObjects\ChildObject</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SceneManager\SceneManager_HighScore.cpp">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClCompile>
@@ -260,6 +263,18 @@
     </ClCompile>
     <ClCompile Include="Source\SpatialPartitionManager.cpp">
       <Filter>Managers\SpatialPartitionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Free3DMovement.cpp">
+      <Filter>Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity.cpp">
+      <Filter>GameObjects\ChildObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player.cpp">
+      <Filter>GameObjects\ChildObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Joker.cpp">
+      <Filter>GameObjects\ChildObject\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -386,12 +401,6 @@
     <ClInclude Include="Source\Weapon.h">
       <Filter>GameObjects\ChildObject</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Player.h">
-      <Filter>GameObjects\ChildObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\PlayerSingleton.h">
-      <Filter>GameObjects\ChildObject</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SceneManager\SceneManager_HighScore.h">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClInclude>
@@ -463,6 +472,18 @@
     </ClInclude>
     <ClInclude Include="Source\SpatialPartitionManager.h">
       <Filter>Managers\SpatialPartitionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Free3DMovement.h">
+      <Filter>Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entity.h">
+      <Filter>GameObjects\ChildObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player.h">
+      <Filter>GameObjects\ChildObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Joker.h">
+      <Filter>GameObjects\ChildObject\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

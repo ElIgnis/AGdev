@@ -89,7 +89,7 @@ int ProjectileManager::GetNumberOfActiveProjectiles(void)
 /********************************************************************************
  Update
  ********************************************************************************/
-void ProjectileManager::Update(const double dt)
+void ProjectileManager::Update(const double dt, const float worldLength, const float worldWidth)
 {
 	//Iterate through vector of projectiles
 	for (std::vector<CProjectile*>::iterator it = m_ProjectileList.begin(); it != m_ProjectileList.end(); ++it)
@@ -99,8 +99,7 @@ void ProjectileManager::Update(const double dt)
 		//Only update if projectile is active
 		if (projectile->getUpdate())
 		{
-			projectile->Update(dt);
-			std::cout << projectile->getPosition() << std::endl;
+			projectile->Update(dt, worldLength, worldWidth);
 		}
 	}
 }

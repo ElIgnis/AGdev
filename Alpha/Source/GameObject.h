@@ -71,6 +71,7 @@ public:
 	virtual Vector3 getPosition(void) const;
 	virtual Vector3 getMtxRotation(void) const;
 	virtual Properties getProperties(void);
+	virtual float getRotateAngle(void) const;
 	virtual bool getRender(void) const;
 	virtual bool getReflectLight(void) const;
 	virtual bool getUpdate(void) const;

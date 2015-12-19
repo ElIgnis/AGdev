@@ -65,7 +65,7 @@ void LeveSelectState::HandleEvents(GameStateManager* gameStateManager)
 
 			else if (scene->interactiveButtons[i].getName() == "LevelTwo")
 			{
-				gameStateManager->PushState(PlayState::Instance());
+				//gameStateManager->PushState(PlayState::Instance());
 			}
 
 			else if (scene->interactiveButtons[i].getName() == "Back")

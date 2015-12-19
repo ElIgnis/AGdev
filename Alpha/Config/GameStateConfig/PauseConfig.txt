@@ -24,7 +24,7 @@
 			[NAME] Resume
 			[Type] Text
 			[Text] Resume
-			[Pos] 800, 600
+			[Pos] 900, 600
 			[Rotation] 0
 			[Scale] 420, 75
 			[Mesh] FONT
@@ -33,7 +33,7 @@
 			[NAME] Menu
 			[Type] Text
 			[Text] Menu
-			[Pos] 800, 450
+			[Pos] 900, 450
 			[Rotation] 0
 			[Scale] 270, 75
 			[Mesh] FONT

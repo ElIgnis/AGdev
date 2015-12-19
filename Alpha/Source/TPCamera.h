@@ -63,12 +63,14 @@ public:
 
 	float calcHDist(void);
 	float calcVDist(void);
+	float getCamPitch(void);
 	float GetCamAngle(void);
 
 	void TogglePitchLock(void);
 	void ToggleYawLock(void);
 
 	void SetAimMode(bool newAimMode);
+	bool GetAimMode(void);
 	void ToggleAimMode(void);
 
 private:
@@ -91,7 +93,7 @@ private:
 	float m_fTPVCameraAngle = 0.f;
 	float m_fTPVCameraPitch = 45.f;
 	
-	float translateSpeed = 100.f;
+	float translateSpeed = 200.f;
 	float pitchChange;
 	float angleChange;
 

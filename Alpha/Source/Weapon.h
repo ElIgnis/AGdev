@@ -23,7 +23,10 @@ public:
 	int getReservedAmmo(void);	//Get reserved amount of ammo
 	void setReservedAmmo(int value);	//Set reserved amount of ammo
 
-	bool Fire();	//Fire Weapon
+	bool CanFire();	//Can Fire Weapon
+	void FireWeapon();	//Fires weapon
+	bool GetReloading();
+	float GetReloadTimer();
 	void Reload();	//Reload Weapon
 	
 private:

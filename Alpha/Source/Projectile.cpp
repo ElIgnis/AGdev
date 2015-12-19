@@ -38,8 +38,17 @@ void CProjectile::Init(GameObject3D object, Vector3 newDirection, bool active, f
 /********************************************************************************
  Update the status of this projectile
  ********************************************************************************/
-void CProjectile::Update(const double dt)
+void CProjectile::Update(const double dt, const float worldLength, const float worldWidth)
 {
+	//if (this->position.x >= worldLength || this->position.x <= -worldLength)
+	//{
+	//	this->setUpdate(false);
+	//}
+	//if (this->position.z >= worldWidth || this->position.z <= -worldWidth)
+	//{
+	//	this->setUpdate(false);
+	//}
+
 	//Updating position & hitbox
 	this->setPosition(this->position += m_v2Direction * (float)dt * m_fSpeed);
 	this->updateHitbox();

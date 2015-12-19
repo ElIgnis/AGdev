@@ -207,7 +207,7 @@ void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir, Vector3 ShoulderPo
 	{
 		normalView = false;
 		//Set the height
-		m_fTPVCameraOffsetY = 10.f;
+		m_fTPVCameraOffsetY = 5.f;
 
 		//Transition
 		if (aimView == false)
@@ -402,9 +402,20 @@ void TPCamera::SetAimMode(bool newAimMode)
 {
 	this->aimMode = newAimMode;
 }
+
+bool TPCamera::GetAimMode(void)
+{
+	return aimMode;
+}
+
 void TPCamera::ToggleAimMode(void)
 {
 	
+}
+
+float TPCamera::getCamPitch(void)
+{
+	return m_fTPVCameraPitch;
 }
 
 /********************************************************************************

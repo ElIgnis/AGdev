@@ -18,7 +18,9 @@ SceneManager_Play::~SceneManager_Play()
 void SceneManager_Play::Init(const int width, const int height, ResourcePool *RM, InputManager* controls)
 {
 	SceneManagerGameplay::Init(width, height, RM, controls);
-
+	resourceManager.stopAllSounds();
+	resourceManager.retrieveSoundas2D("Game_BGM", true, true);
+	srand(time(NULL));
 	Config();
 	Config("Config\\GameStateConfig\\CustomPlayConfig.txt");
 	player->GetInstance();
@@ -33,11 +35,11 @@ void SceneManager_Play::Init(const int width, const int height, ResourcePool *RM
 
 	textMesh = resourceManager.retrieveMesh("FONT");
 
-	testProjectile.setCollidable(true);
-	testProjectile.setMesh(resourceManager.retrieveMesh("WARRIOR_SWORD_OBJ"));
-	testProjectile.setName("testprojectile");
-	testProjectile.setReflectLight(true);
-	testProjectile.setHitbox(Vector3(0, 0, 0), 3, 3, 3, "testprojectile");
+	playerbullet.setCollidable(true);
+	playerbullet.setMesh(resourceManager.retrieveMesh("BULLET"));
+	playerbullet.setName("playerbullet");
+	playerbullet.setReflectLight(true);
+	playerbullet.setHitbox(Vector3(0, 0, 0), 2, 2, 20, "playerbullet");
 
 	/*
 	miniMap = new MiniMap();
@@ -172,7 +174,7 @@ void SceneManager_Play::Config(string directory)
 void SceneManager_Play::Update(double dt)
 {
 	SceneManagerGameplay::Update(dt);
-
+	
 	//spatialPartitionManager->Update();
 	spatialPartitionManager->removeNode(dynamicSceneGraph);
 	spatialPartitionManager->addNode(dynamicSceneGraph, this->spatialPartitionManager->type);
@@ -192,45 +194,60 @@ void SceneManager_Play::Update(double dt)
 					SceneNode* secondNode = *k;
 					string boxName = "";
 
-					if (firstNode->getActive() && secondNode->getActive())
+					if (firstNode->getActive() && secondNode->getActive() && CheckSelfCollide(firstNode, secondNode) == false)
 					{
-						//Only check if both are not player
-						if (firstNode->GetGameObject()->getName() != "Player" && secondNode->GetGameObject()->getName() != "Player" && firstNode->GetGameObject()->getName() != "LeftHand" && secondNode->GetGameObject()->getName() != "LeftHand" && firstNode->GetGameObject()->getName() != "RightHand" && secondNode->GetGameObject()->getName() != "RightHand")
+						if (firstNode->ProcessCollision(secondNode))
 						{
-
-							if (check3DCollision(firstNode->GetGameObject()->getHitbox(), secondNode->GetGameObject()->getHitbox(), boxName))
+							//Bullets destroy everything
+							if (firstNode->GetGameObject()->getName() == "playerbullet")
 							{
-								if (firstNode->GetGameObject()->getName() == "testprojectile")
-								{
-									//projectileManager.RemoveProjectile(firstNode->GetGameObject());
-									spatialPartitionManager->removeNode(secondNode);
-									dynamicSceneGraph->RemoveChildNode(secondNode);
-									j = spatialPartitionManager->partitions[i]->nodes.begin();
-									break;
-								}
-								else if (secondNode->GetGameObject()->getName() == "testprojectile")
-								{
-									//projectileManager.RemoveProjectile(firstNode->GetGameObject());
-									spatialPartitionManager->removeNode(firstNode);
-									dynamicSceneGraph->RemoveChildNode(firstNode);
-									j = spatialPartitionManager->partitions[i]->nodes.begin();
-									break;
-								}
-								//Every other thing
+								//projectileManager.RemoveProjectile(firstNode->GetGameObject());
+								//secondNode->setActive(false);
 								spatialPartitionManager->removeNode(secondNode);
 								dynamicSceneGraph->RemoveChildNode(secondNode);
 								j = spatialPartitionManager->partitions[i]->nodes.begin();
 								break;
 							}
+							else if (secondNode->GetGameObject()->getName() == "playerbullet")
+							{
+								//projectileManager.RemoveProjectile(firstNode->GetGameObject());
+								//firstNode->setActive(false);
+								spatialPartitionManager->removeNode(firstNode);
+								dynamicSceneGraph->RemoveChildNode(firstNode);
+								j = spatialPartitionManager->partitions[i]->nodes.begin();
+								break;
+							}
+							else if (firstNode->GetGameObject()->getName() == "Ammo")
+							{
+								spatialPartitionManager->removeNode(firstNode);
+								dynamicSceneGraph->RemoveChildNode(firstNode);
+								Player->GetWeapon()->setReservedAmmo(120);
+								j = spatialPartitionManager->partitions[i]->nodes.begin();
+								break;
+							}
+							else if (secondNode->GetGameObject()->getName() == "Ammo")
+							{
+								spatialPartitionManager->removeNode(secondNode);
+								dynamicSceneGraph->RemoveChildNode(secondNode);
+								Player->GetWeapon()->setReservedAmmo(120);
+								j = spatialPartitionManager->partitions[i]->nodes.begin();
+								break;
+							}
+
+							////Every other thing
+							//spatialPartitionManager->removeNode(secondNode);
+							//dynamicSceneGraph->RemoveChildNode(secondNode);
+							//j = spatialPartitionManager->partitions[i]->nodes.begin();
+							//break;
 						}
 					}
 				}
 			}
 		}
 	}
-
-	projectileManager.Update(dt);
-
+	
+	projectileManager.Update(dt, 2000, 2000);
+	
 	/*Sound testing related keys*/
 	if (inputManager->getKey("TEST_SOUND"))
 	{
@@ -250,20 +267,6 @@ void SceneManager_Play::Update(double dt)
 		resourceManager.DecreaseSoundEngineVolume();
 	}
 
-	//tpCamera.Update(dt);
-
-	if (inputManager->getKey("LMB"))
-	{
-		Vector3 characterPos = dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition();
-		testProjectile.setPosition(characterPos);
-		CProjectile* projectile = projectileManager.FetchProjectile(testProjectile, (tpCamera.getTarget() - tpCamera.getPosition()).Normalized(), 20.f);
-		GameObject3D* newProjectile = projectile;
-		SceneNode* node;
-		node = getNode();
-		node->SetGameObject(newProjectile);
-		dynamicSceneGraph->AddChildNode(node);
-	}
-
 	if (inputManager->getKey("LockPitch"))
 	{
 		tpCamera.TogglePitchLock();
@@ -273,7 +276,52 @@ void SceneManager_Play::Update(double dt)
 		tpCamera.ToggleYawLock();
 	}
 
-	const float moveSpeed = 100.f;
+	UpdatePlayer(dt);
+	
+	if (inputManager->getKey("Spawn"))
+	{
+		RespawnEnemy();
+	}
+}
+
+void SceneManager_Play::UpdatePlayer(double dt)
+{
+	//Updates the weapon	
+	Player->GetWeapon()->Update(dt);
+
+	//Only able to fire if weapon is ready and still have bullets
+	if (inputManager->getKey("LMB") && Player->GetWeapon()->CanFire() && Player->GetWeapon()->getCurrentAmmo() > 0 && tpCamera.GetAimMode())
+	{
+		Vector3 FiringPos = dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition();
+		float offSet_X = (float)(-13 * sin(Math::DegreeToRadian(Player->GetAngle() + 157.5)));
+		float offSet_Z = (float)(-13 * cos(Math::DegreeToRadian(Player->GetAngle() + 157.5)));
+		//Vector3 FiringPos = tpCamera.getPosition() + 5 * ((tpCamera.getTarget() - tpCamera.getPosition()).Normalized());
+		//Vector3 FiringPos = (0, -100, 0);
+		FiringPos.x += offSet_X;
+		FiringPos.y = dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().y + 6.75f;
+		FiringPos.z += offSet_Z;
+		playerbullet.setPosition(FiringPos);
+		
+		CProjectile* projectile = projectileManager.FetchProjectile(playerbullet, (tpCamera.getTarget() - tpCamera.getPosition()).Normalized(), 1000.f);
+		projectile->setRotation(Player->GetAngle(), 0, 1, 0);
+		GameObject3D* newProjectile = projectile;
+		SceneNode* node;
+		node = getNode();
+		node->SetGameObject(newProjectile);
+		dynamicSceneGraph->AddChildNode(node);
+		Player->GetWeapon()->FireWeapon();
+		resourceManager.retrieveSoundas2D("Pistol_Fire", true, false);
+	}
+
+	//Reloading weapon
+	if (inputManager->getKey("Reload") && Player->GetWeapon()->getCurrentAmmo() < 10)
+	{
+		Player->GetWeapon()->Reload();
+		resourceManager.retrieveSoundas2D("Pistol_Reload", false, false);
+	}
+
+	Player->Update(dt, 0);
+
 	if (inputManager->getKey("Up"))
 	{
 		Player->SetAngle(tpCamera.GetCamAngle());
@@ -287,8 +335,8 @@ void SceneManager_Play::Update(double dt)
 		{
 			Player->SetAngle(tpCamera.GetCamAngle() - 45.f);
 		}
-		Player->UpdateMovement(dt);
-		std::cout << Player->GetAngle() << std::endl;
+		Player->UpdateMovement(tpCamera.GetAimMode(), dt);
+
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setPosition(Vector3(
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().x,
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().y,
@@ -298,6 +346,8 @@ void SceneManager_Play::Update(double dt)
 			0,
 			1,
 			0);
+
+		resourceManager.retrieveSoundas2D("Player_Walk", false, false);
 	}
 
 	else if (inputManager->getKey("Down"))
@@ -313,7 +363,7 @@ void SceneManager_Play::Update(double dt)
 		{
 			Player->SetAngle(tpCamera.GetCamAngle() - 135.f);
 		}
-		Player->UpdateMovement(dt);
+		Player->UpdateMovement(tpCamera.GetAimMode(), dt);
 
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setPosition(Vector3(
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().x,
@@ -324,13 +374,14 @@ void SceneManager_Play::Update(double dt)
 			0,
 			1,
 			0);
+		resourceManager.retrieveSoundas2D("Player_Walk", false, false);
 	}
 
 	else if (inputManager->getKey("Left"))
 	{
 		Player->SetAngle(tpCamera.GetCamAngle() + 90.f);
 
-		Player->UpdateMovement(dt);
+		Player->UpdateMovement(tpCamera.GetAimMode(), dt);
 
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setPosition(Vector3(
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().x,
@@ -341,13 +392,14 @@ void SceneManager_Play::Update(double dt)
 			0,
 			1,
 			0);
+		resourceManager.retrieveSoundas2D("Player_Walk", false, false);
 	}
 
 	else if (inputManager->getKey("Right"))
 	{
 		Player->SetAngle(tpCamera.GetCamAngle() - 90.f);
 
-		Player->UpdateMovement(dt);
+		Player->UpdateMovement(tpCamera.GetAimMode(), dt);
 
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setPosition(Vector3(
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().x,
@@ -358,6 +410,11 @@ void SceneManager_Play::Update(double dt)
 			0,
 			1,
 			0);
+		resourceManager.retrieveSoundas2D("Player_Walk", false, false);
+	}
+	else
+	{
+		Player->RevertLimb(tpCamera.GetAimMode(), dt);
 	}
 
 	//Update zoom
@@ -374,11 +431,132 @@ void SceneManager_Play::Update(double dt)
 	else
 	{
 		tpCamera.SetAimMode(false);
-		//tpCamera.UpdatePosition(dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition(), Vector3(0, 0, 0));
 	}
-	
+
+	if (tpCamera.GetAimMode())
+		Player->RotateLimb("RightHand_Joint", -90, 300, true, dt, 1, 0, 0);
 	tpCamera.UpdatePosition(dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition(), Player->GetDirection(), dynamicSceneGraph->GetChildNode("Player")->GetChildNode("Head")->GetWorldPosition(), dt);
 }
+
+bool SceneManager_Play::CheckSelfCollide(SceneNode* first, SceneNode* second)
+{
+	if (first->GetGameObject()->getName() == "Head"
+		|| first->GetGameObject()->getName() == "Player"
+		|| first->GetGameObject()->getName() == "LeftHand_Joint"
+		|| first->GetGameObject()->getName() == "LeftHand"
+		|| first->GetGameObject()->getName() == "RightHand_Joint"
+		|| first->GetGameObject()->getName() == "RightHand"
+		|| first->GetGameObject()->getName() == "Weapon"
+		|| first->GetGameObject()->getName() == "LeftLeg_Joint"
+		|| first->GetGameObject()->getName() == "LeftLeg"
+		|| first->GetGameObject()->getName() == "RightLeg_Joint"
+		|| first->GetGameObject()->getName() == "RightLeg")
+	{
+		if (second->GetGameObject()->getName() == "Head"
+			|| second->GetGameObject()->getName() == "Player"
+			|| second->GetGameObject()->getName() == "LeftHand_Joint"
+			|| second->GetGameObject()->getName() == "LeftHand"
+			|| second->GetGameObject()->getName() == "RightHand_Joint"
+			|| second->GetGameObject()->getName() == "RightHand"
+			|| second->GetGameObject()->getName() == "Weapon"
+			|| second->GetGameObject()->getName() == "LeftLeg_Joint"
+			|| second->GetGameObject()->getName() == "LeftLeg"
+			|| second->GetGameObject()->getName() == "RightLeg_Joint"
+			|| second->GetGameObject()->getName() == "RightLeg")
+		{
+			return true;
+		}
+	}
+	if (first->GetGameObject()->getName() == "Head"
+		|| first->GetGameObject()->getName() == "Player"
+		|| first->GetGameObject()->getName() == "LeftHand_Joint"
+		|| first->GetGameObject()->getName() == "LeftHand"
+		|| first->GetGameObject()->getName() == "RightHand_Joint"
+		|| first->GetGameObject()->getName() == "RightHand"
+		|| first->GetGameObject()->getName() == "Weapon"
+		|| first->GetGameObject()->getName() == "LeftLeg_Joint"
+		|| first->GetGameObject()->getName() == "LeftLeg"
+		|| first->GetGameObject()->getName() == "RightLeg_Joint"
+		|| first->GetGameObject()->getName() == "RightLeg")
+	{
+		if (second->GetGameObject()->getName() == "playerbullet")
+		{
+			return true;
+		}
+	}
+
+	if (first->GetGameObject()->getName() == "playerbullet")
+	{
+		if (second->GetGameObject()->getName() == "Head"
+			|| second->GetGameObject()->getName() == "Player"
+			|| second->GetGameObject()->getName() == "LeftHand_Joint"
+			|| second->GetGameObject()->getName() == "LeftHand"
+			|| second->GetGameObject()->getName() == "RightHand_Joint"
+			|| second->GetGameObject()->getName() == "RightHand"
+			|| second->GetGameObject()->getName() == "Weapon"
+			|| second->GetGameObject()->getName() == "LeftLeg_Joint"
+			|| second->GetGameObject()->getName() == "LeftLeg"
+			|| second->GetGameObject()->getName() == "RightLeg_Joint"
+			|| second->GetGameObject()->getName() == "RightLeg")
+		{
+			return true;
+		}
+	}
+	//else if (first->GetGameObject()->getName() == "Enemy_Head"
+	//	|| first->GetGameObject()->getName() == "Enemy"
+	//	|| first->GetGameObject()->getName() == "Enemy_LeftHand_Joint"
+	//	|| first->GetGameObject()->getName() == "Enemy_LeftHand"
+	//	|| first->GetGameObject()->getName() == "Enemy_RightHand_Joint"
+	//	|| first->GetGameObject()->getName() == "Enemy_RightHand"
+	//	|| first->GetGameObject()->getName() == "Enemy_Weapon"
+	//	|| first->GetGameObject()->getName() == "Enemy_LeftLeg_Joint"
+	//	|| first->GetGameObject()->getName() == "Enemy_LeftLeg"
+	//	|| first->GetGameObject()->getName() == "Enemy_RightLeg_Joint"
+	//	|| first->GetGameObject()->getName() == "Enemy_RightLeg")
+	//{
+	//	if (second->GetGameObject()->getName() == "Enemy_Head"
+	//		|| second->GetGameObject()->getName() == "Enemy"
+	//		|| second->GetGameObject()->getName() == "Enemy_LeftHand_Joint"
+	//		|| second->GetGameObject()->getName() == "Enemy_LeftHand"
+	//		|| second->GetGameObject()->getName() == "Enemy_RightHand_Joint"
+	//		|| second->GetGameObject()->getName() == "Enemy_RightHand"
+	//		|| second->GetGameObject()->getName() == "Enemy_Weapon"
+	//		|| second->GetGameObject()->getName() == "Enemy_LeftLeg_Joint"
+	//		|| second->GetGameObject()->getName() == "Enemy_LeftLeg"
+	//		|| second->GetGameObject()->getName() == "Enemy_RightLeg_Joint"
+	//		|| second->GetGameObject()->getName() == "Enemy_RightLeg")
+	//	{
+	//		return true;
+	//	}
+	//}
+	return false;
+}
+//
+//bool SceneManager_Play::ProcessCollision(SceneNode* first, SceneNode* second)
+//{
+//	string boxName = "";
+//	if (first->GetGameObject()->getName() == "Head"
+//		|| first->GetGameObject()->getName() == "Player"
+//		|| first->GetGameObject()->getName() == "LeftHand_Joint"
+//		|| first->GetGameObject()->getName() == "LeftHand"
+//		|| first->GetGameObject()->getName() == "RightHand_Joint"
+//		|| first->GetGameObject()->getName() == "RightHand"
+//		|| first->GetGameObject()->getName() == "Weapon"
+//		|| first->GetGameObject()->getName() == "LeftLeg_Joint"
+//		|| first->GetGameObject()->getName() == "LeftLeg"
+//		|| first->GetGameObject()->getName() == "RightLeg_Joint"
+//		|| first->GetGameObject()->getName() == "RightLeg")
+//	{
+//		if (second->GetGameObject()->getName() == "Ammo")
+//		{
+//			if (check3DCollision(first->GetGameObject()->getHitbox(), second->GetGameObject()->getHitbox(), boxName))
+//			{
+//				return true;
+//			}
+//		}
+//	}
+//	return false;
+//}
 
 void SceneManager_Play::Render()
 {
@@ -526,15 +704,6 @@ void SceneManager_Play::RenderStaticObject()
 	staticSceneGraph->Draw(this, debugMesh);
 	Mesh* drawMesh;
 
-	drawMesh = resourceManager.retrieveMesh("WARRIOR_SWORD_OBJ");
-	for (int i = 0; i < 4000; ++i)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(0, 2000, 0);
-		Render3DMesh(drawMesh, false);
-		modelStack.PopMatrix();
-	}
-
 	drawMesh = resourceManager.retrieveMesh("SKYPLANE");
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 2000, 0);
@@ -564,7 +733,7 @@ void SceneManager_Play::RenderStaticObject()
 					Partition* partition = spatialPartitionManager->getPartition(Vector3((float)i, (float)j, (float)k), false);
 					if (partition->nodes.size() > 0)
 					{
-						std::cout << partition->nodes.size() << std::endl;
+						//std::cout << partition->nodes.size() << std::endl;
 						modelStack.PushMatrix();
 						modelStack.Translate(
 							world3DStart.x + (i + 0.5f) * spatialPartitionManager->getParitionDimension().x,
@@ -585,16 +754,56 @@ void SceneManager_Play::RenderMobileObject()
 	static Mesh* debugMesh = resourceManager.retrieveMesh("DEBUG_CUBE");
 	dynamicSceneGraph->Draw(this, debugMesh);
 	//projectileManager.Draw(this);
+
+	//Billboard text
+	for (int i = 0; i < enemyList_Joker.size(); ++i)
+	{
+		//Only display for active
+		if (enemyList_Joker.at(i)->GetNode()->getActive())
+		{
+
+			Vector3 rotation = tpCamera.getPosition() - enemyList_Joker.at(i)->GetNode()->GetWorldPosition();
+			float angleToRotate = Math::RadianToDegree(atan2(rotation.x, rotation.z));
+			enemyList_Joker.at(i)->SetAngle(angleToRotate);
+			ostringstream ss;
+			ss << spatialPartitionManager->generatePartitionIndex(enemyList_Joker.at(i)->GetNode()->GetWorldPosition() * 0.005);
+			modelStack.PushMatrix();
+			modelStack.Translate(enemyList_Joker.at(i)->GetNode()->GetWorldPosition().x, enemyList_Joker.at(i)->GetNode()->GetWorldPosition().y + 5, enemyList_Joker.at(i)->GetNode()->GetWorldPosition().z);
+			modelStack.Rotate(enemyList_Joker.at(i)->GetAngle(), 0, 1, 0);
+			modelStack.Scale(20, 20, 20);
+			RenderText(textMesh, ss.str(), Color(1, 1, 1));
+			modelStack.PopMatrix();
+		}
+	}
 }
 
 void SceneManager_Play::RenderGUI()
 {
+	Mesh* drawMesh;
 	static Color textCol = resourceManager.retrieveColor("Black");
 
 	std::ostringstream ss;
 	ss.precision(5);
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(textMesh, ss.str(), textCol, 30, 0, sceneHeight- 30);
+
+	std::ostringstream ssCurrentAmmo;
+	ssCurrentAmmo << Player->GetWeapon()->getCurrentAmmo() << " / " << Player->GetWeapon()->getReservedAmmo();
+	RenderTextOnScreen(textMesh, ssCurrentAmmo.str(), Color(1, 1, 1), 50, sceneWidth - 200, 100);
+
+	if (Player->GetWeapon()->GetReloading())
+	{
+		std::ostringstream ssReload;
+		ssReload.precision(2);
+		ssReload << "Reloading Weapon " << Player->GetWeapon()->GetReloadTimer() << "s";
+		RenderTextOnScreen(textMesh, ssReload.str(), Color(1, 1, 1), 50, sceneWidth * 0.4f, sceneHeight * 0.4f);
+	}
+
+	if (tpCamera.GetAimMode())
+	{
+		drawMesh = resourceManager.retrieveMesh("CROSSHAIR");
+		Render2DMesh(drawMesh, false, Vector2(50, 50), Vector2(sceneWidth * 0.5f, sceneHeight * 0.45f));
+	}
 }
 
 void SceneManager_Play::InitSceneGraph()
@@ -614,67 +823,399 @@ void SceneManager_Play::InitSceneGraph()
 	sceneGraph->AddChildNode(staticSceneGraph);
 	sceneGraph->AddChildNode(dynamicSceneGraph);
 
+	InitStaticNodes();
+	InitDynamicNodes();
+	//InitPlayer();
+
+	// Rmb to init static nodes position first
+	spatialPartitionManager->addNode(sceneGraph, spatialPartitionManager->type);
+}
+
+void SceneManager_Play::InitStaticNodes()
+{
+	//All props goes here
+	InitEnvironmentNodes();
+}
+
+void SceneManager_Play::InitEnvironmentNodes()
+{
+	//Init environment
+
+}
+
+void SceneManager_Play::InitDynamicNodes()
+{
+	//All moving stuff goes here
+	InitPlayer();
+	InitAmmo();
+	SpawnEnemy();
+}
+
+void SceneManager_Play::InitPlayer()
+{
 	SceneNode* node;
 	Mesh* drawMesh;
 
 	//Init player(Body is main node)
-	Player->Init(Vector3(0, 0, 0), Vector3(0, 1, 0), resourceManager.retrieveMesh("WARRIOR_OBJ"));
-	
-	//Temp use all the same mesh
-	drawMesh = resourceManager.retrieveMesh("WARRIOR_OBJ");
+	drawMesh = resourceManager.retrieveMesh("HUMAN_BODY");
+	drawMesh->textureID = resourceManager.retrieveTexture("PLAYER");
+	Player->Init(Vector3(50, 14, 200), Vector3(0, 1, 0), drawMesh);
+	Player->GetNode()->GetGameObject()->setHitbox(Vector3(), 7, 12, 4, "BodyHitbox");
+
+	GameObject3D Pistol;
+	Pistol.setPosition(Vector3());
+	Pistol.setMesh(resourceManager.retrieveMesh("PISTOL"));
+	Pistol.setCollidable(true);
+	Pistol.setName("Pistol");
+	Pistol.setReflectLight(true);
+	Pistol.setHitbox(Vector3(), 3, 3, 3, "Pistolhitbox");
+	GameObject3D Bullet;
+	//Bullet.setMesh();
+	CProjectile Projectile;
+	Projectile.Init(Bullet, Vector3(), false, 10.f);
+	Player->GetWeapon()->Init(Pistol, Projectile, 10, 100, 1.f, 0.1f);
 
 	//Head of player
 	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("HUMAN_HEAD");
+	drawMesh->textureID = resourceManager.retrieveTexture("PLAYER");
 	node->GetGameObject()->setMesh(drawMesh);
 	node->GetGameObject()->setName("Head");
 	Player->GetNode()->AddChildNode(node);
-	Player->GetNode()->GetChildNode("Head")->GetGameObject()->setPosition(Vector3(0, 5, 0));
-	Player->GetNode()->GetChildNode("Head")->GetGameObject()->setHitbox(Player->GetNode()->GetChildNode("Head")->GetGameObject()->getPosition(), 5, 5, 5, "HeadHitbox");
-	
-	//Left Hand of player
-	node = getNode();
-	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("LeftHand");
-	Player->GetNode()->AddChildNode(node);
-	Player->GetNode()->GetChildNode("LeftHand")->GetGameObject()->setPosition(Vector3(-5, 0, 0));
-	Player->GetNode()->GetChildNode("LeftHand")->GetGameObject()->setHitbox(Player->GetNode()->GetChildNode("LeftHand")->GetGameObject()->getPosition(), 5, 5, 5, "LeftHandHitbox");
+	Player->GetNode()->GetChildNode("Head")->GetGameObject()->setPosition(Vector3(0, 10.5, 0));
+	Player->GetNode()->GetChildNode("Head")->GetGameObject()->setHitbox(Vector3(), 8.5, 9.5, 8.5, "HeadHitbox");
 
-	//Right Hand of player
+	//Right Hand joint
 	node = getNode();
+	node->GetGameObject()->setName("RightHand_Joint");
+	Player->GetNode()->AddChildNode(node);
+	Player->GetNode()->GetChildNode("RightHand_Joint")->GetGameObject()->setPosition(Vector3(-5, 4, 0));
+	Player->GetNode()->GetChildNode("RightHand_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "RightHandJointHitbox");
+
+	//Right hand
+	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("HUMAN_RIGHTHAND");
+	drawMesh->textureID = resourceManager.retrieveTexture("PLAYER");
 	node->GetGameObject()->setMesh(drawMesh);
 	node->GetGameObject()->setName("RightHand");
-	Player->GetNode()->AddChildNode(node);
-	Player->GetNode()->GetChildNode("RightHand")->GetGameObject()->setPosition(Vector3(5, 0, 0));
-	Player->GetNode()->GetChildNode("RightHand")->GetGameObject()->setHitbox(Player->GetNode()->GetChildNode("RightHand")->GetGameObject()->getPosition(), 5, 5, 5, "RightHandHitbox");
+	Player->GetNode()->AddChildToChildNode("RightHand_Joint", node);
+	Player->GetNode()->GetChildNode("RightHand_Joint")->GetChildNode("RightHand")->GetGameObject()->setPosition(Vector3(0, -4, 0));
+	Player->GetNode()->GetChildNode("RightHand_Joint")->GetChildNode("RightHand")->GetGameObject()->setHitbox(Vector3(), 3.25, 12, 3.25, "RightHandHitbox");
 
-	//Left Leg of player
+	//Weapon
 	node = getNode();
+	node->GetGameObject()->setMesh(Player->GetWeapon()->getMesh());
+	node->GetGameObject()->setName("Weapon");
+	Player->GetNode()->AddChildToChildNode("RightHand", node);
+	Player->GetNode()->GetChildNode("RightHand_Joint")->GetChildNode("RightHand")->GetChildNode("Weapon")->GetGameObject()->setPosition(Vector3(0, -4, 0));
+	Player->GetNode()->GetChildNode("RightHand_Joint")->GetChildNode("RightHand")->GetChildNode("Weapon")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "WeaponHitbox");
+
+	//Left Hand joint
+	node = getNode();
+	node->GetGameObject()->setName("LeftHand_Joint");
+	Player->GetNode()->AddChildNode(node);
+	Player->GetNode()->GetChildNode("LeftHand_Joint")->GetGameObject()->setPosition(Vector3(5, 4, 0));
+	Player->GetNode()->GetChildNode("LeftHand_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "LeftHandJointHitbox");
+
+	//Left Hand
+	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("HUMAN_LEFTHAND");
+	drawMesh->textureID = resourceManager.retrieveTexture("PLAYER");
+	node->GetGameObject()->setMesh(drawMesh);
+	node->GetGameObject()->setName("LeftHand");
+	Player->GetNode()->AddChildToChildNode("LeftHand_Joint", node);
+	Player->GetNode()->GetChildNode("LeftHand_Joint")->GetChildNode("LeftHand")->GetGameObject()->setPosition(Vector3(0, -4, 0));
+	Player->GetNode()->GetChildNode("LeftHand_Joint")->GetChildNode("LeftHand")->GetGameObject()->setHitbox(Vector3(), 3.25, 12, 3.25, "LeftHandHitbox");
+
+	//Left Leg joint
+	node = getNode();
+	node->GetGameObject()->setName("LeftLeg_Joint");
+	Player->GetNode()->AddChildNode(node);
+	Player->GetNode()->GetChildNode("LeftLeg_Joint")->GetGameObject()->setPosition(Vector3(2, -2, 0));
+	Player->GetNode()->GetChildNode("LeftLeg_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "LeftLegJointHitbox");
+
+	//Left Leg
+	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("HUMAN_LEG");
+	drawMesh->textureID = resourceManager.retrieveTexture("PLAYER");
 	node->GetGameObject()->setMesh(drawMesh);
 	node->GetGameObject()->setName("LeftLeg");
-	Player->GetNode()->AddChildNode(node);
-	Player->GetNode()->GetChildNode("LeftLeg")->GetGameObject()->setPosition(Vector3(-3, -5, 0));
-	Player->GetNode()->GetChildNode("LeftLeg")->GetGameObject()->setHitbox(Player->GetNode()->GetChildNode("LeftLeg")->GetGameObject()->getPosition(), 5, 5, 5, "LeftLegHitbox");
+	Player->GetNode()->AddChildToChildNode("LeftLeg_Joint", node);
+	Player->GetNode()->GetChildNode("LeftLeg_Joint")->GetChildNode("LeftLeg")->GetGameObject()->setPosition(Vector3(0, -11, 0));
+	Player->GetNode()->GetChildNode("LeftLeg_Joint")->GetChildNode("LeftLeg")->GetGameObject()->setHitbox(Vector3(), 3.5, 17, 3.5, "LeftLegHitbox");
 
-	//Right Leg of player
+	//Right Leg joint
 	node = getNode();
+	node->GetGameObject()->setName("RightLeg_Joint");
+	Player->GetNode()->AddChildNode(node);
+	Player->GetNode()->GetChildNode("RightLeg_Joint")->GetGameObject()->setPosition(Vector3(-2, -2, 0));
+	Player->GetNode()->GetChildNode("RightLeg_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "RightLegJointHitbox");
+
+	//Right Leg
+	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("HUMAN_LEG");
+	drawMesh->textureID = resourceManager.retrieveTexture("PLAYER");
 	node->GetGameObject()->setMesh(drawMesh);
 	node->GetGameObject()->setName("RightLeg");
-	Player->GetNode()->AddChildNode(node);
-	Player->GetNode()->GetChildNode("RightLeg")->GetGameObject()->setPosition(Vector3(3, -5, 0));
-	Player->GetNode()->GetChildNode("RightLeg")->GetGameObject()->setHitbox(Player->GetNode()->GetChildNode("RightLeg")->GetGameObject()->getPosition(), 5, 5, 5, "RightLegHitbox");
+	Player->GetNode()->AddChildToChildNode("RightLeg_Joint", node);
+	Player->GetNode()->GetChildNode("RightLeg_Joint")->GetChildNode("RightLeg")->GetGameObject()->setPosition(Vector3(0, -11, 0));
+	Player->GetNode()->GetChildNode("RightLeg_Joint")->GetChildNode("RightLeg")->GetGameObject()->setHitbox(Vector3(), 3.5, 17, 3.5, "RightLegHitbox");
 
 	//Adds the player node
 	dynamicSceneGraph->AddChildNode(Player->GetNode());
+}
 
+void SceneManager_Play::SpawnEnemy()
+{
+	SceneNode* node;
+	Mesh* drawMesh;
+
+	for (int i = 0; i < 15; ++i)
+	{
+		CJoker* joker = new CJoker();
+		//Init player(Body is main node)
+		drawMesh = resourceManager.retrieveMesh("ENEMY_BODY");
+		drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+		joker->Init(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)), Vector3(0, 1, 0), drawMesh);
+		joker->GetNode()->SetWorldPosition(Vector3(joker->GetNode()->GetGameObject()->getPosition()));
+		joker->GetNode()->GetGameObject()->setHitbox(Vector3(), 7, 12, 4, "BodyHitbox");
+
+		//Head of joker
+		node = getNode();
+		drawMesh = resourceManager.retrieveMesh("ENEMY_HEAD");
+		drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+		node->GetGameObject()->setMesh(drawMesh);
+		node->GetGameObject()->setName("Enemy_Head");
+		joker->GetNode()->AddChildNode(node);
+		joker->GetNode()->GetChildNode("Enemy_Head")->GetGameObject()->setPosition(Vector3(0, 10.5, 0));
+		joker->GetNode()->GetChildNode("Enemy_Head")->GetGameObject()->setHitbox(Vector3(), 8.5, 9.5, 8.5, "HeadHitbox");
+
+		//Right Hand joint
+		node = getNode();
+		node->GetGameObject()->setName("Enemy_RightHand_Joint");
+		joker->GetNode()->AddChildNode(node);
+		joker->GetNode()->GetChildNode("Enemy_RightHand_Joint")->GetGameObject()->setPosition(Vector3(-5, 4, 0));
+		joker->GetNode()->GetChildNode("Enemy_RightHand_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "RightHandJointHitbox");
+
+		//Right hand
+		node = getNode();
+		drawMesh = resourceManager.retrieveMesh("ENEMY_RIGHTHAND");
+		drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+		node->GetGameObject()->setMesh(drawMesh);
+		node->GetGameObject()->setName("Enemy_RightHand");
+		joker->GetNode()->AddChildToChildNode("Enemy_RightHand_Joint", node);
+		joker->GetNode()->GetChildNode("Enemy_RightHand_Joint")->GetChildNode("Enemy_RightHand")->GetGameObject()->setPosition(Vector3(0, -4, 0));
+		joker->GetNode()->GetChildNode("Enemy_RightHand_Joint")->GetChildNode("Enemy_RightHand")->GetGameObject()->setHitbox(Vector3(), 3.25, 12, 3.25, "RightHandHitbox");
+
+		//Left Hand joint
+		node = getNode();
+		node->GetGameObject()->setName("Enemy_LeftHand_Joint");
+		joker->GetNode()->AddChildNode(node);
+		joker->GetNode()->GetChildNode("Enemy_LeftHand_Joint")->GetGameObject()->setPosition(Vector3(5, 4, 0));
+		joker->GetNode()->GetChildNode("Enemy_LeftHand_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "LeftHandJointHitbox");
+
+		//Left Hand
+		node = getNode();
+		drawMesh = resourceManager.retrieveMesh("ENEMY_LEFTHAND");
+		drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+		node->GetGameObject()->setMesh(drawMesh);
+		node->GetGameObject()->setName("Enemy_LeftHand");
+		joker->GetNode()->AddChildToChildNode("Enemy_LeftHand_Joint", node);
+		joker->GetNode()->GetChildNode("Enemy_LeftHand_Joint")->GetChildNode("Enemy_LeftHand")->GetGameObject()->setPosition(Vector3(0, -4, 0));
+		joker->GetNode()->GetChildNode("Enemy_LeftHand_Joint")->GetChildNode("Enemy_LeftHand")->GetGameObject()->setHitbox(Vector3(), 3.25, 12, 3.25, "LeftHandHitbox");
+
+		//Left Leg joint
+		node = getNode();
+		node->GetGameObject()->setName("Enemy_LeftLeg_Joint");
+		joker->GetNode()->AddChildNode(node);
+		joker->GetNode()->GetChildNode("Enemy_LeftLeg_Joint")->GetGameObject()->setPosition(Vector3(2, -2, 0));
+		joker->GetNode()->GetChildNode("Enemy_LeftLeg_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "LeftLegJointHitbox");
+
+		//Left Leg
+		node = getNode();
+		drawMesh = resourceManager.retrieveMesh("ENEMY_LEG");
+		drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+		node->GetGameObject()->setMesh(drawMesh);
+		node->GetGameObject()->setName("Enemy_LeftLeg");
+		joker->GetNode()->AddChildToChildNode("Enemy_LeftLeg_Joint", node);
+		joker->GetNode()->GetChildNode("Enemy_LeftLeg_Joint")->GetChildNode("Enemy_LeftLeg")->GetGameObject()->setPosition(Vector3(0, -11, 0));
+		joker->GetNode()->GetChildNode("Enemy_LeftLeg_Joint")->GetChildNode("Enemy_LeftLeg")->GetGameObject()->setHitbox(Vector3(), 3.5, 17, 3.5, "LeftLegHitbox");
+
+		//Right Leg joint
+		node = getNode();
+		node->GetGameObject()->setName("Enemy_RightLeg_Joint");
+		joker->GetNode()->AddChildNode(node);
+		joker->GetNode()->GetChildNode("Enemy_RightLeg_Joint")->GetGameObject()->setPosition(Vector3(-2, -2, 0));
+		joker->GetNode()->GetChildNode("Enemy_RightLeg_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "RightLegJointHitbox");
+
+		//Right Leg
+		node = getNode();
+		drawMesh = resourceManager.retrieveMesh("ENEMY_LEG");
+		drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+		node->GetGameObject()->setMesh(drawMesh);
+		node->GetGameObject()->setName("Enemy_RightLeg");
+		joker->GetNode()->AddChildToChildNode("Enemy_RightLeg_Joint", node);
+		joker->GetNode()->GetChildNode("Enemy_RightLeg_Joint")->GetChildNode("Enemy_RightLeg")->GetGameObject()->setPosition(Vector3(0, -11, 0));
+		joker->GetNode()->GetChildNode("Enemy_RightLeg_Joint")->GetChildNode("Enemy_RightLeg")->GetGameObject()->setHitbox(Vector3(), 3.5, 17, 3.5, "RightLegHitbox");
+
+		//Adds the joker node
+		enemyList_Joker.push_back(joker);
+		dynamicSceneGraph->AddChildNode(joker->GetNode());
+	}
+}
+
+void SceneManager_Play::RespawnEnemy()
+{
+	SceneNode* node;
+	Mesh* drawMesh;
+	
+	for (int i = 0; i < enemyList_Joker.size(); ++i)
+	{
+		if (enemyList_Joker.at(i)->GetNode()->getActive() == false)
+		{
+			enemyList_Joker.at(i)->GetNode()->setActive(true);
+			//Init player(Body is main node)
+			//drawMesh = resourceManager.retrieveMesh("ENEMY_BODY");
+			//drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+			//enemyList_Joker.at(i)->Init(Vector3(50, 14, 100), Vector3(0, 1, 0), drawMesh);
+			//enemyList_Joker.at(i)->GetNode()->GetGameObject()->setHitbox(Vector3(), 7, 12, 4, "BodyHitbox");
+			enemyList_Joker.at(i)->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)));
+			enemyList_Joker.at(i)->GetNode()->SetWorldPosition(Vector3(enemyList_Joker.at(i)->GetNode()->GetGameObject()->getPosition()));
+
+			//Head of joker
+			node = getNode();
+			drawMesh = resourceManager.retrieveMesh("ENEMY_HEAD");
+			drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+			node->GetGameObject()->setMesh(drawMesh);
+			node->GetGameObject()->setName("Enemy_Head");
+			enemyList_Joker.at(i)->GetNode()->AddChildNode(node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_Head")->GetGameObject()->setPosition(Vector3(0, 10.5, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_Head")->GetGameObject()->setHitbox(Vector3(), 8.5, 9.5, 8.5, "HeadHitbox");
+
+			//Right Hand joint
+			node = getNode();
+			node->GetGameObject()->setName("Enemy_RightHand_Joint");
+			enemyList_Joker.at(i)->GetNode()->AddChildNode(node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_RightHand_Joint")->GetGameObject()->setPosition(Vector3(-5, 4, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_RightHand_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "RightHandJointHitbox");
+
+			//Right hand
+			node = getNode();
+			drawMesh = resourceManager.retrieveMesh("ENEMY_RIGHTHAND");
+			drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+			node->GetGameObject()->setMesh(drawMesh);
+			node->GetGameObject()->setName("Enemy_RightHand");
+			enemyList_Joker.at(i)->GetNode()->AddChildToChildNode("Enemy_RightHand_Joint", node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_RightHand_Joint")->GetChildNode("Enemy_RightHand")->GetGameObject()->setPosition(Vector3(0, -4, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_RightHand_Joint")->GetChildNode("Enemy_RightHand")->GetGameObject()->setHitbox(Vector3(), 3.25, 12, 3.25, "RightHandHitbox");
+
+			//Left Hand joint
+			node = getNode();
+			node->GetGameObject()->setName("Enemy_LeftHand_Joint");
+			enemyList_Joker.at(i)->GetNode()->AddChildNode(node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_LeftHand_Joint")->GetGameObject()->setPosition(Vector3(5, 4, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_LeftHand_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "LeftHandJointHitbox");
+
+			//Left Hand
+			node = getNode();
+			drawMesh = resourceManager.retrieveMesh("ENEMY_LEFTHAND");
+			drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+			node->GetGameObject()->setMesh(drawMesh);
+			node->GetGameObject()->setName("Enemy_LeftHand");
+			enemyList_Joker.at(i)->GetNode()->AddChildToChildNode("Enemy_LeftHand_Joint", node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_LeftHand_Joint")->GetChildNode("Enemy_LeftHand")->GetGameObject()->setPosition(Vector3(0, -4, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_LeftHand_Joint")->GetChildNode("Enemy_LeftHand")->GetGameObject()->setHitbox(Vector3(), 3.25, 12, 3.25, "LeftHandHitbox");
+
+			//Left Leg joint
+			node = getNode();
+			node->GetGameObject()->setName("Enemy_LeftLeg_Joint");
+			enemyList_Joker.at(i)->GetNode()->AddChildNode(node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_LeftLeg_Joint")->GetGameObject()->setPosition(Vector3(2, -2, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_LeftLeg_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "LeftLegJointHitbox");
+
+			//Left Leg
+			node = getNode();
+			drawMesh = resourceManager.retrieveMesh("ENEMY_LEG");
+			drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+			node->GetGameObject()->setMesh(drawMesh);
+			node->GetGameObject()->setName("Enemy_LeftLeg");
+			enemyList_Joker.at(i)->GetNode()->AddChildToChildNode("Enemy_LeftLeg_Joint", node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_LeftLeg_Joint")->GetChildNode("Enemy_LeftLeg")->GetGameObject()->setPosition(Vector3(0, -11, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_LeftLeg_Joint")->GetChildNode("Enemy_LeftLeg")->GetGameObject()->setHitbox(Vector3(), 3.5, 17, 3.5, "LeftLegHitbox");
+
+			//Right Leg joint
+			node = getNode();
+			node->GetGameObject()->setName("Enemy_RightLeg_Joint");
+			enemyList_Joker.at(i)->GetNode()->AddChildNode(node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_RightLeg_Joint")->GetGameObject()->setPosition(Vector3(-2, -2, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_RightLeg_Joint")->GetGameObject()->setHitbox(Vector3(), 1, 1, 1, "RightLegJointHitbox");
+
+			//Right Leg
+			node = getNode();
+			drawMesh = resourceManager.retrieveMesh("ENEMY_LEG");
+			drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
+			node->GetGameObject()->setMesh(drawMesh);
+			node->GetGameObject()->setName("Enemy_RightLeg");
+			enemyList_Joker.at(i)->GetNode()->AddChildToChildNode("Enemy_RightLeg_Joint", node);
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_RightLeg_Joint")->GetChildNode("Enemy_RightLeg")->GetGameObject()->setPosition(Vector3(0, -11, 0));
+			enemyList_Joker.at(i)->GetNode()->GetChildNode("Enemy_RightLeg_Joint")->GetChildNode("Enemy_RightLeg")->GetGameObject()->setHitbox(Vector3(), 3.5, 17, 3.5, "RightLegHitbox");
+
+			dynamicSceneGraph->AddChildNode(enemyList_Joker.at(i)->GetNode());
+			break;
+		}
+	}
+}
+
+void SceneManager_Play::InitAmmo()
+{
+	SceneNode* node;
+	Mesh* drawMesh;
+
+	//Ammo
 	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("AMMO");
 	node->GetGameObject()->setMesh(drawMesh);
-	node->GetGameObject()->setName("TestObject");
+	node->GetGameObject()->setName("Ammo");
 	node->GetGameObject()->setPosition(Vector3(0, 0, 50));
-	node->GetGameObject()->setHitbox(node->GetGameObject()->getPosition(), 20, 20, 20, "TestObject");
+	node->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "AmmoHitbox");
+	node->GetGameObject()->setCollidable(true);
 	dynamicSceneGraph->AddChildNode(node);
 
-	// Rmb to init static nodes position first
-	spatialPartitionManager->addNode(sceneGraph, spatialPartitionManager->type);
+	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("AMMO");
+	node->GetGameObject()->setMesh(drawMesh);
+	node->GetGameObject()->setName("Ammo");
+	node->GetGameObject()->setPosition(Vector3(0, 0, 100));
+	node->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "AmmoHitbox");
+	node->GetGameObject()->setCollidable(true);
+	dynamicSceneGraph->AddChildNode(node);
+
+	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("AMMO");
+	node->GetGameObject()->setMesh(drawMesh);
+	node->GetGameObject()->setName("Ammo");
+	node->GetGameObject()->setPosition(Vector3(0, 0, 150));
+	node->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "AmmoHitbox");
+	node->GetGameObject()->setCollidable(true);
+	dynamicSceneGraph->AddChildNode(node);
+
+	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("AMMO");
+	node->GetGameObject()->setMesh(drawMesh);
+	node->GetGameObject()->setName("Ammo");
+	node->GetGameObject()->setPosition(Vector3(0, 0, 200));
+	node->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "AmmoHitbox");
+	node->GetGameObject()->setCollidable(true);
+	dynamicSceneGraph->AddChildNode(node);
+
+	node = getNode();
+	drawMesh = resourceManager.retrieveMesh("AMMO");
+	node->GetGameObject()->setMesh(drawMesh);
+	node->GetGameObject()->setName("Ammo");
+	node->GetGameObject()->setPosition(Vector3(0, 0, 400));
+	node->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "AmmoHitbox");
+	node->GetGameObject()->setCollidable(true);
+	dynamicSceneGraph->AddChildNode(node);
 }
 
 void SceneManager_Play::UpdateMouse()
@@ -688,6 +1229,10 @@ SceneNode* SceneManager_Play::getNode()
 	{
 		if (!nodeList[i]->getActive())
 		{
+			nodeList[i]->GetGameObject()->setMesh(NULL);
+			nodeList[i]->GetGameObject()->setName("");
+			nodeList[i]->GetGameObject()->setPosition(Vector3());
+			nodeList[i]->GetGameObject()->setRotation(0, 1, 1, 1);
 			nodeList[i]->setActive(true);
 			return nodeList[i];
 		}
