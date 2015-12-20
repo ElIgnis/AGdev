@@ -26,10 +26,64 @@
 			[NAME] Back
 			[Type] Text
 			[Text] Back
-			[Pos] 900, 250
+			[Pos] 900, 150
 			[Rotation] 0
 			[Scale] 90, 75
 			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] Brightness_Down
+			[Type] Image
+			[Pos] 200, 600
+			[Rotation] 0
+			[Scale] 100, 100
+			[Mesh] MINUS
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] Brightness_Up
+			[Type] Image
+			[Pos] 500, 600
+			[Rotation] 0
+			[Scale] 100, 100
+			[Mesh] PLUS
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] Volume_Down
+			[Type] Image
+			[Pos] 200, 400
+			[Rotation] 0
+			[Scale] 100, 100
+			[Mesh] MINUS
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] Volume_Up
+			[Type] Image
+			[Pos] 500, 400
+			[Rotation] 0
+			[Scale] 100, 100
+			[Mesh] PLUS
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] ScreenSize_Down
+			[Type] Image
+			[Pos] 200, 200
+			[Rotation] 0
+			[Scale] 100, 100
+			[Mesh] MINUS
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] ScreenSize_Up
+			[Type] Image
+			[Pos] 500, 200
+			[Rotation] 0
+			[Scale] 100, 100
+			[Mesh] PLUS
 			[Color] 1, 1, 1
 		}
 	}

@@ -45,7 +45,7 @@ public:
 
 	void UpdateMouse();
 
-	void CollisionResponse(SceneNode* first, SceneNode* second);
+	void CollisionResponse(SceneNode* first, SceneNode* second, double dt);
 	bool CheckSelfCollide(SceneNode* first, SceneNode* second);
 	//bool ProcessCollision(SceneNode* first, SceneNode* second);
 

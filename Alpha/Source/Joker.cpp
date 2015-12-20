@@ -171,10 +171,10 @@ void CJoker::UpdateMovement(bool aimMode, double dt)
 
 	Vector3 acceleration = force * (1.f / mass);
 
-	velocity.x = sinf(orientation) * acceleration.x;
-	velocity.z = cosf(orientation) * acceleration.z;
+	//Used for collision response for all gameobjects
+	this->GetNode()->GetGameObject()->setVelocity(Vector3(sinf(orientation) * acceleration.x, 0, cosf(orientation) * acceleration.z));
 
-	jokerNode->GetGameObject()->addPosition(velocity * (float)dt);
+	jokerNode->GetGameObject()->addPosition(this->GetNode()->GetGameObject()->getVelocity() * (float)dt);
 	jokerNode->GetChildNode("Head")->SetWorldPosition(jokerNode->GetGameObject()->getPosition() + jokerNode->GetChildNode("Head")->GetGameObject()->getPosition());
 	
 	jokerNode->GetChildNode("LeftHand_Joint")->SetWorldPosition(jokerNode->GetGameObject()->getPosition() + jokerNode->GetChildNode("LeftHand_Joint")->GetGameObject()->getPosition());
@@ -198,16 +198,6 @@ void CJoker::UpdateAngle(float dt)
 
 	direction.x = sinf(orientation);
 	direction.z = cosf(orientation);
-}
-
-Vector3 CJoker::GetVelocity(void)
-{
-	return velocity;
-}
-
-void CJoker::SetVelocity(Vector3 newVelocity)
-{
-	this->velocity = newVelocity;
 }
 
 //Game related

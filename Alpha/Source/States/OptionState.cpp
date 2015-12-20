@@ -61,7 +61,6 @@ void OptionState::HandleEvents(GameStateManager* gameStateManager)
 			{
 				gameStateManager->ChangeState(MenuState::Instance());
 			}
-
 			break;
 		}
 	}

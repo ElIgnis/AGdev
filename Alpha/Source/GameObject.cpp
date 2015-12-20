@@ -60,6 +60,10 @@ void GameObject::setReflectLight(bool lighting)
 	this->reflectLight = lighting;
 }
 
+void GameObject::setVelocity(Vector3 velocity)
+{
+	this->velocity = velocity;
+}
 
 void GameObject::setCollidable(bool collide)
 {
@@ -124,4 +128,9 @@ bool GameObject::getCollidable(void) const
 float GameObject::getRotateAngle(void) const
 {
 	return this->rotation;
+}
+
+Vector3 GameObject::getVelocity(void)
+{
+	return this->velocity;
 }

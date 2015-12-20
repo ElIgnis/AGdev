@@ -68,3 +68,8 @@ void ResourceManager::stopAllSounds(void)
 {
 	resourcePool->soundPool->stopAllSound();
 }
+
+float ResourceManager::getEngineVolume(void)
+{
+	return resourcePool->soundPool->getEngineVolume();
+}

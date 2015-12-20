@@ -170,14 +170,14 @@ void CPlayer::Update(double dt, float CamAngle)
 
 	Vector3 acceleration = force * (1.f / mass);
 
-	velocity.x = sinf(orientation) * acceleration.x;
-	velocity.z = cosf(orientation) * acceleration.z;
+	//Used for collision response for all gameobjects
+	this->GetNode()->GetGameObject()->setVelocity(Vector3(sinf(orientation) * acceleration.x, 0, cosf(orientation) * acceleration.z));
 }
 
 void CPlayer::UpdateMovement(bool aimMode, double dt)
 {
 	//Update animation
-	if (!velocity.IsZero())
+	if (!this->GetNode()->GetGameObject()->getVelocity().IsZero())
 	{
 		if (!aimMode)
 			RotateLimb("RightHand_Joint", -35, 100, false, dt, 1, 0, 0);
@@ -186,7 +186,7 @@ void CPlayer::UpdateMovement(bool aimMode, double dt)
 		RotateLimb("RightLeg_Joint", 35, 100, false, dt, 1, 0, 0);
 	}
 
-	playerNode->GetGameObject()->addPosition(velocity * (float)dt);
+	playerNode->GetGameObject()->addPosition(this->GetNode()->GetGameObject()->getVelocity() * (float)dt);
 	playerNode->GetChildNode("Head")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("Head")->GetGameObject()->getPosition());
 	
 	playerNode->GetChildNode("LeftHand_Joint")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("LeftHand_Joint")->GetGameObject()->getPosition());
@@ -209,16 +209,6 @@ void CPlayer::UpdateAngle(float dt)
 
 	direction.x = sinf(orientation);
 	direction.z = cosf(orientation);
-}
-
-Vector3 CPlayer::GetVelocity(void)
-{
-	return velocity;
-}
-
-void CPlayer::SetVelocity(Vector3 newVelocity)
-{
-	this->velocity = newVelocity;
 }
 
 //Game related

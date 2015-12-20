@@ -28,6 +28,7 @@ public:
 	void DecreaseEngineVolume();	//Decrease current volume by 10
 
 	void setEngineVolume(float value);	//Set engine volume
+	float getEngineVolume(void);
 	void setListenerPos(Vector3 position, Vector3 target);	//Let engine know where listener position is at
 
 	void retrieveSound2D(string soundName,const bool playNew = true,const bool loop = false);	//Plays retrieved sound in 2D

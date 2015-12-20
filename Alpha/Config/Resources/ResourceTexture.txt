@@ -14,6 +14,14 @@
 		[NAME] BLACK
 		[Directory] Config\\Resources\\Texture\\Menu\\Black.tga
 	}
+	{
+		[NAME] MINUS
+		[Directory] Config\\Resources\\Texture\\Menu\\MinusButton.tga
+	}
+	{
+		[NAME] PLUS
+		[Directory] Config\\Resources\\Texture\\Menu\\PlusButton.tga
+	}
 	#Menu Screens---------------------------------------------------------------------------------------------------------
 	{
 		[NAME] TITLE
@@ -22,10 +30,6 @@
 	{
 		[NAME] SPLASH_BG
 		[Directory] Config\\Resources\\Texture\\Menu\\Splash_BG.tga
-	}
-	{
-		[NAME] HANDPRINT
-		[Directory] Config\\Resources\\Texture\\Menu\\HandPrint.tga
 	}
 	{
 		[NAME] MENU_BG

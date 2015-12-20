@@ -173,13 +173,38 @@ void SceneManager_Play::Config(string directory)
 
 void SceneManager_Play::Update(double dt)
 {
+	//Test
+	if (inputManager->getKey("Y"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("H"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("U"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("J"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("I"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("K"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("O"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("L"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("B"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("N"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (inputManager->getKey("M"))
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+
 	SceneManagerGameplay::Update(dt);
 	
+	UpdatePlayer(dt);
+
 	//spatialPartitionManager->Update();
 	spatialPartitionManager->removeNode(dynamicSceneGraph);
 	spatialPartitionManager->addNode(dynamicSceneGraph, this->spatialPartitionManager->type);
-
-	UpdatePlayer(dt);
 
 	// loop through partitions
 	for (unsigned i = 0; i < spatialPartitionManager->partitions.size(); ++i)
@@ -239,7 +264,7 @@ void SceneManager_Play::Update(double dt)
 							//Apply collision response to main body only
 							if (firstNode->GetGameObject()->getName() == "Player" || secondNode->GetGameObject()->getName() == "Player")
 							{
-								CollisionResponse(firstNode, secondNode);
+								CollisionResponse(firstNode, secondNode, dt);
 							}
 							////Every other thing
 							//spatialPartitionManager->removeNode(secondNode);
@@ -284,6 +309,7 @@ void SceneManager_Play::Update(double dt)
 	}
 
 	//Update player movement after col check
+	//std::cout << Player->GetNode()->GetGameObject()->getVelocity() << std::endl;
 	Player->UpdateMovement(tpCamera.GetAimMode(), dt);
 	//Update camera position
 	tpCamera.UpdatePosition(dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition(), Player->GetDirection(), dynamicSceneGraph->GetChildNode("Player")->GetChildNode("Head")->GetWorldPosition(), dt);
@@ -422,7 +448,7 @@ void SceneManager_Play::UpdatePlayer(double dt)
 	}
 	else
 	{
-		Player->SetVelocity(Vector3());
+		Player->GetNode()->GetGameObject()->setVelocity(Vector3());
 		Player->RevertLimb(tpCamera.GetAimMode(), dt);
 	}
 
@@ -540,9 +566,8 @@ bool SceneManager_Play::CheckSelfCollide(SceneNode* first, SceneNode* second)
 	return false;
 }
 
-void SceneManager_Play::CollisionResponse(SceneNode* first, SceneNode* second)
+void SceneManager_Play::CollisionResponse(SceneNode* first, SceneNode* second, double dt)
 {
-	std::cout << Player->GetVelocity() << std::endl;
 	if (first->GetGameObject()->getName() == "Player")
 	{
 		////Dont apply response on self
@@ -562,32 +587,36 @@ void SceneManager_Play::CollisionResponse(SceneNode* first, SceneNode* second)
 		if (second->GetGameObject()->getName() == "Joker")
 		{
 			float distSquared = (second->GetGameObject()->getPosition() - first->GetGameObject()->getPosition()).LengthSquared();
-			float moveDistSquared = (second->GetGameObject()->getPosition() - (first->GetGameObject()->getPosition() + Player->GetVelocity())).LengthSquared();
-			std::cout << distSquared << "   " << moveDistSquared << std::endl;
+			float moveDistSquared = (second->GetGameObject()->getPosition() - (first->GetGameObject()->getPosition() + first->GetGameObject()->getVelocity() * 5)).LengthSquared();
+			//std::cout << distSquared << "   " << moveDistSquared << "   " << std::endl;
 			
-			if (moveDistSquared >= distSquared)
+			if (moveDistSquared > distSquared)
 			{
-				Player->SetVelocity(-Player->GetVelocity());
-				//Player->SetVelocity(Vector3());
+				//first->GetGameObject()->setVelocity();
+				//std::cout << "Negative vel is: " << -first->GetGameObject()->getVelocity() << std::endl;
+				first->GetGameObject()->setVelocity(Vector3());
+				//first->GetGameObject()->setPosition(first->GetGameObject()->getPosition() - first->GetGameObject()->getVelocity() * dt);
+				//first->GetGameObject()->setVelocity(Vector3());
+				
 				std::cout << "collided 1" << std::endl;
 			}
 		}
 	}
-	if (first->GetGameObject()->getName() == "Joker")
-	{
-		if (second->GetGameObject()->getName() == "Player")
-		{
-			float distSquared = (first->GetGameObject()->getPosition() - second->GetGameObject()->getPosition()).LengthSquared();
-			float moveDistSquared = (first->GetGameObject()->getPosition() - (second->GetGameObject()->getPosition() + Player->GetVelocity())).LengthSquared();
-			std::cout << distSquared << "   " << moveDistSquared << std::endl;
-			if (moveDistSquared >= distSquared)
-			{
-				Player->SetVelocity(-Player->GetVelocity());
-				//Player->SetVelocity(Vector3());
-				std::cout << "collided 1" << std::endl;
-			}
-		}
-	}
+	//else if (first->GetGameObject()->getName() == "Joker")
+	//{
+	//	if (second->GetGameObject()->getName() == "Player")
+	//	{
+	//		float distSquared = (first->GetGameObject()->getPosition() - second->GetGameObject()->getPosition()).LengthSquared();
+	//		float moveDistSquared = (first->GetGameObject()->getPosition() - (second->GetGameObject()->getPosition() + first->GetGameObject()->getVelocity())).LengthSquared();
+	//		std::cout << distSquared << "   " << moveDistSquared << std::endl;
+	//		if (moveDistSquared > distSquared)
+	//		{
+	//			second->GetGameObject()->setVelocity(Vector3());
+	//			
+	//			std::cout << "collided 2" << std::endl;
+	//		}
+	//	}
+	//}
 }
 
 //
@@ -906,7 +935,7 @@ void SceneManager_Play::InitDynamicNodes()
 {
 	//All moving stuff goes here
 	InitPlayer();
-	InitAmmo();
+	//InitAmmo();
 	SpawnEnemy();
 }
 

@@ -94,6 +94,10 @@ void SoundPool::setEngineVolume(float value)
 
 	engine->setSoundVolume(value);
 }
+float SoundPool::getEngineVolume(void)
+{
+	return engine->getSoundVolume();
+}
 
 void SoundPool::retrieveSound2D(string soundName,bool playNew,bool loop)
 {

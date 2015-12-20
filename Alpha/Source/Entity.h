@@ -27,9 +27,6 @@ public:
 	//Angle
 	virtual float GetAngle(void) = 0;
 	virtual void SetAngle(float newAngle) = 0;
-	//Velocity
-	virtual Vector3 GetVelocity(void) = 0;
-	virtual void SetVelocity(Vector3 newVelocity) = 0;
 	//Physics
 	virtual void SetGravity(float newGravity) = 0;
 	virtual float GetGravity(void) = 0;
@@ -63,7 +60,6 @@ public:
 
 protected:
 	Vector3 force;
-	Vector3 velocity;
 	Vector3 direction;
 
 	int health;

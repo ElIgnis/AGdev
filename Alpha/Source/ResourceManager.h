@@ -24,6 +24,7 @@ public:
 	void retrieveSoundas2D(string name,const bool playNew = true,const bool loop = false);	//Plays 2D sound from pool
 	void retrieveSoundas3D(string name, Vector3 position, const bool playNew = true, const bool loop = false);	//Plays 3D sound from pool
 	void stopAllSounds(void);	//Stops all sound
+	float getEngineVolume(void);
 	
 private:
 	ResourcePool* resourcePool;

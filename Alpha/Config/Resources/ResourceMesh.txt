@@ -15,9 +15,14 @@
 		[Texture] CURSOR
 	}
 	{
-		[NAME] HANDPRINT
+		[NAME] PLUS
 		[Type] Quad
-		[Texture] HANDPRINT
+		[Texture] PLUS
+	}
+	{
+		[NAME] MINUS
+		[Type] Quad
+		[Texture] MINUS
 	}
 	{
 		[NAME] CROSSHAIR

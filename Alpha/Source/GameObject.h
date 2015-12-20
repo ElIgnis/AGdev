@@ -44,6 +44,7 @@ protected:
 	Mesh* mesh;
 	string name;
 	Vector3 position;
+	Vector3 velocity;
 	float rotation;
 	Properties TRS;
 	bool render;
@@ -61,6 +62,7 @@ public:
 	virtual void addPosition(Vector3 addPosition);
 	virtual void setRotation(float Angle, float x, float y, float z);
 	virtual void setTRS(Properties _TRS);
+	virtual void setVelocity(Vector3 velocity);
 	virtual void setRender(bool render);
 	virtual void setReflectLight(bool lighting);
 	virtual void setUpdate(bool update);
@@ -71,6 +73,7 @@ public:
 	virtual Vector3 getPosition(void) const;
 	virtual Vector3 getMtxRotation(void) const;
 	virtual Properties getProperties(void);
+	virtual Vector3 getVelocity(void);
 	virtual float getRotateAngle(void) const;
 	virtual bool getRender(void) const;
 	virtual bool getReflectLight(void) const;

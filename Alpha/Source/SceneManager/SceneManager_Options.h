@@ -2,6 +2,7 @@
 #define SCENE_MANAGER_OPTIONS_H
 
 #include "SceneManagerSelection.h"
+#include <iomanip>
 
 class SceneManager_Options : public SceneManagerSelection
 {
@@ -22,10 +23,17 @@ public:
 	void UpdateSelection();
 	void RenderSelection();
 
-	void RenderLight(const float rotation, const float x, const float y, const float z);;
+	void RenderLight(const float rotation, const float x, const float y, const float z);
 	void RenderBG();
 	void RenderStaticObject();
 	void RenderMobileObject();
+
+	void UpdateBrightness(void);
+
+protected:
+	int screenWidth;
+	int screenHeight;
+
 };
 
 #endif

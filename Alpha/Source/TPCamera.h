@@ -73,6 +73,11 @@ public:
 	bool GetAimMode(void);
 	void ToggleAimMode(void);
 
+	void SetVerticalSensitivity(float newSensitivity);
+	void SetHorizontalSensitivity(float newSensitivity);
+	float GetVerticalSensitivity(void);
+	float GetHorizontalSensitivity(void);
+
 private:
 	bool myKeys[255];
 

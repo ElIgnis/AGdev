@@ -3,7 +3,10 @@
 #include "..\shader.hpp"
 #include "..\Application.h"
 
+
 SceneManager::SceneManager()
+: pulseAmt(0.f)
+, pulse(false)
 {
 	parameters.clear();
 	lights.clear();
@@ -30,6 +33,17 @@ void SceneManager::Init(const int width, const int height, ResourcePool* RM, Inp
 		{
 			textWidth[TextCount] = stoi(data);
 			TextCount++;
+		}
+		inFile.close();
+	}
+
+	data = " ";
+	inFile.open("Config//Brightness.txt");
+	if (inFile.good())
+	{
+		while (getline(inFile, data))
+		{
+			brightness = stoi(data);
 		}
 		inFile.close();
 	}
@@ -84,7 +98,6 @@ void SceneManager::UpdateMouse()
 
 void SceneManager::RenderLight(const float rotation, const float x, const float y, const float z)
 {
-
 }
 
 void SceneManager::Update(double dt)
@@ -112,6 +125,7 @@ void SceneManager::Update(double dt)
 	{
 		this->debugInfo = false;
 	}
+
 }
 
 void SceneManager::ClearScreen()
@@ -349,19 +363,6 @@ void SceneManager::Render2DMesh(Mesh *mesh, const bool enableLight, const Vector
 	viewStack.PopMatrix();
 	projectionStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
-}
-
-void SceneManager::UpdateAnim(double dt)
-{
-
-}
-void SceneManager::RenderIntro(Mesh* mesh)
-{
-
-}
-void SceneManager::RenderOutro(Mesh* mesh)
-{
-
 }
 
 void SceneManager::Exit()

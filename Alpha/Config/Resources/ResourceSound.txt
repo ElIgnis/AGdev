@@ -8,11 +8,11 @@
 	}
 	{
 		[NAME] Menu_BGM
-		[Directory] Config\\Resources\\Sound\\BGM_Menu.wav
+		[Directory] Config\\Resources\\Sound\\BGM_Menu.ogg
 	}
 	{
 		[NAME] Game_BGM
-		[Directory] Config\\Resources\\Sound\\BGM_Game.wav
+		[Directory] Config\\Resources\\Sound\\BGM_Game.ogg
 	}
 	{
 		[NAME] Button_Hover

@@ -155,7 +155,10 @@ void SceneManager_Help::RenderBG()
 	Render2DMesh(drawMesh, false, Vector2(1920, 1080), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
 
 	drawMesh = resourceManager.retrieveMesh("FONT");
-	RenderTextOnScreen(drawMesh, "Help..", Color(1, 0, 0), 200.f, 1100, 800, 0.f);
+	RenderTextOnScreen(drawMesh, "Help..", Color(1, 0, 0), 200.f, 200, 800, 0.f);
+
+	drawMesh = resourceManager.retrieveMesh("FONT");
+	RenderTextOnScreen(drawMesh, "", Color(1, 0, 0), 200.f, 200, 800, 0.f);
 }
 
 void SceneManager_Help::RenderStaticObject()

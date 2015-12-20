@@ -36,6 +36,9 @@ void SceneManager_HighScore::Update(double dt)
 
 	UpdateMouse();
 	UpdateSelection();
+
+	lights[0].power = brightness;
+	glUniform1f(parameters[U_LIGHT0_POWER], lights[0].power);
 }
 
 void SceneManager_HighScore::Render()
