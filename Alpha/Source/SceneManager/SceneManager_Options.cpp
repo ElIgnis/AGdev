@@ -41,17 +41,19 @@ void SceneManager_Options::Update(double dt)
 	glUniform1f(parameters[U_LIGHT0_POWER], lights[0].power);
 }
 
-void SceneManager_Options::UpdateBrightness(void)
+void SceneManager_Options::UpdateOptions(void)
 {
 	ofstream outFile;
-	outFile.open("Config//Brightness.txt");
+	outFile.open("Config//Options.txt");
 	if (outFile.good())
 	{
-		outFile << brightness;
+		outFile << brightness << std::endl;
+		outFile << tpCamera.GetVSense() << std::endl;
+		outFile << tpCamera.GetHSense() << std::endl;
 		outFile.close();
 	}
 	else
-		std::cout << "Load brightness data failed" << std::endl;
+		std::cout << "Load Options data failed" << std::endl;
 }
 
 void SceneManager_Options::Render()
@@ -281,9 +283,14 @@ void SceneManager_Options::RenderBG()
 	RenderTextOnScreen(drawMesh, "Volume:", Color(1, 1, 1), 100.f, 200, 500, 0.f);
 	RenderTextOnScreen(drawMesh, std::to_string((int)(resourceManager.getEngineVolume() * 100 + 0.5f)), Color(1, 1, 1), 100.f, 325, 400, 0.f);
 
-	//WIP Screen
+	//Sensitivity
 	drawMesh = resourceManager.retrieveMesh("FONT");
-	RenderTextOnScreen(drawMesh, "Screen resolution", Color(1, 1, 1), 100.f, 200, 300, 0.f);
+	RenderTextOnScreen(drawMesh, "Vertical Sensitivity", Color(1, 1, 1), 100.f, 800, 700, 0.f);
+	RenderTextOnScreen(drawMesh, std::to_string(tpCamera.GetVSense()), Color(1, 1, 1), 100.f, 925, 600, 0.f);
+
+	drawMesh = resourceManager.retrieveMesh("FONT");
+	RenderTextOnScreen(drawMesh, "Horizontal Sensitivity", Color(1, 1, 1), 100.f, 800, 500, 0.f);
+	RenderTextOnScreen(drawMesh, std::to_string(tpCamera.GetHSense()), Color(1, 1, 1), 100.f, 925, 400, 0.f);
 }
 
 void SceneManager_Options::RenderStaticObject()
@@ -320,6 +327,7 @@ void SceneManager_Options::UpdateSelection()
 				interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
 				resourceManager.retrieveSoundas2D("Button_Press");
 
+				//Brightness
 				if (interactiveButtons[i].getName() == "Brightness_Up")
 				{
 					if (brightness < 5)
@@ -330,6 +338,8 @@ void SceneManager_Options::UpdateSelection()
 					if (brightness > 0)
 						brightness -= 0.5f;
 				}
+
+				//Volume
 				if (interactiveButtons[i].getName() == "Volume_Up")
 				{
 					resourceManager.IncreaseSoundEngineVolume();
@@ -337,6 +347,30 @@ void SceneManager_Options::UpdateSelection()
 				if (interactiveButtons[i].getName() == "Volume_Down")
 				{
 					resourceManager.DecreaseSoundEngineVolume();
+				}
+
+				//Vertical sensitivity
+				if (interactiveButtons[i].getName() == "VSense_Up")
+				{
+					if (tpCamera.GetVSense() < 0.09f)
+						tpCamera.AddVSense();
+				}
+				if (interactiveButtons[i].getName() == "VSense_Down")
+				{
+					if (tpCamera.GetVSense() > 0.f)
+						tpCamera.MinusVSense();
+				}
+
+				//Horizontal sensitivity
+				if (interactiveButtons[i].getName() == "HSense_Up")
+				{
+					if (tpCamera.GetHSense() < 0.09f)
+						tpCamera.AddHSense();
+				}
+				if (interactiveButtons[i].getName() == "HSense_Down")
+				{
+					if (tpCamera.GetHSense() > 0.f)
+						tpCamera.MinusHSense();
 				}
 			}
 
@@ -351,7 +385,7 @@ void SceneManager_Options::UpdateSelection()
 				if (interactiveButtons[i].getName() == "Back")
 				{
 					interactiveButtons[i].setRotation(-10.f);
-					UpdateBrightness();
+					UpdateOptions();
 				}
 				interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
 				resourceManager.retrieveSoundas2D("Button_Hover");

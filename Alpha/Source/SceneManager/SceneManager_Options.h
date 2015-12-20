@@ -28,7 +28,7 @@ public:
 	void RenderStaticObject();
 	void RenderMobileObject();
 
-	void UpdateBrightness(void);
+	void UpdateOptions(void);
 
 protected:
 	int screenWidth;

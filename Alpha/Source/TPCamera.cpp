@@ -26,6 +26,8 @@ TPCamera::TPCamera()
 	, aimMode(false)
 	, normalView(true)
 	, aimView(false)
+	, vSense(0.01f)
+	, hSense(0.01f)
 {
 }
 
@@ -325,7 +327,7 @@ void TPCamera::calcPitch(void)
 	//Pitch inertia
 	//Speed limit
 	//if (pitchChange < CAM_PITCH_SPEED_LIMIT && pitchChange > -CAM_PITCH_SPEED_LIMIT)
-	pitchChange = Application::getMouse()->getDiffPos().y * 0.03f;
+	pitchChange = Application::getMouse()->getDiffPos().y * vSense;
 	//std::cout << pitchChange << std::endl;
 	//Slowing down
 	//if (pitchChange != 0.0f && Application::mouse_diff_y == 0.f)
@@ -369,7 +371,7 @@ void TPCamera::calcRotation(void)
 	//Rotation inertia
 	//Speed limit
 	if (angleChange < CAM_ROTATION_SPEED_LIMIT && angleChange > -CAM_ROTATION_SPEED_LIMIT)
-		angleChange += Application::getMouse()->getDiffPos().x * 0.01f;
+		angleChange += Application::getMouse()->getDiffPos().x * hSense;
 
 	//Slowing down
 	if (angleChange != 0.0f && Application::getMouse()->getDiffPos().x == 0.f)
@@ -416,6 +418,39 @@ void TPCamera::ToggleAimMode(void)
 float TPCamera::getCamPitch(void)
 {
 	return m_fTPVCameraPitch;
+}
+
+void TPCamera::SetVSense(float newVSense)
+{
+	this->vSense = newVSense;
+}
+void TPCamera::AddVSense(void)
+{
+	this->vSense += 0.01f;
+}
+void TPCamera::MinusVSense(void)
+{
+	this->vSense -= 0.01f;
+}
+void TPCamera::SetHSense(float newHSense)
+{
+	this->hSense = newHSense;
+}
+void TPCamera::AddHSense(void)
+{
+	this->hSense += 0.01f;
+}
+void TPCamera::MinusHSense(void)
+{
+	this->hSense -= 0.01f;
+}
+float TPCamera::GetHSense(void)
+{
+	return hSense;
+}
+float TPCamera::GetVSense(void)
+{
+	return vSense;
 }
 
 /********************************************************************************

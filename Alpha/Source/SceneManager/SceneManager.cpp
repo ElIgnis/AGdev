@@ -38,12 +38,27 @@ void SceneManager::Init(const int width, const int height, ResourcePool* RM, Inp
 	}
 
 	data = " ";
-	inFile.open("Config//Brightness.txt");
+	inFile.open("Config//Options.txt");
+	int Line = 0;
 	if (inFile.good())
 	{
 		while (getline(inFile, data))
 		{
-			brightness = stoi(data);
+			switch (Line)
+			{
+			case 0:
+				brightness = stoi(data);
+				break;
+			case 1:
+				tpCamera.SetVSense(stof(data));
+				break;
+			case 2:
+				tpCamera.SetHSense(stof(data));
+				break;
+			default:
+				break;
+			}
+			++Line;
 		}
 		inFile.close();
 	}

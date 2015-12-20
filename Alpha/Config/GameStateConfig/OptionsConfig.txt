@@ -69,18 +69,36 @@
 			[Color] 1, 1, 1
 		}
 		{
-			[NAME] ScreenSize_Down
+			[NAME] VSense_Down
 			[Type] Image
-			[Pos] 200, 200
+			[Pos] 800, 600
 			[Rotation] 0
 			[Scale] 100, 100
 			[Mesh] MINUS
 			[Color] 1, 1, 1
 		}
 		{
-			[NAME] ScreenSize_Up
+			[NAME] VSense_Up
 			[Type] Image
-			[Pos] 500, 200
+			[Pos] 1300, 600
+			[Rotation] 0
+			[Scale] 100, 100
+			[Mesh] PLUS
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] HSense_Down
+			[Type] Image
+			[Pos] 800, 400
+			[Rotation] 0
+			[Scale] 100, 100
+			[Mesh] MINUS
+			[Color] 1, 1, 1
+		}
+		{
+			[NAME] HSense_Up
+			[Type] Image
+			[Pos] 1300, 400
 			[Rotation] 0
 			[Scale] 100, 100
 			[Mesh] PLUS

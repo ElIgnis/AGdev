@@ -73,10 +73,16 @@ public:
 	bool GetAimMode(void);
 	void ToggleAimMode(void);
 
-	void SetVerticalSensitivity(float newSensitivity);
-	void SetHorizontalSensitivity(float newSensitivity);
-	float GetVerticalSensitivity(void);
-	float GetHorizontalSensitivity(void);
+	void AddVSense(void);
+	void MinusVSense(void);
+	void SetVSense(float newVSense);
+
+	void AddHSense(void);
+	void MinusHSense(void);
+	void SetHSense(float newHSense);
+
+	float GetHSense(void);
+	float GetVSense(void);
 
 private:
 	bool myKeys[255];
@@ -99,6 +105,8 @@ private:
 	float m_fTPVCameraPitch = 45.f;
 	
 	float translateSpeed = 200.f;
+	float vSense;
+	float hSense;
 	float pitchChange;
 	float angleChange;
 
