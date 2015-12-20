@@ -40,6 +40,7 @@ GLuint LoadTGA(const char *file_path)				// load TGA file to memory
 	fileStream.read((char *)data, imageSize);
 	fileStream.close();	
 
+
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	if(bytesPerPixel == 3)

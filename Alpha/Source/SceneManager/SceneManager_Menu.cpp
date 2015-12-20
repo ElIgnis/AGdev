@@ -64,11 +64,12 @@ void SceneManager_Menu::Render()
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 
-	RenderLight();
+	void RenderLight(const float rotation, const float x, const float y, const float z);;
 	RenderBG();
 	RenderStaticObject();
 	RenderMobileObject();
 	RenderSelection();
+	SceneManagerSelection::Render();
 }
 
 void SceneManager_Menu::Exit()
@@ -150,7 +151,7 @@ void SceneManager_Menu::InitShader()
 	glUniform1f(parameters[U_LIGHT0_EXPONENT], lights[0].exponent);
 }
 
-void SceneManager_Menu::RenderLight()
+void SceneManager_Menu::RenderLight(const float rotation, const float x, const float y, const float z)
 {
 
 }

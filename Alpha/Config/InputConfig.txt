@@ -106,5 +106,60 @@
 		[Key] 0x70
 		# [Key] Spawn Key down
 	}
+	{
+		[NAME] I
+		[Key] 0x49
+		# [Key] Debug Key
+	}
+	{
+		[NAME] J
+		[Key] 0x4A
+		# [Key] Debug Key
+	}
+	{
+		[NAME] K
+		[Key] 0x4B
+		# [Key] Debug Key
+	}
+	{
+		[NAME] L
+		[Key] 0x4C
+		# [Key] Debug Key
+	}
+	{
+		[NAME] O
+		[Key] 0x4F
+		# [Key] Debug Key
+	}
+	{
+		[NAME] U
+		[Key] 0x55
+		# [Key] Debug Key
+	}
+	{
+		[NAME] Y
+		[Key] 0x59
+		# [Key] Debug Key
+	}
+	{
+		[NAME] H
+		[Key] 0x48
+		# [Key] Debug Key
+	}
+	{
+		[NAME] B
+		[Key] 0x42
+		# [Key] Debug Key
+	}
+	{
+		[NAME] M
+		[Key] 0x4D
+		# [Key] Debug Key
+	}
+	{
+		[NAME] N
+		[Key] 0x4E
+		# [Key] Debug Key
+	}
 }
 # https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx

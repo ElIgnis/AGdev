@@ -179,6 +179,8 @@ void SceneManager_Play::Update(double dt)
 	spatialPartitionManager->removeNode(dynamicSceneGraph);
 	spatialPartitionManager->addNode(dynamicSceneGraph, this->spatialPartitionManager->type);
 
+	UpdatePlayer(dt);
+
 	// loop through partitions
 	for (unsigned i = 0; i < spatialPartitionManager->partitions.size(); ++i)
 	{
@@ -201,7 +203,7 @@ void SceneManager_Play::Update(double dt)
 							//Bullets destroy everything
 							if (firstNode->GetGameObject()->getName() == "playerbullet")
 							{
-								//projectileManager.RemoveProjectile(firstNode->GetGameObject());
+								projectileManager.RemoveProjectile(firstNode->GetGameObject());
 								//secondNode->setActive(false);
 								spatialPartitionManager->removeNode(secondNode);
 								dynamicSceneGraph->RemoveChildNode(secondNode);
@@ -210,7 +212,7 @@ void SceneManager_Play::Update(double dt)
 							}
 							else if (secondNode->GetGameObject()->getName() == "playerbullet")
 							{
-								//projectileManager.RemoveProjectile(firstNode->GetGameObject());
+								projectileManager.RemoveProjectile(firstNode->GetGameObject());
 								//firstNode->setActive(false);
 								spatialPartitionManager->removeNode(firstNode);
 								dynamicSceneGraph->RemoveChildNode(firstNode);
@@ -234,6 +236,11 @@ void SceneManager_Play::Update(double dt)
 								break;
 							}
 
+							//Apply collision response to main body only
+							if (firstNode->GetGameObject()->getName() == "Player" || secondNode->GetGameObject()->getName() == "Player")
+							{
+								CollisionResponse(firstNode, secondNode);
+							}
 							////Every other thing
 							//spatialPartitionManager->removeNode(secondNode);
 							//dynamicSceneGraph->RemoveChildNode(secondNode);
@@ -276,8 +283,11 @@ void SceneManager_Play::Update(double dt)
 		tpCamera.ToggleYawLock();
 	}
 
-	UpdatePlayer(dt);
-	
+	//Update player movement after col check
+	Player->UpdateMovement(tpCamera.GetAimMode(), dt);
+	//Update camera position
+	tpCamera.UpdatePosition(dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition(), Player->GetDirection(), dynamicSceneGraph->GetChildNode("Player")->GetChildNode("Head")->GetWorldPosition(), dt);
+
 	if (inputManager->getKey("Spawn"))
 	{
 		RespawnEnemy();
@@ -320,8 +330,6 @@ void SceneManager_Play::UpdatePlayer(double dt)
 		resourceManager.retrieveSoundas2D("Pistol_Reload", false, false);
 	}
 
-	Player->Update(dt, 0);
-
 	if (inputManager->getKey("Up"))
 	{
 		Player->SetAngle(tpCamera.GetCamAngle());
@@ -335,7 +343,7 @@ void SceneManager_Play::UpdatePlayer(double dt)
 		{
 			Player->SetAngle(tpCamera.GetCamAngle() - 45.f);
 		}
-		Player->UpdateMovement(tpCamera.GetAimMode(), dt);
+		Player->Update(dt, Player->GetAngle());
 
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setPosition(Vector3(
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().x,
@@ -363,7 +371,7 @@ void SceneManager_Play::UpdatePlayer(double dt)
 		{
 			Player->SetAngle(tpCamera.GetCamAngle() - 135.f);
 		}
-		Player->UpdateMovement(tpCamera.GetAimMode(), dt);
+		Player->Update(dt, Player->GetAngle());
 
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setPosition(Vector3(
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().x,
@@ -381,12 +389,12 @@ void SceneManager_Play::UpdatePlayer(double dt)
 	{
 		Player->SetAngle(tpCamera.GetCamAngle() + 90.f);
 
-		Player->UpdateMovement(tpCamera.GetAimMode(), dt);
-
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setPosition(Vector3(
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().x,
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().y,
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().z));
+
+		Player->Update(dt, Player->GetAngle());
 
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setRotation(Player->GetAngle(),
 			0,
@@ -399,12 +407,12 @@ void SceneManager_Play::UpdatePlayer(double dt)
 	{
 		Player->SetAngle(tpCamera.GetCamAngle() - 90.f);
 
-		Player->UpdateMovement(tpCamera.GetAimMode(), dt);
-
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setPosition(Vector3(
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().x,
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().y,
 			dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().z));
+
+		Player->Update(dt, Player->GetAngle());
 
 		dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->setRotation(Player->GetAngle(),
 			0,
@@ -414,6 +422,7 @@ void SceneManager_Play::UpdatePlayer(double dt)
 	}
 	else
 	{
+		Player->SetVelocity(Vector3());
 		Player->RevertLimb(tpCamera.GetAimMode(), dt);
 	}
 
@@ -435,7 +444,6 @@ void SceneManager_Play::UpdatePlayer(double dt)
 
 	if (tpCamera.GetAimMode())
 		Player->RotateLimb("RightHand_Joint", -90, 300, true, dt, 1, 0, 0);
-	tpCamera.UpdatePosition(dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition(), Player->GetDirection(), dynamicSceneGraph->GetChildNode("Player")->GetChildNode("Head")->GetWorldPosition(), dt);
 }
 
 bool SceneManager_Play::CheckSelfCollide(SceneNode* first, SceneNode* second)
@@ -531,6 +539,57 @@ bool SceneManager_Play::CheckSelfCollide(SceneNode* first, SceneNode* second)
 	//}
 	return false;
 }
+
+void SceneManager_Play::CollisionResponse(SceneNode* first, SceneNode* second)
+{
+	std::cout << Player->GetVelocity() << std::endl;
+	if (first->GetGameObject()->getName() == "Player")
+	{
+		////Dont apply response on self
+		//if (second->GetGameObject()->getName() == "Head"
+		//	|| second->GetGameObject()->getName() == "LeftHand_Joint"
+		//	|| second->GetGameObject()->getName() == "LeftHand"
+		//	|| second->GetGameObject()->getName() == "RightHand_Joint"
+		//	|| second->GetGameObject()->getName() == "RightHand"
+		//	|| second->GetGameObject()->getName() == "Weapon"
+		//	|| second->GetGameObject()->getName() == "LeftLeg_Joint"
+		//	|| second->GetGameObject()->getName() == "LeftLeg"
+		//	|| second->GetGameObject()->getName() == "RightLeg_Joint"
+		//	|| second->GetGameObject()->getName() == "RightLeg")
+		//{
+		//	return;
+		//}
+		if (second->GetGameObject()->getName() == "Joker")
+		{
+			float distSquared = (second->GetGameObject()->getPosition() - first->GetGameObject()->getPosition()).LengthSquared();
+			float moveDistSquared = (second->GetGameObject()->getPosition() - (first->GetGameObject()->getPosition() + Player->GetVelocity())).LengthSquared();
+			std::cout << distSquared << "   " << moveDistSquared << std::endl;
+			
+			if (moveDistSquared >= distSquared)
+			{
+				Player->SetVelocity(-Player->GetVelocity());
+				//Player->SetVelocity(Vector3());
+				std::cout << "collided 1" << std::endl;
+			}
+		}
+	}
+	if (first->GetGameObject()->getName() == "Joker")
+	{
+		if (second->GetGameObject()->getName() == "Player")
+		{
+			float distSquared = (first->GetGameObject()->getPosition() - second->GetGameObject()->getPosition()).LengthSquared();
+			float moveDistSquared = (first->GetGameObject()->getPosition() - (second->GetGameObject()->getPosition() + Player->GetVelocity())).LengthSquared();
+			std::cout << distSquared << "   " << moveDistSquared << std::endl;
+			if (moveDistSquared >= distSquared)
+			{
+				Player->SetVelocity(-Player->GetVelocity());
+				//Player->SetVelocity(Vector3());
+				std::cout << "collided 1" << std::endl;
+			}
+		}
+	}
+}
+
 //
 //bool SceneManager_Play::ProcessCollision(SceneNode* first, SceneNode* second)
 //{
@@ -560,7 +619,7 @@ bool SceneManager_Play::CheckSelfCollide(SceneNode* first, SceneNode* second)
 
 void SceneManager_Play::Render()
 {
-	SceneManagerGameplay::Render();
+	SceneManagerGameplay::ClearScreen();
 
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -576,7 +635,7 @@ void SceneManager_Play::Render()
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 
-	RenderLight();
+	void RenderLight(const float rotation, const float x, const float y, const float z);;
 	RenderBG();
 	RenderStaticObject();
 	RenderMobileObject();
@@ -688,7 +747,7 @@ void SceneManager_Play::InitShader()
 	glUniform1f(parameters[U_LIGHT0_EXPONENT], lights[0].exponent);
 }
 
-void SceneManager_Play::RenderLight()
+void SceneManager_Play::RenderLight(const float rotation, const float x, const float y, const float z)
 {
 
 }
@@ -707,7 +766,7 @@ void SceneManager_Play::RenderStaticObject()
 	drawMesh = resourceManager.retrieveMesh("SKYPLANE");
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 2000, 0);
-	Render3DMesh(drawMesh, false);
+	RenderMesh(drawMesh, false);
 	modelStack.PopMatrix();
 
 	drawMesh = resourceManager.retrieveMesh("FLOOR");
@@ -716,11 +775,11 @@ void SceneManager_Play::RenderStaticObject()
 	modelStack.Rotate(-90, 1, 0, 0);
 	modelStack.Translate(0, 0, -10);
 	modelStack.Rotate(-90, 0, 0, 1);
-	Render3DMesh(drawMesh, false);
+	RenderMesh(drawMesh, false);
 	modelStack.PopMatrix();
 
 	drawMesh = resourceManager.retrieveMesh("TREE_OBJ");
-	Render3DMesh(drawMesh, false);
+	RenderMesh(drawMesh, false);
 
 	if (debugInfo)
 	{
@@ -740,7 +799,7 @@ void SceneManager_Play::RenderStaticObject()
 							world3DStart.y + (j + 0.5f) * spatialPartitionManager->getParitionDimension().y,
 							world3DStart.z + (k + 0.5f) * spatialPartitionManager->getParitionDimension().z);
 						modelStack.Scale(spatialPartitionManager->getParitionDimension());
-						Render3DMesh(partition->getMesh(), false);
+						RenderMesh(partition->getMesh(), false);
 						modelStack.PopMatrix();
 					}
 				}
@@ -970,13 +1029,14 @@ void SceneManager_Play::SpawnEnemy()
 	SceneNode* node;
 	Mesh* drawMesh;
 
-	for (int i = 0; i < 15; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		CJoker* joker = new CJoker();
 		//Init player(Body is main node)
 		drawMesh = resourceManager.retrieveMesh("ENEMY_BODY");
 		drawMesh->textureID = resourceManager.retrieveTexture("JOKER");
-		joker->Init(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)), Vector3(0, 1, 0), drawMesh);
+		//joker->Init(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)), Vector3(0, 1, 0), drawMesh);
+		joker->Init(Vector3(0, 14, 0), Vector3(0, 1, 0), drawMesh);
 		joker->GetNode()->SetWorldPosition(Vector3(joker->GetNode()->GetGameObject()->getPosition()));
 		joker->GetNode()->GetGameObject()->setHitbox(Vector3(), 7, 12, 4, "BodyHitbox");
 

@@ -7,7 +7,6 @@ SceneManager::SceneManager()
 {
 	parameters.clear();
 	lights.clear();
-	lightEnabled = true;
 	fontSize = specialFontSize = 1.f;
 	debugInfo = false;
 }
@@ -40,7 +39,7 @@ void SceneManager::Init(const int width, const int height, ResourcePool* RM, Inp
 	this->resourceManager.Init(RM);
 	this->inputManager = controls;
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.f, 0.f, 0.f, 1.0f);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
@@ -83,8 +82,9 @@ void SceneManager::UpdateMouse()
 	mousePos.Set((float)x * sceneWidth / w, (h - (float)y) * sceneHeight / h);
 }
 
-void SceneManager::RenderLight()
+void SceneManager::RenderLight(const float rotation, const float x, const float y, const float z)
 {
+
 }
 
 void SceneManager::Update(double dt)
@@ -114,9 +114,17 @@ void SceneManager::Update(double dt)
 	}
 }
 
-void SceneManager::Render()
+void SceneManager::ClearScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void SceneManager::Render()
+{
+	Mesh* drawMesh;
+	drawMesh = resourceManager.retrieveMesh("FONT");
+	RenderTextOnScreen(drawMesh, "test", Color(), 100, 100, 100);
+	
 }
 
 void SceneManager::PreRender(bool enableLight)
@@ -125,7 +133,7 @@ void SceneManager::PreRender(bool enableLight)
 
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
-	if (enableLight && lightEnabled)
+	if (enableLight)
 	{
 		glUniform1i(parameters[U_LIGHTENABLED], 1);
 		modelView = viewStack.Top() * modelStack.Top();
@@ -242,7 +250,7 @@ void SceneManager::RenderTextOnScreen(Mesh* mesh, std::string text, Color color,
 /********************************************************************************
 Render a mesh in 3D
 ********************************************************************************/
-void SceneManager::Render3DMesh(Mesh* mesh, bool enableLight)
+void SceneManager::RenderMesh(Mesh* mesh, bool enableLight)
 {
 	if (!mesh)
 	{
@@ -258,7 +266,7 @@ void SceneManager::Render3DMesh(Mesh* mesh, bool enableLight)
 	modelView = viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
 
-	if (enableLight && lightEnabled)
+	if (enableLight)
 	{
 		glUniform1i(parameters[U_LIGHTENABLED], 1);
 		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
@@ -330,8 +338,8 @@ void SceneManager::Render2DMesh(Mesh *mesh, const bool enableLight, const Vector
 	{
 		glUniform1i(parameters[U_COLOR_TEXTURE_ENABLED], 0);
 	}
-	mesh->Render();
-
+	//mesh->Render();
+	RenderMesh(mesh, enableLight);
 	if (mesh->textureID > 0)
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -341,6 +349,19 @@ void SceneManager::Render2DMesh(Mesh *mesh, const bool enableLight, const Vector
 	viewStack.PopMatrix();
 	projectionStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
+}
+
+void SceneManager::UpdateAnim(double dt)
+{
+
+}
+void SceneManager::RenderIntro(Mesh* mesh)
+{
+
+}
+void SceneManager::RenderOutro(Mesh* mesh)
+{
+
 }
 
 void SceneManager::Exit()

@@ -4,11 +4,15 @@
 	[NAME] TextureConfig
 	{
 		[NAME] FONT
-		[Directory] Config\\Resources\\Texture\\Font.tga
+		[Directory] Config\Resources\Texture\Font.tga
 	}
 	{
 		[NAME] CURSOR
 		[Directory] Config\\Resources\\Texture\\Cursor.tga
+	}
+	{
+		[NAME] BLACK
+		[Directory] Config\\Resources\\Texture\\Menu\\Black.tga
 	}
 	#Menu Screens---------------------------------------------------------------------------------------------------------
 	{
@@ -71,10 +75,6 @@
 	{
 		[NAME] CROSSHAIR
 		[Directory] Config\\Resources\\Texture\\Weapon\\Crosshair.tga
-	}
-	{
-		[NAME] FIREBALL_SPRITE
-		[Directory] Config\\Resources\\Texture\\FireballSprite.tga
 	}
 	{
 		[NAME] TREE

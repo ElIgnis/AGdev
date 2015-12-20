@@ -200,6 +200,16 @@ void CJoker::UpdateAngle(float dt)
 	direction.z = cosf(orientation);
 }
 
+Vector3 CJoker::GetVelocity(void)
+{
+	return velocity;
+}
+
+void CJoker::SetVelocity(Vector3 newVelocity)
+{
+	this->velocity = newVelocity;
+}
+
 //Game related
 void CJoker::SetHealth(int newHealth)
 {

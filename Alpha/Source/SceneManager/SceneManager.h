@@ -17,6 +17,7 @@
 #include "..\Button3D.h"
 #include "..\SceneNode.h"
 #include "..\SpatialPartitionManager.h"
+#include "..\Utility.h"
 
 using std::ifstream;
 using std::stoi;
@@ -60,20 +61,24 @@ public:
 	virtual void Config(string directory);
 	virtual void Update(double dt);
 	virtual void Render();
+	virtual void ClearScreen();
 	virtual void Exit();
 
 	virtual void InitShader();
 	virtual void BindShaders();
 	virtual void UpdateMouse();
-	virtual void RenderLight();
+	virtual void RenderLight(const float rotation, const float x, const float y, const float z);
 
 	void PreRender(bool enableLight);
 	void RenderPush(Mtx44 properties);
 	void RenderPop();
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, float rotation = 0.f);
-	void Render3DMesh(Mesh *mesh, bool enableLight);
+	void RenderMesh(Mesh *mesh, bool enableLight);
 	void Render2DMesh(Mesh *mesh, const bool enableLight, const Vector2 size, const Vector2 pos, const float rotation = 0.f);
+	void UpdateAnim(double dt);
+	void RenderIntro(Mesh* mesh);
+	void RenderOutro(Mesh* mesh);
 
 	InputManager* inputManager;
 protected:

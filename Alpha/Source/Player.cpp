@@ -115,7 +115,6 @@ SceneNode* CPlayer::GetNode(void)
 
 void CPlayer::RotateLimb(string nodeName, float angle, float rotateSpeed, bool playOnce, double dt, float axisX, float axisY, float axisZ)
 {
-	
 	//Left hand joint
 	if (nodeName == "LeftHand_Joint")
 	{
@@ -160,23 +159,12 @@ void CPlayer::RevertLimb(bool aimMode, double dt)
 void CPlayer::Update(double dt, float CamAngle)
 {
 	playerNode->GetChildNode("Head")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("Head")->GetGameObject()->getPosition());
-}
 
-void CPlayer::UpdateMovement(bool aimMode, double dt)
-{
-	//Update animation
-	if (!aimMode)
-		RotateLimb("RightHand_Joint", -35, 100, false, dt, 1, 0, 0);
-	RotateLimb("LeftHand_Joint", 35, 100, false, dt, 1, 0, 0);
-	RotateLimb("LeftLeg_Joint", -35, 100, false, dt, 1, 0, 0);
-	RotateLimb("RightLeg_Joint", 35, 100, false, dt, 1, 0, 0);
-	
-	moving = true;
 	force.x = moveSpeed * moveSpeed_Mult;
 	force.z = moveSpeed * moveSpeed_Mult;
 
-	orientation = Math::DegreeToRadian(angle);
-	
+	orientation = Math::DegreeToRadian(CamAngle);
+
 	direction.x = sinf(orientation);
 	direction.z = cosf(orientation);
 
@@ -184,6 +172,19 @@ void CPlayer::UpdateMovement(bool aimMode, double dt)
 
 	velocity.x = sinf(orientation) * acceleration.x;
 	velocity.z = cosf(orientation) * acceleration.z;
+}
+
+void CPlayer::UpdateMovement(bool aimMode, double dt)
+{
+	//Update animation
+	if (!velocity.IsZero())
+	{
+		if (!aimMode)
+			RotateLimb("RightHand_Joint", -35, 100, false, dt, 1, 0, 0);
+		RotateLimb("LeftHand_Joint", 35, 100, false, dt, 1, 0, 0);
+		RotateLimb("LeftLeg_Joint", -35, 100, false, dt, 1, 0, 0);
+		RotateLimb("RightLeg_Joint", 35, 100, false, dt, 1, 0, 0);
+	}
 
 	playerNode->GetGameObject()->addPosition(velocity * (float)dt);
 	playerNode->GetChildNode("Head")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("Head")->GetGameObject()->getPosition());
@@ -208,6 +209,16 @@ void CPlayer::UpdateAngle(float dt)
 
 	direction.x = sinf(orientation);
 	direction.z = cosf(orientation);
+}
+
+Vector3 CPlayer::GetVelocity(void)
+{
+	return velocity;
+}
+
+void CPlayer::SetVelocity(Vector3 newVelocity)
+{
+	this->velocity = newVelocity;
 }
 
 //Game related

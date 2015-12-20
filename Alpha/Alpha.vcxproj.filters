@@ -55,9 +55,6 @@
     <Filter Include="GameObjects\ParentObject">
       <UniqueIdentifier>{89c825dc-6802-4501-b8b2-81bb590e4b34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="States\StatesCM">
-      <UniqueIdentifier>{fc4ca3ca-de21-4a4c-8871-7fd23e346f67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Managers\SceneManagers\Template">
       <UniqueIdentifier>{aec86a7c-17fd-4684-a116-c50137580834}</UniqueIdentifier>
     </Filter>
@@ -225,32 +222,8 @@
     <ClCompile Include="Source\SceneManager\SceneManager_Splash.cpp">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\States\HighScoreState.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\LevelSelectState.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\MenuState.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\OptionState.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\PauseState.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\PlayState.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\SplashState.cpp">
-      <Filter>States\StatesCM</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SceneManager\SceneManager_Help.cpp">
       <Filter>Managers\SceneManagers\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\HelpState.cpp">
-      <Filter>States\StatesCM</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneManager\SceneManager.cpp">
       <Filter>Managers\SceneManagers\Template</Filter>
@@ -275,6 +248,30 @@
     </ClCompile>
     <ClCompile Include="Source\Joker.cpp">
       <Filter>GameObjects\ChildObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\HelpState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\HighScoreState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\LevelSelectState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\MenuState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\OptionState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\PauseState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\PlayState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\SplashState.cpp">
+      <Filter>States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -422,32 +419,8 @@
     <ClInclude Include="Source\SceneManager\SceneManager_Splash.h">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\States\HighScoreState.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\LevelSelectState.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\MenuState.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\OptionState.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\PauseState.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\PlayState.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\SplashState.h">
-      <Filter>States\StatesCM</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SceneManager\SceneManager_Help.h">
       <Filter>Managers\SceneManagers\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\HelpState.h">
-      <Filter>States\StatesCM</Filter>
     </ClInclude>
     <ClInclude Include="Source\SceneManager\SceneManager.h">
       <Filter>Managers\SceneManagers\Template</Filter>
@@ -484,6 +457,30 @@
     </ClInclude>
     <ClInclude Include="Source\Joker.h">
       <Filter>GameObjects\ChildObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\HelpState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\HighScoreState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\LevelSelectState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\MenuState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\OptionState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\PauseState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\PlayState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\SplashState.h">
+      <Filter>States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,11 @@ public:
 		SceneManager::Update(dt);
 	}
 
+	virtual void ClearScreen()
+	{
+		SceneManager::ClearScreen();
+	}
+
 	virtual void Render()
 	{
 		SceneManager::Render();
@@ -66,7 +71,7 @@ public:
 		}
 	}
 
-	virtual void RenderLight() {}
+	virtual void RenderLight(const float rotation, const float x, const float y, const float z) {}
 	virtual void RenderTransition() {}
 
 	bool getExit()

@@ -24,6 +24,11 @@ public:
 		SceneManager::Update(dt);
 	}
 
+	virtual void ClearScreen()
+	{
+		SceneManager::ClearScreen();
+	}
+
 	virtual void Render()
 	{
 		SceneManager::Render();
@@ -48,7 +53,7 @@ public:
 		SceneManager::UpdateMouse();
 	}
 
-	virtual void RenderLight() {}
+	virtual void RenderLight(const float rotation, const float x, const float y, const float z) {}
 	virtual void RenderBG() {}
 	virtual void RenderStaticObject() {}
 	virtual void RenderMobileObject() {}

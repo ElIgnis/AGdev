@@ -26,7 +26,7 @@ void SceneManager_Splash::Init(const int width, const int height, ResourcePool *
 	handPrintTimer = 1.5f;
 	
 	startTransition = false;
-	delayTimer = 1.5f;
+	delayTimer = 0.5f;
 }
 
 void SceneManager_Splash::Config()
@@ -44,7 +44,7 @@ void SceneManager_Splash::Update(double dt)
 
 void SceneManager_Splash::Render()
 {
-	SceneManagerTransition::Render();
+	SceneManagerTransition::ClearScreen();
 
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -60,8 +60,33 @@ void SceneManager_Splash::Render()
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 
-	RenderLight();
+	if (inputManager->getKey("Y"))
+		angle += 5;
+	if (inputManager->getKey("H"))
+		angle += 5;
+	if (inputManager->getKey("U"))
+		x = 0;
+	if (inputManager->getKey("J"))
+		x = 1;
+	if (inputManager->getKey("I"))
+		y = 0;
+	if (inputManager->getKey("K"))
+		y = 1;
+	if (inputManager->getKey("O"))
+		z = 0;
+	if (inputManager->getKey("L"))
+		z = 1;
+	if (inputManager->getKey("B"))
+		a+= 5;
+	if (inputManager->getKey("N"))
+		b+= 5;
+	if (inputManager->getKey("M"))
+		c+= 5;
+
 	RenderTransition();
+	SceneManagerTransition::Render();
+	RenderLight(angle, x, y, z);
+	
 }
 
 void SceneManager_Splash::Exit()
@@ -117,13 +142,13 @@ void SceneManager_Splash::InitShader()
 	// Use our shader
 	glUseProgram(programID);
 
-	lights[0].type = Light::LIGHT_DIRECTIONAL;
+	lights[0].type = Light::LIGHT_POINT;
 	lights[0].position.Set(0, 0, 10);
 	lights[0].color.Set(1, 1, 1);
-	lights[0].power = 1;
+	lights[0].power = 10;
 	lights[0].kC = 1.f;
-	lights[0].kL = 0.01f;
-	lights[0].kQ = 0.001f;
+	lights[0].kL = 0.001f;
+	lights[0].kQ = 0.0001f;
 	lights[0].cosCutoff = cos(Math::DegreeToRadian(45));
 	lights[0].cosInner = cos(Math::DegreeToRadian(30));
 	lights[0].exponent = 3.f;
@@ -143,9 +168,38 @@ void SceneManager_Splash::InitShader()
 	glUniform1f(parameters[U_LIGHT0_EXPONENT], lights[0].exponent);
 }
 
-void SceneManager_Splash::RenderLight()
+void SceneManager_Splash::RenderLight(const float rotation, const float x, const float y, const float z)
 {
-
+	//Lights
+	if (lights[0].type == Light::LIGHT_DIRECTIONAL)
+	{
+		Mtx44 rot;
+		rot.SetToRotation(rotation, x, y, z);
+		Vector3 lightDir(lights[0].position.x, lights[0].position.y, lights[0].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * rot * lightDir;
+		glUniform3fv(parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (lights[0].type == Light::LIGHT_SPOT)
+	{
+		Mtx44 rot;
+		rot.SetToRotation(rotation, x, y, z);
+		Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
+		glUniform3fv(parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * rot * lights[0].spotDirection;
+		glUniform3fv(parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else if (lights[0].type == Light::LIGHT_POINT)
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
+		glUniform3fv(parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * lights[0].spotDirection;
+		glUniform3fv(parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
+		glUniform3fv(parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+	}
 }
 
 void SceneManager_Splash::RenderTransition()
@@ -154,18 +208,28 @@ void SceneManager_Splash::RenderTransition()
 	Mesh* drawMesh;
 	drawMesh = resourceManager.retrieveMesh("Background");
 	drawMesh->textureID = resourceManager.retrieveTexture("SPLASH_BG");
-	Render2DMesh(drawMesh, false, Vector2(1920, 1080), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
+	Render2DMesh(drawMesh, true, Vector2(sceneWidth, sceneHeight), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
 
-	//HandPrint
-	if (handPrintTimer <= 0)
-	{
-		Render2DMesh(handPrintTexture, false, Vector2(sceneHeight * 0.75f, sceneHeight * 0.75f), Vector2(sceneWidth * 0.45f, sceneHeight * 0.5f));	
-	}
-	if (handPrintTimer <= 0)
+	if (handPrintTimer > 0)
 	{
 		drawMesh = resourceManager.retrieveMesh("FONT");
 		drawMesh->textureID = resourceManager.retrieveTexture("FONT");
 		RenderTextOnScreen(drawMesh, "Ignis Productions", Color(1, 1, 1), 200, sceneWidth * 0.25f, sceneHeight * 0.4f);
+		lights[0].position.Set(150 + transX, sceneHeight * 0.5f, 150);
+	}
+
+	//HandPrint
+	if (handPrintTimer <= 0)
+	{
+		lights[0].power = 0;
+		glUniform1f(parameters[U_LIGHT0_POWER], lights[0].power);
+	}
+
+	if (delayTimer <= 0.2)
+	{		
+		drawMesh = resourceManager.retrieveMesh("Circle");
+		drawMesh->textureID = resourceManager.retrieveTexture("BLACK");
+		Render2DMesh(drawMesh, true, Vector2(scale, scale), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
 	}
 }
 
@@ -177,13 +241,13 @@ void SceneManager_Splash::UpdateMouse()
 void SceneManager_Splash::UpdateTransition(double dt)
 {
 	SceneManagerTransition::UpdateTransition(dt);
-
 	// update
 	if (!complete)
 	{
 		if (handPrintTimer > 0)
 		{
 			handPrintTimer -= dt;
+			transX += dt * 1000;
 			resourceManager.retrieveSoundas2D("Splash_Opening", false, false);
 		}
 
@@ -195,6 +259,9 @@ void SceneManager_Splash::UpdateTransition(double dt)
 		if (startTransition)
 		{
 			delayTimer -= (float)dt;
+			
+			if (delayTimer <= 0.2)
+				scale += dt * 750;
 
 			if (delayTimer <= 0)
 				complete = true;

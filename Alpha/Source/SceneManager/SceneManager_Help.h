@@ -22,7 +22,7 @@ public:
 	void UpdateSelection();
 	void RenderSelection();
 
-	void RenderLight();
+	void RenderLight(const float rotation, const float x, const float y, const float z);;
 	void RenderBG();
 	void RenderStaticObject();
 	void RenderMobileObject();

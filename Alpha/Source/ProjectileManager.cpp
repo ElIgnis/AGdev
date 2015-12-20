@@ -117,7 +117,7 @@ void ProjectileManager::Draw(SceneManager *sceneManager)
 		if (projectile->getRender())
 		{
 			sceneManager->RenderPush(projectile->getProperties().modelProperties);
-			sceneManager->Render3DMesh(projectile->getMesh(), projectile->getReflectLight());
+			sceneManager->RenderMesh(projectile->getMesh(), projectile->getReflectLight());
 			sceneManager->RenderPop();
 		}
 	}

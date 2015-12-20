@@ -23,7 +23,9 @@ public:
 	//Angle
 	virtual float GetAngle(void);
 	virtual void SetAngle(float newAngle);
-
+	//Velocity
+	virtual Vector3 GetVelocity(void);
+	virtual void SetVelocity(Vector3 newVelocity);
 	//Physics
 	virtual void SetGravity(float newGravity);
 	virtual float GetGravity(void);

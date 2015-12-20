@@ -1,6 +1,7 @@
 #include "SceneNode.h"
 #include "MatrixStack.h"
 #include "..\Source\SceneManager\SceneManager.h"
+#include "Player.h"
 
 SceneNode::SceneNode() : gameObject3D(NULL), parentNode(NULL), nodeType(STATIC_NODE), active(false)
 {
@@ -105,11 +106,11 @@ void SceneNode::Draw(SceneManager *sceneManager, Mesh* debugMesh)
 			trs.scale.SetToScale(Vector3(gameObject3D->getHitbox().getLength(), gameObject3D->getHitbox().getHeight(), gameObject3D->getHitbox().getDepth()));
 			trs.modelProperties = overall * trs.translation * trs.rotation * trs.scale;
 			sceneManager->RenderPush(trs.modelProperties);
-			sceneManager->Render3DMesh(debugMesh, false);
+			sceneManager->RenderMesh(debugMesh, false);
 			sceneManager->RenderPop();
 		}
 #endif
-		sceneManager->Render3DMesh(gameObject3D->getMesh(), gameObject3D->getReflectLight());
+		sceneManager->RenderMesh(gameObject3D->getMesh(), gameObject3D->getReflectLight());
 	}
 
 	for (unsigned i = 0; i < childNodes.size(); ++i)
@@ -136,12 +137,12 @@ void SceneNode::DrawChild(SceneManager *sceneManager, Mesh* debugMesh)
 		trs.scale.SetToScale(Vector3(gameObject3D->getHitbox().getLength(), gameObject3D->getHitbox().getHeight(), gameObject3D->getHitbox().getDepth()));
 		trs.modelProperties = overall * trs.translation * trs.rotation * trs.scale;
 		sceneManager->RenderPush(trs.modelProperties);
-		sceneManager->Render3DMesh(debugMesh, false);
+		sceneManager->RenderMesh(debugMesh, false);
 		sceneManager->RenderPop();
 	}
 #endif
 
-	sceneManager->Render3DMesh(gameObject3D->getMesh(), gameObject3D->getReflectLight());
+	sceneManager->RenderMesh(gameObject3D->getMesh(), true);
 
 	for (unsigned i = 0; i < childNodes.size(); ++i)
 	{
@@ -160,8 +161,18 @@ bool SceneNode::ProcessCollision(SceneNode* dst)
 {
 	bool checkCollide = false;
 	string boxName = "";
-		
+
 	checkCollide = check3DCollision(this->GetGameObject()->getHitbox(), dst->GetGameObject()->getHitbox(), boxName);
+	
+	//if (this->GetGameObject()->getName() == "Player")
+	//{
+	//	Vector3 checkWithVel = this->GetGameObject()->getHitbox().getMidPoint() + Player->GetVelocity();
+	//	
+	//}
+	//else if (dst->GetGameObject()->getName() == "Player")
+	//{
+	//	checkCollide = check3DCollision(this->GetGameObject()->getHitbox(), dst->GetGameObject()->getHitbox(), boxName);
+	//}
 	
 	return checkCollide;
 }

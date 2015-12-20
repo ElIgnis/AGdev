@@ -12,7 +12,6 @@ struct Light
 		LIGHT_DIRECTIONAL,
 		LIGHT_SPOT,
 	};
-
 	LIGHT_TYPE type;
 	Position position;
 	Color color;

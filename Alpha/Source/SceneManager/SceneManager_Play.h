@@ -45,10 +45,11 @@ public:
 
 	void UpdateMouse();
 
+	void CollisionResponse(SceneNode* first, SceneNode* second);
 	bool CheckSelfCollide(SceneNode* first, SceneNode* second);
 	//bool ProcessCollision(SceneNode* first, SceneNode* second);
 
-	void RenderLight();
+	void RenderLight(const float rotation, const float x, const float y, const float z);;
 	void RenderBG();
 	void RenderStaticObject();
 	void RenderMobileObject();

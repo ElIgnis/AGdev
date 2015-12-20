@@ -24,7 +24,9 @@ public:
 	//Angle
 	virtual float GetAngle(void);
 	virtual void SetAngle(float newAngle);
-
+	//Velocity
+	virtual Vector3 GetVelocity(void);
+	virtual void SetVelocity(Vector3 newVelocity);
 	//Physics
 	virtual void SetGravity(float newGravity);
 	virtual float GetGravity(void);
@@ -41,6 +43,7 @@ public:
 	virtual void UpdateAngle(float dt);
 	virtual void RotateLimb(string nodeName, float angle, float rotateSpeed, bool playOnce, double dt, float axisX, float axisY, float axisZ);
 	virtual void RevertLimb(bool aimMode, double dt);
+	
 
 	virtual bool GetInAir(void);
 

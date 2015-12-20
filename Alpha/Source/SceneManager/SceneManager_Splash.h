@@ -11,6 +11,18 @@ private:
 
 	bool startTransition;
 	float delayTimer;
+	float scale = 0;
+	float scale2 = 0;
+	float transX = 0;
+
+	//Light debugging
+	float angle = 0;
+	float x = 0;
+	float y = 1;
+	float z = 0;
+	float a = 0;
+	float b = 0;
+	float c = 0;
 	
 public:
 	SceneManager_Splash();
@@ -28,7 +40,7 @@ public:
 	void UpdateMouse();
 	void UpdateTransition(double dt);
 
-	void RenderLight();
+	void RenderLight(const float rotation, const float x, const float y, const float z);
 	void RenderTransition();
 };
 
