@@ -27,6 +27,7 @@ public:
 	//Angle
 	virtual float GetAngle(void) = 0;
 	virtual void SetAngle(float newAngle) = 0;
+
 	//Physics
 	virtual void SetGravity(float newGravity) = 0;
 	virtual float GetGravity(void) = 0;
@@ -44,6 +45,8 @@ public:
 	virtual void RotateLimb(string nodeName, float angle, float rotateSpeed, bool playOnce, double dt, float axisX, float axisY, float axisZ) = 0;
 	virtual void RevertLimb(bool aimMode, double dt) = 0;
 
+	virtual bool GetIsMoving(void) = 0;
+	virtual void SetIsMoving(bool moving) = 0;
 	virtual bool GetInAir(void) = 0;
 
 	virtual SceneNode* GetNode(void) = 0;

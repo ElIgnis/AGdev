@@ -4,7 +4,8 @@
 #include "..\GameState.h"
 #include "..\SceneManager\SceneManager_LevelSelect.h"
 #include "..\Application.h"
-#include "PlayState.h"
+#include "PlayState_L1.h"
+#include "PlayState_L2.h"
 
 class LeveSelectState : public GameState
 {

@@ -54,9 +54,28 @@
 		[Texture] SKYPLANE_TOP
 	}
 	{
+		# InnerRadius = PlanetRadius, OuterRadius = AtmosphereRadius
+		# TileRow = hTile, TileCol = vTile	
+		[NAME] SKYPLANE2
+		[Type] Skyplane
+		[Slices] 128
+		[InnerRadius] 2000
+		[OuterRadius] 4000
+		[TileRow] 1
+		[TileCol] 1
+		[Texture] SKYPLANE2_TOP
+	}
+	{
 		[NAME] FLOOR
 		[Type] Quad
 		[Texture] Ground
+		[Length] 4000
+		[Width] 4000
+	}
+	{
+		[NAME] FLOOR2
+		[Type] Quad
+		[Texture] Ground2
 		[Length] 4000
 		[Width] 4000
 	}
@@ -65,12 +84,6 @@
 		#[Type] Terrain
 		#[Directory] Config\\Resources\\Texture\\heightmap.raw
 		#[Texture] Grass
-	}
-	{
-		[NAME] TREE_OBJ
-		[Type] Obj
-		[Directory] Config\\Resources\\Obj\\Static\\OBJ_Tree.obj
-		[Texture] TREE
 	}
 	{
 		[NAME] HUMAN_HEAD
@@ -98,31 +111,6 @@
 		[Directory] Config\\Resources\\Obj\\Human\\OBJ_Human_Leg.obj
 	}
 	{
-		[NAME] ENEMY_HEAD
-		[Type] Obj
-		[Directory] Config\\Resources\\Obj\\Human\\OBJ_Human_Head.obj
-	}
-	{
-		[NAME] ENEMY_BODY
-		[Type] Obj
-		[Directory] Config\\Resources\\Obj\\Human\\OBJ_Human_Body.obj
-	}
-	{
-		[NAME] ENEMY_LEFTHAND
-		[Type] Obj
-		[Directory] Config\\Resources\\Obj\\Human\\OBJ_Human_LH.obj
-	}
-	{
-		[NAME] ENEMY_RIGHTHAND
-		[Type] Obj
-		[Directory] Config\\Resources\\Obj\\Human\\OBJ_Human_RH.obj
-	}
-	{
-		[NAME] ENEMY_LEG
-		[Type] Obj
-		[Directory] Config\\Resources\\Obj\\Human\\OBJ_Human_Leg.obj
-	}
-	{
 		[NAME] PISTOL
 		[Type] Obj
 		[Directory] Config\\Resources\\Obj\\Weapon\\OBJ_Pistol.obj
@@ -135,10 +123,16 @@
 		[Texture] BULLET
 	}
 	{
-		[NAME] AMMO
+		[NAME] LASER
 		[Type] Obj
-		[Directory] Config\\Resources\\Obj\\Weapon\\OBJ_Ammo.obj
-		[Texture] AMMO
+		[Directory] Config\\Resources\\Obj\\Weapon\\OBJ_LaserBeam.obj
+		[Texture] LASER
+	}
+	{
+		[NAME] EYEBALL
+		[Type] Obj
+		[Directory] Config\\Resources\\Obj\\Enemy\\OBJ_Eye.obj
+		[Texture] EYEBALL
 	}
 	{
 		[NAME] Circle

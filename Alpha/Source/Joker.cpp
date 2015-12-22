@@ -93,6 +93,16 @@ float CJoker::GetMoveSpeedMult(void)
 	return moveSpeed_Mult;
 }
 
+bool CJoker::GetIsMoving(void)
+{
+	return moving;
+}
+
+void CJoker::SetIsMoving(bool moving)
+{
+	this->moving = moving;
+}
+
 bool CJoker::GetInAir(void)
 {
 	return inAir;

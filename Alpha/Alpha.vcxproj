@@ -90,6 +90,7 @@
     <ClCompile Include="Source\Button2D.cpp" />
     <ClCompile Include="Source\Button3D.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\Death.cpp" />
     <ClCompile Include="Source\FPCamera.cpp" />
     <ClCompile Include="Source\Free3DMovement.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
@@ -98,7 +99,6 @@
     <ClCompile Include="Source\GameObjectSprite2D.cpp" />
     <ClCompile Include="Source\GameStateManager.cpp" />
     <ClCompile Include="Source\InputManager.cpp" />
-    <ClCompile Include="Source\Joker.cpp" />
     <ClCompile Include="Source\Keyboard.cpp" />
     <ClCompile Include="Source\LoadHmap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
@@ -124,7 +124,8 @@
     <ClCompile Include="Source\SceneManager\SceneManager_Menu.cpp" />
     <ClCompile Include="Source\SceneManager\SceneManager_Options.cpp" />
     <ClCompile Include="Source\SceneManager\SceneManager_Pause.cpp" />
-    <ClCompile Include="Source\SceneManager\SceneManager_Play.cpp" />
+    <ClCompile Include="Source\SceneManager\SceneManager_Play_L1.cpp" />
+    <ClCompile Include="Source\SceneManager\SceneManager_Play_L2.cpp" />
     <ClCompile Include="Source\SceneManager\SceneManager_Splash.cpp" />
     <ClCompile Include="Source\SceneNode.cpp" />
     <ClCompile Include="Source\shader.cpp" />
@@ -137,7 +138,8 @@
     <ClCompile Include="Source\States\MenuState.cpp" />
     <ClCompile Include="Source\States\OptionState.cpp" />
     <ClCompile Include="Source\States\PauseState.cpp" />
-    <ClCompile Include="Source\States\PlayState.cpp" />
+    <ClCompile Include="Source\States\PlayState_L1.cpp" />
+    <ClCompile Include="Source\States\PlayState_L2.cpp" />
     <ClCompile Include="Source\States\SplashState.cpp" />
     <ClCompile Include="Source\StaticGameObject.cpp" />
     <ClCompile Include="Source\TileSheet.cpp" />
@@ -152,6 +154,7 @@
     <ClInclude Include="Source\Button2D.h" />
     <ClInclude Include="Source\Button3D.h" />
     <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\Death.h" />
     <ClInclude Include="Source\Fog.h" />
     <ClInclude Include="Source\FPCamera.h" />
     <ClInclude Include="Source\Free3DMovement.h" />
@@ -162,7 +165,6 @@
     <ClInclude Include="Source\GameState.h" />
     <ClInclude Include="Source\GameStateManager.h" />
     <ClInclude Include="Source\InputManager.h" />
-    <ClInclude Include="Source\Joker.h" />
     <ClInclude Include="Source\Keyboard.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadHmap.h" />
@@ -194,7 +196,8 @@
     <ClInclude Include="Source\SceneManager\SceneManager_Menu.h" />
     <ClInclude Include="Source\SceneManager\SceneManager_Options.h" />
     <ClInclude Include="Source\SceneManager\SceneManager_Pause.h" />
-    <ClInclude Include="Source\SceneManager\SceneManager_Play.h" />
+    <ClInclude Include="Source\SceneManager\SceneManager_Play_L1.h" />
+    <ClInclude Include="Source\SceneManager\SceneManager_Play_L2.h" />
     <ClInclude Include="Source\SceneManager\SceneManager_Splash.h" />
     <ClInclude Include="Source\SceneNode.h" />
     <ClInclude Include="Source\shader.hpp" />
@@ -207,7 +210,8 @@
     <ClInclude Include="Source\States\MenuState.h" />
     <ClInclude Include="Source\States\OptionState.h" />
     <ClInclude Include="Source\States\PauseState.h" />
-    <ClInclude Include="Source\States\PlayState.h" />
+    <ClInclude Include="Source\States\PlayState_L1.h" />
+    <ClInclude Include="Source\States\PlayState_L2.h" />
     <ClInclude Include="Source\States\SplashState.h" />
     <ClInclude Include="Source\StaticGameObject.h" />
     <ClInclude Include="Source\TileSheet.h" />

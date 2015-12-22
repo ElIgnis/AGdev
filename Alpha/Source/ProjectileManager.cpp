@@ -69,8 +69,10 @@ void ProjectileManager::RemoveProjectile(GameObject3D* object)
 		{
 			if (Projectile->getPosition() == object->getPosition())
 			{
-				Projectile->setUpdate(false);
-				Projectile->setRender(false);
+				//Projectile->setUpdate(false);
+				//Projectile->setRender(false);
+				m_ProjectileList.erase(it);
+				
 				this->m_iActiveProjectileCount--;
 				break;
 			}

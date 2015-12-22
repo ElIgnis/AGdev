@@ -23,7 +23,7 @@ public:
 	virtual void Update(double dt);
 	// For third person camera
 	
-	virtual void UpdatePosition(Vector3 position, Vector3 newDirection, Vector3 ShoulderPos, double dt);
+	virtual void UpdatePosition(Vector3 position, Vector3 newDirection, Vector3 ShoulderPos, double dt, bool isMoving);
 	// Update Camera status
 	virtual void UpdateStatus(const unsigned char key, const bool status = true);
 	virtual void Reset();
@@ -84,6 +84,8 @@ public:
 	float GetHSense(void);
 	float GetVSense(void);
 
+	void SetStrafeLeft(int strafe);
+
 private:
 	bool myKeys[255];
 
@@ -104,7 +106,7 @@ private:
 	float m_fTPVCameraAngle = 0.f;
 	float m_fTPVCameraPitch = 45.f;
 	
-	float translateSpeed = 200.f;
+	float translateSpeed;
 	float vSense;
 	float hSense;
 	float pitchChange;
@@ -113,8 +115,12 @@ private:
 	bool LockPitch;
 	bool LockYaw;
 	bool aimMode;
-	bool aimView;
-	bool normalView;
+	bool aimView_Transit;
+	bool sideView_Transit;
+	bool normalView_Transit;
+	int strafeLeft;
+	float maxLimit = 35;
+	float strafe;
 };
 
 #endif

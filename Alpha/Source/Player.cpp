@@ -21,10 +21,12 @@ CPlayer::~CPlayer()
 
 void CPlayer::Init(Vector3 currentPos, Vector3 currentDir, Mesh* playerMesh)
 {
+	Alive = true;
+
 	playerNode = new SceneNode();
 	GO3D_Object = new GameObject3D();
 	playerNode->SetGameObject(GO3D_Object);
-	
+
 	playerNode->setActive(true);
 	playerNode->GetGameObject()->setPosition(currentPos);
 	playerNode->GetGameObject()->setMesh(playerMesh);
@@ -67,6 +69,26 @@ void CPlayer::SetAngle(float newAngle)
 {
 	this->angle = newAngle;
 }
+void CPlayer::AddAngle(float newAngle, float dt)
+{
+	float rotateToAngle = newAngle - this->angle;
+
+	if (rotateToAngle < 0.f)
+	{
+		rotateToAngle *= -1.f;
+	}
+	if (rotateToAngle >= 360)
+	{
+		rotateToAngle -= 360.f;
+	}
+	//else
+	//{
+	//this->angle += rotateToAngle * 100 * dt;
+	//}
+
+	//std::cout << newAngle << "   " << this->angle << std::endl;
+	std::cout << rotateToAngle << std::endl;
+}
 
 //Physics
 void CPlayer::SetGravity(float newGravity)
@@ -101,6 +123,16 @@ void CPlayer::SetMoveSpeedMult(float newMSpeedMult)
 float CPlayer::GetMoveSpeedMult(void)
 {
 	return moveSpeed_Mult;
+}
+
+bool CPlayer::GetIsMoving(void)
+{
+	return moving;
+}
+
+void CPlayer::SetIsMoving(bool moving)
+{
+	this->moving = moving;
 }
 
 bool CPlayer::GetInAir(void)
@@ -158,6 +190,9 @@ void CPlayer::RevertLimb(bool aimMode, double dt)
 //Update
 void CPlayer::Update(double dt, float CamAngle)
 {
+
+	moving = true;
+
 	playerNode->GetChildNode("Head")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("Head")->GetGameObject()->getPosition());
 
 	force.x = moveSpeed * moveSpeed_Mult;
@@ -176,6 +211,13 @@ void CPlayer::Update(double dt, float CamAngle)
 
 void CPlayer::UpdateMovement(bool aimMode, double dt)
 {
+
+	//Angle handler
+	if (this->angle >= 360.f)
+		this->angle = 0.f;
+	else if (this->angle < 0.f)
+		this->angle = 0.f;
+
 	//Update animation
 	if (!this->GetNode()->GetGameObject()->getVelocity().IsZero())
 	{
@@ -188,19 +230,19 @@ void CPlayer::UpdateMovement(bool aimMode, double dt)
 
 	playerNode->GetGameObject()->addPosition(this->GetNode()->GetGameObject()->getVelocity() * (float)dt);
 	playerNode->GetChildNode("Head")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("Head")->GetGameObject()->getPosition());
-	
+
 	playerNode->GetChildNode("LeftHand_Joint")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("LeftHand_Joint")->GetGameObject()->getPosition());
 	playerNode->GetChildNode("LeftHand_Joint")->GetChildNode("LeftHand")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("LeftHand_Joint")->GetChildNode("LeftHand")->GetGameObject()->getPosition());
-	
+
 	playerNode->GetChildNode("RightHand_Joint")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("RightHand_Joint")->GetGameObject()->getPosition());
 	playerNode->GetChildNode("RightHand_Joint")->GetChildNode("RightHand")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("RightHand_Joint")->GetChildNode("RightHand")->GetGameObject()->getPosition());
 	playerNode->GetChildNode("RightHand_Joint")->GetChildNode("RightHand")->GetChildNode("Weapon")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("RightHand_Joint")->GetChildNode("RightHand")->GetChildNode("Weapon")->GetGameObject()->getPosition());
-	
+
 	playerNode->GetChildNode("LeftLeg_Joint")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("LeftLeg_Joint")->GetGameObject()->getPosition());
 	playerNode->GetChildNode("LeftLeg_Joint")->GetChildNode("LeftLeg")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("LeftLeg_Joint")->GetChildNode("LeftLeg")->GetGameObject()->getPosition());
-	
+
 	playerNode->GetChildNode("RightLeg_Joint")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("RightLeg_Joint")->GetGameObject()->getPosition());
-	playerNode->GetChildNode("RightLeg_Joint")->GetChildNode("RightLeg")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("RightLeg_Joint")->GetChildNode("RightLeg")->GetGameObject()->getPosition());	
+	playerNode->GetChildNode("RightLeg_Joint")->GetChildNode("RightLeg")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("RightLeg_Joint")->GetChildNode("RightLeg")->GetGameObject()->getPosition());
 }
 
 void CPlayer::UpdateAngle(float dt)
@@ -231,4 +273,13 @@ int CPlayer::GetLives(void)
 Weapon* CPlayer::GetWeapon(void)
 {
 	return Pistol;
+}
+
+void CPlayer::SetIsAlive(bool alive)
+{
+	this->Alive = alive;
+}
+bool CPlayer::GetIsAlive(void)
+{
+	return Alive;
 }

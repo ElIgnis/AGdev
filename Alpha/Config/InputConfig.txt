@@ -8,6 +8,11 @@
 		# [Key] VK_LBUTTON
 	}
 	{
+		[NAME] MMB
+		[Key] 0x04
+		# [Key] VK_LBUTTON
+	}
+	{
 		[NAME] RMB
 		[Key] 0x02
 		# [Key] VK_RBUTTON

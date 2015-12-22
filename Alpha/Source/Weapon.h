@@ -22,6 +22,7 @@ public:
 
 	int getReservedAmmo(void);	//Get reserved amount of ammo
 	void setReservedAmmo(int value);	//Set reserved amount of ammo
+	void addReservedAmmo(int amount);
 
 	bool CanFire();	//Can Fire Weapon
 	void FireWeapon();	//Fires weapon

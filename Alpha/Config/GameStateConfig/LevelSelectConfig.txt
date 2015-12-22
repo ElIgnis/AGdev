@@ -33,6 +33,16 @@
 			[Color] 1, 1, 1
 		}
 		{
+			[NAME] LevelTwo
+			[Type] Text
+			[Text] Level Two
+			[Pos] 830, 450
+			[Rotation] 0
+			[Scale] 200, 75
+			[Mesh] FONT
+			[Color] 1, 1, 1
+		}
+		{
 			[NAME] Back
 			[Type] Text
 			[Text] Back

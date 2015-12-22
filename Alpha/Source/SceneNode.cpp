@@ -141,8 +141,16 @@ void SceneNode::DrawChild(SceneManager *sceneManager, Mesh* debugMesh)
 		sceneManager->RenderPop();
 	}
 #endif
-
-	sceneManager->RenderMesh(gameObject3D->getMesh(), true);
+	//Only draw active death object
+	if (this->GetGameObject()->getName() == "Death" || this->GetGameObject()->getName() == "DemonSpawner")
+	{
+		if (this->active)
+			sceneManager->RenderMesh(gameObject3D->getMesh(), true);
+	}
+	else
+	{
+		sceneManager->RenderMesh(gameObject3D->getMesh(), true);
+	}
 
 	for (unsigned i = 0; i < childNodes.size(); ++i)
 	{

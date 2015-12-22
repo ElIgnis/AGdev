@@ -40,6 +40,8 @@ public:
 	virtual void RotateLimb(string nodeName, float angle, float rotateSpeed, bool playOnce, double dt, float axisX, float axisY, float axisZ);
 	virtual void RevertLimb(bool aimMode, double dt);
 
+	virtual bool GetIsMoving(void);
+	virtual void SetIsMoving(bool moving);
 	virtual bool GetInAir(void);
 
 	virtual SceneNode* GetNode(void);

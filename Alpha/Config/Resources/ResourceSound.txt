@@ -34,4 +34,20 @@
 		[NAME] Player_Walk
 		[Directory] Config\\Resources\\Sound\\Player_Walk.wav
 	}
+	{
+		[NAME] Receive_Ammo
+		[Directory] Config\\Resources\\Sound\\AddAmmo.wav
+	}
+	{
+		[NAME] No_Ammo
+		[Directory] Config\\Resources\\Sound\\OutOfAmmo.wav
+	}
+	{
+		[NAME] Enemy_Attack
+		[Directory] Config\\Resources\\Sound\\Enemy_Attack.wav
+	}
+	{
+		[NAME] Player_Death
+		[Directory] Config\\Resources\\Sound\\Player_Death.wav
+	}
 }

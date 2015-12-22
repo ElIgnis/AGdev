@@ -24,10 +24,13 @@ TPCamera::TPCamera()
 	, MoveVel_D(0)
 	, CAMERA_ACCEL(0)
 	, aimMode(false)
-	, normalView(true)
-	, aimView(false)
+	, normalView_Transit(true)
+	, aimView_Transit(false)
+	, sideView_Transit(false)
+	, strafeLeft(0)
 	, vSense(0.01f)
 	, hSense(0.01f)
+	, translateSpeed(500.f)
 {
 }
 
@@ -185,7 +188,7 @@ void TPCamera::Update(double dt)
 Update the camera for third person view
 Vector3 newPosition is the new position which the camera is to be based on
 ********************************************************************************/
-void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir, Vector3 ShoulderPos, double dt)
+void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir, Vector3 ShoulderPos, double dt, bool isMoving)
 {
 	if (!LockPitch)
 	{
@@ -201,18 +204,18 @@ void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir, Vector3 ShoulderPo
 	float offSet_Z = calcHDist() * cos(Math::DegreeToRadian(theta));
 
 	target.x = newPos.x + offSet_X * 2;
-	target.y = newPos.y + 5.f - m_fTPVCameraPitch;
+	target.y = newPos.y + 25.f - m_fTPVCameraPitch;
 	target.z = newPos.z + offSet_Z * 2;
 
 	//Update focused view
 	if (aimMode)
 	{
-		normalView = false;
+		normalView_Transit = false;
 		//Set the height
-		m_fTPVCameraOffsetY = 5.f;
+		m_fTPVCameraOffsetY = 0.f;
 
 		//Transition
-		if (aimView == false)
+		if (aimView_Transit == false)
 		{
 			Vector3 shoulderView;
 			shoulderView.x = ShoulderPos.x - 15 * sin(Math::DegreeToRadian(theta + 35));
@@ -228,7 +231,7 @@ void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir, Vector3 ShoulderPo
 			}
 			else
 			{
-				aimView = true;
+				aimView_Transit = true;
 			}
 		}
 		else
@@ -241,36 +244,81 @@ void TPCamera::UpdatePosition(Vector3 newPos, Vector3 newDir, Vector3 ShoulderPo
 	//Update normal view
 	else
 	{
-		aimView = false;
+		aimView_Transit = false;
 		//Set the height
-		m_fTPVCameraOffsetY = 50;
-
-		//Transition
-		if (normalView == false)
+		m_fTPVCameraOffsetY = 100.f;
+		
+		//Cam moves to player when not moving
+		if (strafeLeft == 0)
 		{
-			Vector3 defaultView;
-			defaultView.x = newPos.x - offSet_X;
-			defaultView.y = newPos.y + calcVDist();
-			defaultView.z = newPos.z - offSet_Z;
-
-			Vector3 direction = defaultView - position;
-			float distance = direction.LengthSquared();
-
-			if ((translateSpeed * dt) * (translateSpeed * dt) < distance)
+			strafe = 0;
+			
+			sideView_Transit = false;
+			//Transition
+			if (normalView_Transit == false)
 			{
-				position += direction.Normalized() * (translateSpeed * dt);
+				Vector3 defaultView;
+				defaultView.x = newPos.x - offSet_X;
+				defaultView.y = newPos.y + calcVDist();
+				defaultView.z = newPos.z - offSet_Z;
+
+				Vector3 direction = defaultView - position;
+				float distance = direction.LengthSquared();
+
+				if ((translateSpeed * dt) * (translateSpeed * dt) < distance)
+				{
+					position += direction.Normalized() * (translateSpeed * dt);
+				}
+				else
+				{
+					normalView_Transit = true;
+				}
 			}
 			else
 			{
-				normalView = true;
+				position.x = newPos.x - offSet_X;
+				position.y = newPos.y + calcVDist();
+				position.z = newPos.z - offSet_Z;
 			}
 		}
+		//Chracter slides towards direction
 		else
 		{
-			position.x = newPos.x - offSet_X;
-			position.y = newPos.y + calcVDist();
-			position.z = newPos.z - offSet_Z;
+			if (strafeLeft == 1 && strafe < maxLimit)
+				strafe += dt * 100;
+			if (strafeLeft == 2 && strafe > -maxLimit)
+				strafe -= dt * 100;
+
+			normalView_Transit = false;
+			//Transition
+			if (sideView_Transit == false)	
+			{
+				Vector3 sideView;
+				sideView.x = newPos.x - 45 * sin(Math::DegreeToRadian(theta + strafe));
+				sideView.y = newPos.y + calcVDist();
+				sideView.z = newPos.z - 45 * cos(Math::DegreeToRadian(theta + strafe));
+
+				Vector3 direction = sideView - position;
+				float distance = direction.LengthSquared();
+
+				if ((translateSpeed * dt) * (translateSpeed * dt) < distance)
+				{
+					position += direction.Normalized() * (translateSpeed * dt);
+					target += direction.Normalized() * (translateSpeed * dt);
+				}
+				else
+				{
+					sideView_Transit = true;
+				}
+			}
+			else
+			{
+				position.x = newPos.x - 45 * sin(Math::DegreeToRadian(theta + strafe));
+				position.y = newPos.y + calcVDist();
+				position.z = newPos.z - 45 * cos(Math::DegreeToRadian(theta + strafe));
+			}
 		}
+		
 		if (position.y <= 0.f)
 			position.y = 0.f;
 	}
@@ -375,7 +423,7 @@ void TPCamera::calcRotation(void)
 
 	//Slowing down
 	if (angleChange != 0.0f && Application::getMouse()->getDiffPos().x == 0.f)
-		angleChange -= angleChange * 0.5f;
+		angleChange -= angleChange * 0.75f;
 
 	m_fTPVCameraAngle -= angleChange;
 	//360/0 limiter
@@ -451,6 +499,11 @@ float TPCamera::GetHSense(void)
 float TPCamera::GetVSense(void)
 {
 	return vSense;
+}
+
+void TPCamera::SetStrafeLeft(int strafe)
+{
+	this->strafeLeft = strafe;
 }
 
 /********************************************************************************

@@ -24,6 +24,7 @@ public:
 	//Angle
 	virtual float GetAngle(void);
 	virtual void SetAngle(float newAngle);
+	virtual void AddAngle(float newAngle, float dt);
 	//Physics
 	virtual void SetGravity(float newGravity);
 	virtual float GetGravity(void);
@@ -41,7 +42,8 @@ public:
 	virtual void RotateLimb(string nodeName, float angle, float rotateSpeed, bool playOnce, double dt, float axisX, float axisY, float axisZ);
 	virtual void RevertLimb(bool aimMode, double dt);
 	
-
+	virtual bool GetIsMoving(void);
+	virtual void SetIsMoving(bool moving);
 	virtual bool GetInAir(void);
 
 	virtual SceneNode* GetNode(void);
@@ -55,6 +57,8 @@ public:
 	virtual void SetLives(int newLives);
 	virtual int GetHealth(void);
 	virtual int GetLives(void);
+	void SetIsAlive(bool alive);
+	bool GetIsAlive(void);
 
 	Weapon* GetWeapon(void);
 
@@ -67,5 +71,6 @@ private:
 	static CPlayer* instance;
 	Free3DMovement LeftHand, RightHand, LeftLeg, RightLeg;
 	Weapon* Pistol;
+	bool Alive;
 };
 

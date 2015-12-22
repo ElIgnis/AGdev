@@ -216,9 +216,6 @@
     <ClCompile Include="Source\SceneManager\SceneManager_Pause.cpp">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SceneManager\SceneManager_Play.cpp">
-      <Filter>Managers\SceneManagers\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SceneManager\SceneManager_Splash.cpp">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClCompile>
@@ -246,9 +243,6 @@
     <ClCompile Include="Source\Player.cpp">
       <Filter>GameObjects\ChildObject\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Joker.cpp">
-      <Filter>GameObjects\ChildObject\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Source\States\HelpState.cpp">
       <Filter>States</Filter>
     </ClCompile>
@@ -267,10 +261,22 @@
     <ClCompile Include="Source\States\PauseState.cpp">
       <Filter>States</Filter>
     </ClCompile>
-    <ClCompile Include="Source\States\PlayState.cpp">
+    <ClCompile Include="Source\States\SplashState.cpp">
       <Filter>States</Filter>
     </ClCompile>
-    <ClCompile Include="Source\States\SplashState.cpp">
+    <ClCompile Include="Source\Death.cpp">
+      <Filter>GameObjects\ChildObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_Play_L1.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneManager\SceneManager_Play_L2.cpp">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\PlayState_L1.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\PlayState_L2.cpp">
       <Filter>States</Filter>
     </ClCompile>
   </ItemGroup>
@@ -413,9 +419,6 @@
     <ClInclude Include="Source\SceneManager\SceneManager_Pause.h">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneManager\SceneManager_Play.h">
-      <Filter>Managers\SceneManagers\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SceneManager\SceneManager_Splash.h">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClInclude>
@@ -455,9 +458,6 @@
     <ClInclude Include="Source\Player.h">
       <Filter>GameObjects\ChildObject\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Joker.h">
-      <Filter>GameObjects\ChildObject\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Source\States\HelpState.h">
       <Filter>States</Filter>
     </ClInclude>
@@ -476,10 +476,22 @@
     <ClInclude Include="Source\States\PauseState.h">
       <Filter>States</Filter>
     </ClInclude>
-    <ClInclude Include="Source\States\PlayState.h">
+    <ClInclude Include="Source\States\SplashState.h">
       <Filter>States</Filter>
     </ClInclude>
-    <ClInclude Include="Source\States\SplashState.h">
+    <ClInclude Include="Source\Death.h">
+      <Filter>GameObjects\ChildObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_Play_L1.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneManager\SceneManager_Play_L2.h">
+      <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\PlayState_L1.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\PlayState_L2.h">
       <Filter>States</Filter>
     </ClInclude>
   </ItemGroup>

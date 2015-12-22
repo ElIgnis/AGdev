@@ -57,12 +57,12 @@
 		[Directory] Config\\Resources\\Texture\\Environment\\Ground_Tex.tga
 	}
 	{
-		[NAME] PLAYER
-		[Directory] Config\\Resources\\Texture\\Human\\OBJ_Player_Tex.tga
+		[NAME] Ground2
+		[Directory] Config\\Resources\\Texture\\Environment\\Ground2_Tex.tga
 	}
 	{
-		[NAME] JOKER
-		[Directory] Config\\Resources\\Texture\\Human\\OBJ_Joker_Tex.tga
+		[NAME] PLAYER
+		[Directory] Config\\Resources\\Texture\\Human\\OBJ_Player_Tex.tga
 	}
 	{
 		[NAME] PISTOL
@@ -73,19 +73,24 @@
 		[Directory] Config\\Resources\\Texture\\Weapon\\OBJ_Bullet_Tex.tga
 	}
 	{
-		[NAME] AMMO
-		[Directory] Config\\Resources\\Texture\\Weapon\\OBJ_Ammo_Tex.tga
+		[NAME] LASER
+		[Directory] Config\\Resources\\Texture\\Weapon\\OBJ_Laser_Tex.tga
 	}
 	{
 		[NAME] CROSSHAIR
 		[Directory] Config\\Resources\\Texture\\Weapon\\Crosshair.tga
 	}
 	{
-		[NAME] TREE
-		[Directory] Config\\Resources\\Texture\\Static\OBJ_Tree_Tex.tga
+		[NAME] EYEBALL
+		[Directory] Config\\Resources\\Texture\\Enemy\\OBJ_Eye_Tex.tga
 	}
 	{
 		[NAME] SKYPLANE_TOP
 		[Directory] Config\\Resources\\Texture\\Environment\\Skyplane.tga
 	}
+	{
+		[NAME] SKYPLANE2_TOP
+		[Directory] Config\\Resources\\Texture\\Environment\\Skyplane2.tga
+	}
+
 }

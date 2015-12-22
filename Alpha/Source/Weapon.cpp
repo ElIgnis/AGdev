@@ -72,6 +72,10 @@ void Weapon::setReservedAmmo(int value)
 {
 	this->Reserve_Ammo = value;
 }
+void Weapon::addReservedAmmo(int amount)
+{
+	this->Reserve_Ammo += amount;
+}
 
 void Weapon::RefillWeapon()
 {

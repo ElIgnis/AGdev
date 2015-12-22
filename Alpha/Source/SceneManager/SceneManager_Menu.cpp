@@ -62,7 +62,6 @@ void SceneManager_Menu::Update(double dt)
 	}
 
 	lights[0].power = pulseAmt + brightness;
-	std::cout << brightness << std::endl;
 	glUniform1f(parameters[U_LIGHT0_POWER], lights[0].power);
 
 	if (!playBGM)
