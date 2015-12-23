@@ -1,14 +1,14 @@
-#include "SceneManager_LevelSelect.h"
+#include "SceneManager_GameOver.h"
 
-SceneManager_LevelSelect::SceneManager_LevelSelect()
+SceneManager_GameOver::SceneManager_GameOver()
 {
 }
 
-SceneManager_LevelSelect::~SceneManager_LevelSelect()
+SceneManager_GameOver::~SceneManager_GameOver()
 {
 }
 
-void SceneManager_LevelSelect::Init(const int width, const int height, ResourcePool *RM, InputManager* controls)
+void SceneManager_GameOver::Init(const int width, const int height, ResourcePool *RM, InputManager* controls)
 {
 	SceneManagerSelection::Init(width, height, RM, controls);
 
@@ -25,12 +25,12 @@ void SceneManager_LevelSelect::Init(const int width, const int height, ResourceP
 	mouseMesh = resourceManager.retrieveMesh("CURSOR");
 }
 
-void SceneManager_LevelSelect::Config()
+void SceneManager_GameOver::Config()
 {
-	SceneManagerSelection::Config("Config\\GameStateConfig\\LevelSelectConfig.txt");
+	SceneManagerSelection::Config("Config\\GameStateConfig\\GameOverConfig.txt");
 }
 
-void SceneManager_LevelSelect::Update(double dt)
+void SceneManager_GameOver::Update(double dt)
 {
 	SceneManagerSelection::Update(dt);
 
@@ -41,9 +41,9 @@ void SceneManager_LevelSelect::Update(double dt)
 	glUniform1f(parameters[U_LIGHT0_POWER], lights[0].power);
 }
 
-void SceneManager_LevelSelect::Render()
+void SceneManager_GameOver::Render()
 {
-	SceneManagerSelection::ClearScreen();
+	//SceneManagerSelection::Render();
 
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -66,18 +66,18 @@ void SceneManager_LevelSelect::Render()
 	RenderLight(0, 0, 1, 0);
 }
 
-void SceneManager_LevelSelect::Exit()
+void SceneManager_GameOver::Exit()
 {
 	SceneManagerSelection::Exit();
 }
 
-void SceneManager_LevelSelect::BindShaders()
+void SceneManager_GameOver::BindShaders()
 {
 	SceneManagerSelection::BindShaders();
 }
 
 // Other specific init, update and render classes
-void SceneManager_LevelSelect::InitShader()
+void SceneManager_GameOver::InitShader()
 {
 	SHADER thisShader = resourceManager.retrieveShader("Comg");
 	programID = LoadShaders(thisShader.vertexShaderDirectory.c_str(), thisShader.fragmentShaderDirectory.c_str());
@@ -180,7 +180,7 @@ void SceneManager_LevelSelect::InitShader()
 	glUniform1f(parameters[U_LIGHT1_EXPONENT], lights[1].exponent);
 }
 
-void SceneManager_LevelSelect::RenderLight(const float rotation, const float x, const float y, const float z)
+void SceneManager_GameOver::RenderLight(const float rotation, const float x, const float y, const float z)
 {
 	//Lights
 	if (lights[0].type == Light::LIGHT_DIRECTIONAL)
@@ -245,27 +245,19 @@ void SceneManager_LevelSelect::RenderLight(const float rotation, const float x, 
 	}
 }
 
-void SceneManager_LevelSelect::RenderBG()
-{
-	Mesh* drawMesh;
-	drawMesh = resourceManager.retrieveMesh("Background");
-	drawMesh->textureID = resourceManager.retrieveTexture("LVLSELECT_BG");
-	Render2DMesh(drawMesh, true, Vector2(1920, 1080), Vector2(sceneWidth * 0.5f, sceneHeight * 0.5f));
-
-	//drawMesh = resourceManager.retrieveMesh("FONT");
-	//RenderTextOnScreen(drawMesh, "Level Two", Color(), 75.f, 830, 400, 0.f);
-	//RenderTextOnScreen(drawMesh, "X", Color(), 200.f, 910, 325, 0.f);
-}
-
-void SceneManager_LevelSelect::RenderStaticObject()
+void SceneManager_GameOver::RenderBG()
 {
 }
 
-void SceneManager_LevelSelect::RenderMobileObject()
+void SceneManager_GameOver::RenderStaticObject()
 {
 }
 
-void SceneManager_LevelSelect::RenderSelection()
+void SceneManager_GameOver::RenderMobileObject()
+{
+}
+
+void SceneManager_GameOver::RenderSelection()
 {
 	SceneManagerSelection::RenderSelection();
 
@@ -273,12 +265,12 @@ void SceneManager_LevelSelect::RenderSelection()
 	Render2DMesh(mouseMesh, false, Vector2(25, 50), Vector2(mousePos.x, mousePos.y - 5.f), 0.f);
 }
 
-void SceneManager_LevelSelect::UpdateMouse()
+void SceneManager_GameOver::UpdateMouse()
 {
 	SceneManagerSelection::UpateMouse();
 }
 
-void SceneManager_LevelSelect::UpdateSelection()
+void SceneManager_GameOver::UpdateSelection()
 {
 	SceneManagerSelection::UpdateSelection();
 
@@ -286,23 +278,24 @@ void SceneManager_LevelSelect::UpdateSelection()
 	{
 		if (interactiveButtons[i].getStatus() != interactiveButtons[i].getPrevStatus())
 		{
-			if (interactiveButtons[i].getStatus() == Button2D::BUTTON_PRESSED)
+			if (interactiveButtons[i].getStatus() != interactiveButtons[i].getPrevStatus())
 			{
-				interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
-				resourceManager.retrieveSoundas2D("Button_Press");
-			}
+				if (interactiveButtons[i].getStatus() == Button2D::BUTTON_PRESSED)
+				{
+					interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
+					resourceManager.retrieveSoundas2D("Button_Press");
+				}
 
-			else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_IDLE)
-			{
-				interactiveButtons[i].setColor(resourceManager.retrieveColor("White"));
-				interactiveButtons[i].setRotation(0.f);
-			}
+				else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_IDLE)
+				{
+					interactiveButtons[i].setColor(resourceManager.retrieveColor("White"));
+				}
 
-			else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_HOVER)
-			{
-				interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
-				interactiveButtons[i].setRotation(-10.f);
-				resourceManager.retrieveSoundas2D("Button_Hover");
+				else if (interactiveButtons[i].getStatus() == Button2D::BUTTON_HOVER)
+				{
+					interactiveButtons[i].setColor(resourceManager.retrieveColor("Red"));
+					resourceManager.retrieveSoundas2D("Button_Hover");
+				}
 			}
 		}
 	}

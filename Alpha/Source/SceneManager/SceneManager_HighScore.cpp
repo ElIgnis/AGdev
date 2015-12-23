@@ -23,6 +23,8 @@ void SceneManager_HighScore::Init(const int width, const int height, ResourcePoo
 	projectionStack.LoadMatrix(perspective);
 
 	mouseMesh = resourceManager.retrieveMesh("CURSOR");
+
+	LoadHighScore();
 }
 
 void SceneManager_HighScore::Config()
@@ -43,7 +45,7 @@ void SceneManager_HighScore::Update(double dt)
 
 void SceneManager_HighScore::Render()
 {
-	SceneManagerSelection::Render();
+	SceneManagerSelection::ClearScreen();
 
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -254,6 +256,19 @@ void SceneManager_HighScore::RenderBG()
 
 	drawMesh = resourceManager.retrieveMesh("FONT");
 	RenderTextOnScreen(drawMesh, "High Score", Color(1, 0, 0), 200.f, 800, 850, 0.f);
+
+	for (int i = 0; i < 5; ++i)
+	{
+		ostringstream ssScore;
+		ssScore << i + 1 << ".  " << ScoreList[i] << " points";
+		RenderTextOnScreen(drawMesh, ssScore.str(), Color(1, 0, 0), 75.f, 800, sceneHeight - 300 - i * 100, 0.f);
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		ostringstream ssScore;
+		ssScore << i + 6 << ".  " << ScoreList[i + 5] << " points";
+		RenderTextOnScreen(drawMesh, ssScore.str(), Color(1, 0, 0), 75.f, 1300, sceneHeight - 300 - i * 100, 0.f);
+	}
 }
 
 void SceneManager_HighScore::RenderStaticObject()
@@ -305,4 +320,23 @@ void SceneManager_HighScore::UpdateSelection()
 			}
 		}
 	}
+}
+
+void SceneManager_HighScore::LoadHighScore(void)
+{
+	data = " ";
+	ifstream inFile;
+	inFile.open("Config//Highscore.txt");
+	int Line = 0;
+	if (inFile.good())
+	{
+		while (getline(inFile, data))
+		{
+			ScoreList[Line] = data;
+			++Line;
+		}
+		inFile.close();
+	}
+	else
+		std::cout << "Load score file failed" << std::endl;
 }

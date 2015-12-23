@@ -52,7 +52,7 @@ public:
 	void CollisionResponse(SceneNode* first, SceneNode* second, double dt);
 	bool CheckSelfCollide(SceneNode* first, SceneNode* second);
 	//bool ProcessCollision(SceneNode* first, SceneNode* second);
-	bool GetGameOver();
+
 	void RenderLight(const float rotation, const float x, const float y, const float z);;
 	void RenderBG();
 	void RenderStaticObject();
@@ -61,18 +61,20 @@ public:
 
 	void LoadHighScore(void);
 	void CompareHighScore(void);
+	void WriteHighScore(void);
 
 	SceneNode* getNode(void);
 	CPlayer* player;
 	vector<CDeath*> enemyList_Death;
-	//Score as time
-	float timer_sec;
-	float timer_min;
 
+	int score;
 	int spawnNumber;
 	float ammoTimer;
 	float spawnTimer;
-	bool GameOver;
+
+	bool newRecord;
+	int ScoreList[10];
+	string data;
 };
 
 #endif

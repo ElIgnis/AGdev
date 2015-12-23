@@ -1,7 +1,7 @@
 # Interface Config #
 # Init all scene variables here (etc. camera, buttons) #
 {
-	[NAME] MenuConfig
+	[NAME] OptionsConfig
 	# Menu interface
 	{
 		[NAME] Camera

@@ -43,7 +43,7 @@ void SceneManager_Help::Update(double dt)
 
 void SceneManager_Help::Render()
 {
-	SceneManagerSelection::Render();
+	SceneManagerSelection::ClearScreen();
 
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);

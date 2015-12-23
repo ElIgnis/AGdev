@@ -1,5 +1,5 @@
 {
-	[NAME] Pause Config
+	[NAME] GameOver Config
 	# Pause interface
 	{
 		[NAME] Camera
@@ -21,21 +21,12 @@
 	{
 		[NAME] Buttons
 		{
-			[NAME] Resume
-			[Type] Text
-			[Text] Resume
-			[Pos] 875, 550
-			[Rotation] 0
-			[Scale] 180, 75
-			[Mesh] FONT
-		}
-		{
 			[NAME] Menu
 			[Type] Text
-			[Text] Menu
-			[Pos] 895, 450
+			[Text] MainMenu
+			[Pos] 800, 450
 			[Rotation] 0
-			[Scale] 110, 75
+			[Scale] 270, 75
 			[Mesh] FONT
 		}
 	}

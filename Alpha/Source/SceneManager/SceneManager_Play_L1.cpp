@@ -5,7 +5,6 @@ spatialPartitionManager(NULL),
 sceneGraph(NULL),
 staticSceneGraph(NULL),
 dynamicSceneGraph(NULL),
-GameOver(false),
 spawnNumber(0)/*,
 miniMap(NULL)*/
 {
@@ -28,6 +27,7 @@ void SceneManager_Play_L1::Init(const int width, const int height, ResourcePool 
 	player->GetInstance();
 	this->InitShader();
 	this->InitSceneGraph();
+	LoadHighScore();
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
@@ -194,7 +194,8 @@ void SceneManager_Play_L1::Update(double dt)
 	//Update gameover
 	else
 	{
-		GameOver = true;
+		CompareHighScore();
+		WriteHighScore();
 	}
 	
 	//Update spatial partition
@@ -243,6 +244,7 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 									spatialPartitionManager->removeNode(secondNode);
 									dynamicSceneGraph->RemoveChildNode(secondNode);
 									DeleteEnemy(secondNode);
+									++score;
 									j = spatialPartitionManager->partitions[i]->nodes.begin();
 									break;
 								}
@@ -254,6 +256,7 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 									spatialPartitionManager->removeNode(firstNode);
 									dynamicSceneGraph->RemoveChildNode(firstNode);
 									DeleteEnemy(firstNode);
+									++score;
 									j = spatialPartitionManager->partitions[i]->nodes.begin();
 									break;
 								}
@@ -261,21 +264,25 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 								//Lasers
 								if (firstNode->GetGameObject()->getName() == "theLaser")
 								{
-									projectileManager.RemoveProjectile(firstNode->GetGameObject());
-									spatialPartitionManager->removeNode(firstNode);
-									dynamicSceneGraph->RemoveChildNode(firstNode);
+									//projectileManager.RemoveProjectile(firstNode->GetGameObject());
+									//spatialPartitionManager->removeNode(firstNode);
+									//dynamicSceneGraph->RemoveChildNode(firstNode);
 									spatialPartitionManager->removeNode(secondNode);
 									dynamicSceneGraph->RemoveChildNode(secondNode);
+									DeleteEnemy(secondNode);
+									++score;
 									j = spatialPartitionManager->partitions[i]->nodes.begin();
 									break;
 								}
 								else if (secondNode->GetGameObject()->getName() == "theLaser")
 								{
-									projectileManager.RemoveProjectile(secondNode->GetGameObject());
-									spatialPartitionManager->removeNode(secondNode);
-									dynamicSceneGraph->RemoveChildNode(secondNode);
+									//projectileManager.RemoveProjectile(secondNode->GetGameObject());
+									//spatialPartitionManager->removeNode(secondNode);
+									//dynamicSceneGraph->RemoveChildNode(secondNode);
 									spatialPartitionManager->removeNode(firstNode);
 									dynamicSceneGraph->RemoveChildNode(firstNode);
+									DeleteEnemy(firstNode);
+									++score;
 									j = spatialPartitionManager->partitions[i]->nodes.begin();
 									break;
 								}
@@ -339,12 +346,15 @@ void SceneManager_Play_L1::UpdatePlayer(double dt)
 		float offSet_X = (float)(-13 * sin(Math::DegreeToRadian(Player->GetAngle() + 157.5)));
 		float offSet_Z = (float)(-13 * cos(Math::DegreeToRadian(Player->GetAngle() + 157.5)));
 
+		Vector3 FiringPoint = tpCamera.getTarget();
+		FiringPoint.y -= 2.5f;
+
 		FiringPos.x += offSet_X;
 		FiringPos.y = dynamicSceneGraph->GetChildNode("Player")->GetGameObject()->getPosition().y + 6.75f;
 		FiringPos.z += offSet_Z;
 		playerbullet.setPosition(FiringPos);
 		
-		CProjectile* projectile = projectileManager.FetchProjectile(playerbullet, (tpCamera.getTarget() - tpCamera.getPosition()).Normalized(), 1000.f);
+		CProjectile* projectile = projectileManager.FetchProjectile(playerbullet, (FiringPoint - tpCamera.getPosition()).Normalized(), 1000.f);
 		projectile->setRotation(Player->GetAngle(), 0, 1, 0);
 		GameObject3D* newProjectile = projectile;
 
@@ -369,7 +379,7 @@ void SceneManager_Play_L1::UpdatePlayer(double dt)
 		theLaser.setPosition(FiringPos);
 
 		Vector3 FiringPoint = tpCamera.getTarget();
-		FiringPoint.y -= 5.f;
+		FiringPoint.y -= 2.5f;
 
 		CProjectile* projectile = projectileManager.FetchProjectile(theLaser, (FiringPoint - tpCamera.getPosition()).Normalized(), 1000.f);
 		projectile->setRotation(Player->GetAngle() + 2.5f, 0, 1, 0);
@@ -1070,7 +1080,7 @@ void SceneManager_Play_L1::RenderGUI()
 	std::ostringstream ss;
 	ss.precision(5);
 	ss << "FPS: " << fps;
-	RenderTextOnScreen(textMesh, ss.str(), textCol, 30, 0, sceneHeight- 30);
+	RenderTextOnScreen(textMesh, ss.str(), Color(1, 1, 1), 50.f, sceneWidth - 200, sceneHeight- 50);
 
 	std::ostringstream ssCurrentAmmo;
 	ssCurrentAmmo << Player->GetWeapon()->getCurrentAmmo() << " / " << Player->GetWeapon()->getReservedAmmo();
@@ -1088,6 +1098,23 @@ void SceneManager_Play_L1::RenderGUI()
 	{
 		drawMesh = resourceManager.retrieveMesh("CROSSHAIR");
 		Render2DMesh(drawMesh, false, Vector2(50, 50), Vector2(sceneWidth * 0.5f, sceneHeight * 0.45f));
+	}
+
+	std::ostringstream ssCurrentScore;
+	ssCurrentScore << "Score: " << score;
+	RenderTextOnScreen(textMesh, ssCurrentScore.str(), Color(1, 1, 1), 50, 50, sceneHeight - 100);
+
+	if (GameOver)
+	{
+		RenderTextOnScreen(textMesh, "You are dead...", Color(1, 1, 1), 50, sceneWidth * 0.4f, sceneHeight * 0.65f);
+		std::ostringstream ssFinalScore;
+		ssFinalScore << "Your final score: " << score;
+		RenderTextOnScreen(textMesh, ssFinalScore.str(), Color(1, 1, 1), 50, sceneWidth * 0.4f, sceneHeight * 0.55f);
+	}
+
+	if (newRecord)
+	{
+		RenderTextOnScreen(textMesh, "but you have lasted longer than the others..", Color(1, 1, 1), 50, sceneWidth * 0.4f, sceneHeight * 0.6f);
 	}
 }
 
@@ -1301,6 +1328,64 @@ void SceneManager_Play_L1::SpawnEnemy(void)
 void SceneManager_Play_L1::UpdateMouse()
 {
 	SceneManagerGameplay::UpateMouse();
+}
+
+void SceneManager_Play_L1::LoadHighScore(void)
+{
+	data = " ";
+	ifstream inFile;
+	inFile.open("Config//Highscore.txt");
+	int Line = 0;
+	if (inFile.good())
+	{
+		while (getline(inFile, data))
+		{
+			ScoreList[Line] = stoi(data);
+			++Line;
+		}
+		inFile.close();
+	}
+	else
+		std::cout << "Load score file failed" << std::endl;
+}
+void SceneManager_Play_L1::CompareHighScore(void)
+{
+	//If beat the lowest score
+	if (score > ScoreList[9] && GameOver == false)
+	{
+		newRecord = true;
+		ScoreList[9] = score;
+		//Sort high score in descending order
+		for (int i = 1; i < 10; ++i)
+		{
+			for (int j = 0; j < 9; ++j)
+			{
+				if (ScoreList[j] < ScoreList[j + 1])
+				{
+					float temp = ScoreList[j];
+					ScoreList[j] = ScoreList[j + 1];
+					ScoreList[j + 1] = temp;
+				}
+			}
+		}
+		WriteHighScore();
+	}
+	GameOver = true;
+}
+void SceneManager_Play_L1::WriteHighScore(void)
+{
+	ofstream outFile;
+	outFile.open("Config//Highscore.txt");
+	if (outFile.good())
+	{
+		for (int i = 0; i < 10; ++i)
+		{
+			outFile << ScoreList[i] << std::endl;
+		}
+		outFile.close();
+	}
+	else
+		std::cout << "Write score file failed" << std::endl;
 }
 
 SceneNode* SceneManager_Play_L1::getNode()

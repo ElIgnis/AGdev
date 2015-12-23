@@ -5,6 +5,7 @@
 #include "..\SceneManager\SceneManager_Play_L2.h"
 #include "..\Application.h"
 #include "PauseState.h"
+#include "GameOverState.h"
 
 class PlayState_L2 : public GameState
 {

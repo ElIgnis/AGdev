@@ -247,7 +247,10 @@ void SceneManager_Pause::RenderLight(const float rotation, const float x, const 
 
 void SceneManager_Pause::RenderBG()
 {
+	Mesh* drawMesh;
 
+	drawMesh = resourceManager.retrieveMesh("FONT");
+	RenderTextOnScreen(drawMesh, "Paused", Color(1, 1, 1), 200.f, 775, 625, 0.f);
 }
 
 void SceneManager_Pause::RenderStaticObject()

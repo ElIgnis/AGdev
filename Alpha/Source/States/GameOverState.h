@@ -1,16 +1,15 @@
-#ifndef PLAY_STATE_L1_H
-#define PLAY_STATE_L1_H
+#ifndef GAMEOVER_STATE_H
+#define GAMEOVER_STATE_H
 
 #include "..\GameState.h"
-#include "..\SceneManager\SceneManager_Play_L1.h"
+#include "..\SceneManager\SceneManager_GameOver.h"
 #include "..\Application.h"
-#include "PauseState.h"
-#include "GameOverState.h"
+#include "MenuState.h"
 
-class PlayState_L1 : public GameState
+class GameOverState : public GameState
 {
 private:
-	static PlayState_L1 playState_L1;
+	static GameOverState gameOverState;
 
 public:
 	void Init(const int width, const int height, ResourcePool* RP, InputManager* controls);
@@ -18,7 +17,7 @@ public:
 
 	void Config();
 
-	void Pause();
+	void GameOver();
 	void Resume();
 
 	void HandleEvents(GameStateManager* gameStateManager);
@@ -31,16 +30,16 @@ public:
 
 	void Draw(GameStateManager* gameStateManager);
 
-	static PlayState_L1* Instance()
+	static GameOverState* Instance()
 	{
-		return &playState_L1;
+		return &gameOverState;
 	}
 
 protected:
-	PlayState_L1();
-	virtual ~PlayState_L1();
+	GameOverState();
+	virtual ~GameOverState();
 
-	SceneManagerGameplay* scene;
+	SceneManagerSelection* scene;
 };
 
 #endif

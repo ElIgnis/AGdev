@@ -10,6 +10,7 @@ protected:
 	Vector3 world3DEnd;
 	Vector2 world2DStart;
 	Vector2 world2DEnd;
+	bool GameOver = false;
 public:
 	SceneManagerGameplay() {}
 	virtual ~SceneManagerGameplay() {}
@@ -158,6 +159,11 @@ public:
 				}
 			}
 		}
+	}
+
+	bool GetGameOver(void)
+	{
+		return GameOver;
 	}
 };
 

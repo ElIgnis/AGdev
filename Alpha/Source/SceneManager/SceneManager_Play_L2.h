@@ -61,18 +61,20 @@ public:
 
 	void LoadHighScore(void);
 	void CompareHighScore(void);
+	void WriteHighScore(void);
 
 	SceneNode* getNode(void);
 	CPlayer* player;
 	vector<CDeath*> enemyList_Death;
-	//Score as time
-	float timer_sec;
-	float timer_min;
 
+	int score;
 	int spawnNumber;
 	float ammoTimer;
 	float spawnTimer;
-	bool GameOver;
+	
+	bool newRecord;
+	int ScoreList[10];
+	string data;
 };
 
 #endif

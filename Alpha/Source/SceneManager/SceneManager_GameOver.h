@@ -1,13 +1,13 @@
-#ifndef SCENE_MANAGER_HIGHSCORE_H
-#define SCENE_MANAGER_HIGHSCORE_H
+#ifndef SCENE_MANAGER_GAMEOVER_H
+#define SCENE_MANAGER_GAMEOVER_H
 
 #include "SceneManagerSelection.h"
 
-class SceneManager_HighScore : public SceneManagerSelection
+class SceneManager_GameOver : public SceneManagerSelection
 {
 public:
-	SceneManager_HighScore();
-	~SceneManager_HighScore();
+	SceneManager_GameOver();
+	~SceneManager_GameOver();
 
 	void Init(const int width, const int height, ResourcePool* RP, InputManager* controls);
 	void Config();
@@ -26,10 +26,6 @@ public:
 	void RenderBG();
 	void RenderStaticObject();
 	void RenderMobileObject();
-
-	void LoadHighScore(void);
-	string ScoreList[10];
-	string data;
 };
 
 #endif

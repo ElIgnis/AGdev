@@ -59,9 +59,16 @@ void PlayState_L1::Resume()
 
 void PlayState_L1::HandleEvents(GameStateManager* gameStateManager)
 {
-	if (scene->inputManager->getKey("Pause"))
+	if (scene->inputManager->getKey("Pause") && !scene->GetGameOver())
 	{
 		gameStateManager->PushState(PauseState::Instance());
+		this->draw = true;
+		this->update = true;
+		gameStateManager->SetOverrideRender(true);
+	}
+	else if (scene->GetGameOver())
+	{
+		gameStateManager->PushState(GameOverState::Instance());
 		this->draw = true;
 		this->update = true;
 		gameStateManager->SetOverrideRender(true);
@@ -89,6 +96,7 @@ void PlayState_L1::Update(GameStateManager* gsm, const double dt)
 	if (update)
 	{
 		scene->Update(dt);
+		
 	}
 }
 

@@ -118,6 +118,7 @@
     <ClCompile Include="Source\ResourceManager.cpp" />
     <ClCompile Include="Source\ResourcePool.cpp" />
     <ClCompile Include="Source\SceneManager\SceneManager.cpp" />
+    <ClCompile Include="Source\SceneManager\SceneManager_GameOver.cpp" />
     <ClCompile Include="Source\SceneManager\SceneManager_Help.cpp" />
     <ClCompile Include="Source\SceneManager\SceneManager_HighScore.cpp" />
     <ClCompile Include="Source\SceneManager\SceneManager_LevelSelect.cpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="Source\SoundPool.cpp" />
     <ClCompile Include="Source\SpatialPartitionManager.cpp" />
     <ClCompile Include="Source\SpriteAnimation.cpp" />
+    <ClCompile Include="Source\States\GameOverState.cpp" />
     <ClCompile Include="Source\States\HelpState.cpp" />
     <ClCompile Include="Source\States\HighScoreState.cpp" />
     <ClCompile Include="Source\States\LevelSelectState.cpp" />
@@ -190,6 +192,7 @@
     <ClInclude Include="Source\SceneManager\SceneManagerInfo.h" />
     <ClInclude Include="Source\SceneManager\SceneManagerSelection.h" />
     <ClInclude Include="Source\SceneManager\SceneManagerTransition.h" />
+    <ClInclude Include="Source\SceneManager\SceneManager_GameOver.h" />
     <ClInclude Include="Source\SceneManager\SceneManager_Help.h" />
     <ClInclude Include="Source\SceneManager\SceneManager_HighScore.h" />
     <ClInclude Include="Source\SceneManager\SceneManager_LevelSelect.h" />
@@ -204,6 +207,7 @@
     <ClInclude Include="Source\SoundPool.h" />
     <ClInclude Include="Source\SpatialPartitionManager.h" />
     <ClInclude Include="Source\SpriteAnimation.h" />
+    <ClInclude Include="Source\States\GameOverState.h" />
     <ClInclude Include="Source\States\HelpState.h" />
     <ClInclude Include="Source\States\HighScoreState.h" />
     <ClInclude Include="Source\States\LevelSelectState.h" />
