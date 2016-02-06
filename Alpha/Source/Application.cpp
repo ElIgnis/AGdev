@@ -102,72 +102,112 @@ Application::~Application()
 }
 
 // Setting up of the engine using data from the text files
-void Application::Config(void)
+void Application::SetUp(void)
 {
-	for (vector<Branch>::iterator branch = engineBranch.childBranches.begin(); branch != engineBranch.childBranches.end(); ++branch)
+	lua_State *Lua_Init = lua_open();
+
+	//Load the libs
+	luaL_openlibs(Lua_Init);
+
+	//Initialise engine with values from Lua file
+	luaL_dofile(Lua_Init, "Lua/AppConfig.Lua");
+
+	if (luaL_loadfile(Lua_Init, "Lua/AppConfig.Lua") || lua_pcall(Lua_Init, 0, 0, 0))
 	{
-		if (branch->branchName == "SetUp")
-		{
-			for (vector<Attribute>::iterator attri = branch->attributes.begin(); attri != branch->attributes.end(); ++attri)
-			{
-				Attribute tempAttri = *attri;
-				string attriName = tempAttri.name;
-				string attriValue = tempAttri.value;
-				if (attriName == "WindowTitle")
-				{
-					this->windowTitle = attriValue;
-				}
-
-				else if (attriName == "WindowWidth")
-				{
-					this->windowWidth = stoi(attriValue);
-				}
-
-				else if (attriName == "WindowHeight")
-				{
-					this->windowHeight = stoi(attriValue);
-				}
-
-				else if (attriName == "FullScreen")
-				{
-					if (attriValue == "true" || attriValue == "1")
-					{
-						this->fullScreen = true;
-					}
-
-					else
-					{
-						this->fullScreen = false;
-					}
-				}
-
-				else if (attriName == "FrameRate")
-				{
-					this->FPS = stoi(attriValue);
-					this->frameTime = 1000 / FPS;
-				}
-			}
-		}
-
-		else if (branch->branchName == "MouseConfig")
-		{
-			this->mouse->Init(branch->attributes[FIRST].value);
-		}
-
-		else if (branch->branchName == "InputConfig")
-		{
-			this->inputConfig = branch->attributes[FIRST].value;
-		}
-
-		else if (branch->branchName == "ResourceConfig")
-		{
-			this->resourceConfig = branch->attributes[FIRST].value;
-		}
+		printf("error: %s", lua_tostring(Lua_Init, -1));
 	}
+
+	//Init OpenGL window
+	lua_getglobal(Lua_Init, "TITLE");
+	if (!lua_isstring(Lua_Init, TITLE))
+	{
+		printf("Invalid title name specified\n");
+	}
+
+	lua_getglobal(Lua_Init, "WIDTH");
+	if (!lua_isnumber(Lua_Init, WIDTH))
+	{
+		printf("Invalid width value specified\n");
+	}
+
+	lua_getglobal(Lua_Init, "HEIGHT");
+	if (!lua_isnumber(Lua_Init, HEIGHT))
+	{
+		printf("Invalid height value specified\n");
+	}
+
+	lua_getglobal(Lua_Init, "FULLSCREEN");
+	if (!lua_isboolean(Lua_Init, FULLSCREEN))
+	{
+		printf("Invalid screen type specified\n");
+	}
+
+	lua_getglobal(Lua_Init, "FRAMERATE");
+	if (!lua_isnumber(Lua_Init, FRAMERATE))
+	{
+		printf("Invalid frame rate value specified\n");
+	}
+
+	//Init Mouse
+	lua_getglobal(Lua_Init, "INIT_MOUSE");
+	if (!lua_isstring(Lua_Init, MOUSE_SETTING))
+	{
+		printf("Invalid mouse init file name specified\n");
+	}
+
+	//Init Resources
+	lua_getglobal(Lua_Init, "INIT_INPUT");
+	if (!lua_isstring(Lua_Init, INPUT_SETTING))
+	{
+		printf("Invalid resource init file name specified\n");
+	}
+
+	//Init Input
+	lua_getglobal(Lua_Init, "INIT_RESOURCE");
+	if (!lua_isstring(Lua_Init, RESOURCE_SETTING))
+	{
+		printf("Invalid input init file name specified\n");
+	}
+
+	//Initialise OpenGL window
+	string EngineInitString;
+	int EngineInitInt;
+	bool EngineInitBool;
+	//Title
+	EngineInitString = (string)lua_tostring(Lua_Init, TITLE);
+	this->windowTitle = EngineInitString;
+	//Screen width
+	EngineInitInt = (int)lua_tonumber(Lua_Init, WIDTH);
+	this->windowWidth = EngineInitInt;
+	//Screen height
+	EngineInitInt = (int)lua_tonumber(Lua_Init, HEIGHT);
+	this->windowHeight = EngineInitInt;
+	//Full screen
+	EngineInitBool = (bool)lua_toboolean(Lua_Init, FULLSCREEN);
+	this->fullScreen = EngineInitBool;
+	//Framerate
+	EngineInitInt = (int)lua_tonumber(Lua_Init, FRAMERATE);
+	this->FPS = EngineInitInt;
+	this->frameTime = 1000 / FPS;
+
+	//Initialise the mouse
+	EngineInitString = (string)lua_tostring(Lua_Init, MOUSE_SETTING);
+	this->mouse->Init(EngineInitString);
+
+	//Initialise the inputs
+	EngineInitString = (string)lua_tostring(Lua_Init, INPUT_SETTING);
+	this->inputConfig = EngineInitString;
+
+	//Initialise the resources
+	EngineInitString = (string)lua_tostring(Lua_Init, RESOURCE_SETTING);
+	this->resourceConfig = EngineInitString;
+
+	//Close the lua file
+	lua_close(Lua_Init);
 }
 
 // Init the engine settings
-void Application::Init(string config)
+void Application::Init()
 {
 	this->mouse = new Mouse();
 	this->keyboard = new Keyboard();
@@ -189,9 +229,7 @@ void Application::Init(string config)
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL 
 
-	engineBranch = TextTree::FileToRead(config);
-
-	Config();
+	SetUp();
 
 	//Create a window and create its OpenGL context
 	const char* title = windowTitle.c_str();

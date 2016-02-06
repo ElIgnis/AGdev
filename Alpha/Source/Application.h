@@ -30,13 +30,24 @@ using std::string;
 class Application
 {
 public:
+	enum INIT{
+		TITLE = 1,
+		WIDTH,
+		HEIGHT,
+		FULLSCREEN,
+		FRAMERATE,
+		MOUSE_SETTING,
+		INPUT_SETTING,
+		RESOURCE_SETTING,
+	};
+
 	static Application& getInstance()
 	{
 		static Application app;
 		return app;
 	}
 
-	void Init(string config);
+	void Init();
 	void Run(void);
 	void Exit(void);
 
@@ -56,15 +67,13 @@ private:
 	Application();
 	~Application();
 
-	void Config(void);
+	void SetUp(void);
 
 	GLFWwindow* m_window;
 	StopWatch m_timer;
 	double m_dElapsedTime;
 	double m_dAccumulatedTime_ThreadOne;
 	double m_dAccumulatedTime_ThreadTwo;
-
-	Branch engineBranch;
 
 	static Mouse *mouse;
 	static Keyboard *keyboard;
