@@ -17,6 +17,12 @@
 //#include "SplashStateCM.h"
 #include "../Source/States/SplashState.h"
 
+extern "C"{
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
 #define FIRST 0
 
 using std::string;
