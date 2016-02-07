@@ -2,6 +2,7 @@
 #define SCENE_MANAGER_PAUSE_H
 
 #include "SceneManagerSelection.h"
+#include "..//Lua/LuaFileLoader.h"
 
 class SceneManager_Pause : public SceneManagerSelection
 {

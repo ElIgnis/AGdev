@@ -76,8 +76,8 @@ int Application::getWindowHeight(void)
 }
 
 // Application class
-Application::Application() : 
-	gameStateManager(NULL)
+Application::Application() 
+: gameStateManager(NULL)
 {
 }
 
@@ -212,7 +212,7 @@ void Application::Init()
 	this->mouse = new Mouse();
 	this->keyboard = new Keyboard();
 	this->gameStateManager = new GameStateManager();
-
+	
 	//Set the error callback
 	glfwSetErrorCallback(error_callback);
 

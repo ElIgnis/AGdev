@@ -2,6 +2,7 @@
 #define SCENE_MANAGER_OPTIONS_H
 
 #include "SceneManagerSelection.h"
+#include "..//Lua/LuaFileLoader.h"
 #include <iomanip>
 
 class SceneManager_Options : public SceneManagerSelection

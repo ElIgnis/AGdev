@@ -16,12 +16,7 @@
 
 //#include "SplashStateCM.h"
 #include "../Source/States/SplashState.h"
-
-extern "C"{
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
+#include "Lua\LuaFileLoader.h"
 
 #define FIRST 0
 

@@ -2,6 +2,7 @@
 #define SCENE_MANAGER_PLAY_L1_H
 
 #include "SceneManagerGameplay.h"
+#include "..//Lua/LuaFileLoader.h"
 #include "..\Player.h"
 #include "..\Death.h"
 

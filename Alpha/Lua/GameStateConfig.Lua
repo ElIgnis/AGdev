@@ -1,0 +1,11 @@
+--[[List of configs to load for all scenes]]-- 
+CONFIG_CUSTOMPLAY = "Config\\GameStateConfig\\CustomPlayConfig.txt"
+CONFIG_GAMEOVER = "Config\\GameStateConfig\\GameOverConfig.txt"
+CONFIG_HELP = "Config\\GameStateConfig\\HelpConfig.txt"
+CONFIG_HIGHSCORE = "Config\\GameStateConfig\\HighScoreConfig.txt"
+CONFIG_LEVELSELECT = "Config\\GameStateConfig\\LevelSelectConfig.txt"
+CONFIG_MENU = "Config\\GameStateConfig\\MenuConfig.txt"
+CONFIG_OPTIONS = "Config\\GameStateConfig\\OptionsConfig.txt"
+CONFIG_PAUSE = "Config\\GameStateConfig\\PauseConfig.txt"
+CONFIG_PLAY = "Config\\GameStateConfig\\PlayConfig.txt"
+CONFIG_SPLASH = "Config\\GameStateConfig\\SplashConfig.txt"

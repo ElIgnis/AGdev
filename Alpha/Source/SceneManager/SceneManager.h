@@ -73,6 +73,8 @@ public:
 	~SceneManager();
 
 	virtual void Init(const int width, const int height, ResourcePool* RP, InputManager* controls);
+	string InitOptionSettings(int numOfOption);
+	int GetNumOptions(void);
 	virtual void Config(string directory);
 	virtual void Update(double dt);
 	virtual void Render();

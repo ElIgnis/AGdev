@@ -3,6 +3,7 @@
 #include "..\shader.hpp"
 #include "..\Application.h"
 
+lua_State *Lua_Init;
 
 SceneManager::SceneManager()
 : pulseAmt(0.f)
@@ -37,31 +38,43 @@ void SceneManager::Init(const int width, const int height, ResourcePool* RM, Inp
 		inFile.close();
 	}
 
-	data = " ";
-	inFile.open("Config//Options.txt");
-	int Line = 0;
-	if (inFile.good())
+	Lua_Init = lua_open();
+
+	//Load the libs
+	luaL_openlibs(Lua_Init);
+
+	//Initialise engine with values from Lua file
+	luaL_dofile(Lua_Init, "Lua/OptionsSettings.Lua");
+
+	if (luaL_loadfile(Lua_Init, "Lua/OptionsSettings.Lua") || lua_pcall(Lua_Init, 0, 0, 0))
 	{
-		while (getline(inFile, data))
-		{
-			switch (Line)
-			{
-			case 0:
-				brightness = stoi(data);
-				break;
-			case 1:
-				tpCamera.SetVSense(stof(data));
-				break;
-			case 2:
-				tpCamera.SetHSense(stof(data));
-				break;
-			default:
-				break;
-			}
-			++Line;
-		}
-		inFile.close();
+		printf("error: %s", lua_tostring(Lua_Init, -1));
 	}
+
+	int NumOptions = GetNumOptions();
+
+	for (int i = 1; i <= NumOptions; ++i)
+	{
+		string options_data = InitOptionSettings(i);
+
+		switch (i)
+		{
+		case 1:
+			brightness = stoi(options_data);
+			break;
+		case 2:
+			tpCamera.SetVSense(stof(options_data));
+			break;
+		case 3:
+			tpCamera.SetHSense(stof(options_data));
+			break;
+		default:
+			break;
+		}
+	}
+
+	//Close the lua file
+	lua_close(Lua_Init);
 
 	this->sceneWidth = (float)width;
 	this->sceneHeight = (float)height;
@@ -82,6 +95,29 @@ void SceneManager::Init(const int width, const int height, ResourcePool* RM, Inp
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Math::InitRNG();
+}
+
+string SceneManager::InitOptionSettings(int numOfOption)
+{
+	lua_getglobal(Lua_Init, "readData");
+
+	lua_pushstring(Lua_Init, "Config\\Options.txt");
+	lua_pushnumber(Lua_Init, numOfOption);
+	if (lua_pcall(Lua_Init, 2, 1, 0) != 0)
+		printf("error running function `f': %s", lua_tostring(Lua_Init, -1));
+
+	return (string)lua_tostring(Lua_Init, -1);
+}
+
+int SceneManager::GetNumOptions(void)
+{
+	lua_getglobal(Lua_Init, "readDataSize");
+
+	lua_pushstring(Lua_Init, "Config\\Options.txt");
+	if (lua_pcall(Lua_Init, 1, 1, 0) != 0)
+		printf("error running function `f': %s", lua_tostring(Lua_Init, -1));
+
+	return (int)lua_tonumber(Lua_Init, -1);
 }
 
 void SceneManager::Config(string directory)

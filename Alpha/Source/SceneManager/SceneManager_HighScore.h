@@ -2,6 +2,7 @@
 #define SCENE_MANAGER_HIGHSCORE_H
 
 #include "SceneManagerSelection.h"
+#include "..//Lua/LuaFileLoader.h"
 
 class SceneManager_HighScore : public SceneManagerSelection
 {

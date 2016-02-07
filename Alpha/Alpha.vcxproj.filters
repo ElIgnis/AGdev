@@ -91,6 +91,9 @@
     <Filter Include="GameObjects\ChildObject\Enemy">
       <UniqueIdentifier>{c0237cb5-028e-4ac6-bb79-80d146ff5d59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{99184f9d-0f73-4fcb-9349-fab036748eaf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Utility.cpp">
@@ -284,6 +287,15 @@
     </ClCompile>
     <ClCompile Include="Source\SceneManager\SceneManager_GameOver.cpp">
       <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Lua\Functions.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Lua\LuaFileLoader.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Lua\LuaFunctions.cpp">
+      <Filter>Lua</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -505,6 +517,15 @@
     </ClInclude>
     <ClInclude Include="Source\SceneManager\SceneManager_GameOver.h">
       <Filter>Managers\SceneManagers\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Lua\Functions.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Lua\LuaFileLoader.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Lua\LuaFunctions.h">
+      <Filter>Lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

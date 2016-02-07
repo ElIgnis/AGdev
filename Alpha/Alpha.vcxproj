@@ -103,6 +103,9 @@
     <ClCompile Include="Source\LoadHmap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
+    <ClCompile Include="Source\Lua\Functions.cpp" />
+    <ClCompile Include="Source\Lua\LuaFileLoader.cpp" />
+    <ClCompile Include="Source\Lua\LuaFunctions.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
@@ -172,6 +175,9 @@
     <ClInclude Include="Source\LoadHmap.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
+    <ClInclude Include="Source\Lua\Functions.h" />
+    <ClInclude Include="Source\Lua\LuaFileLoader.h" />
+    <ClInclude Include="Source\Lua\LuaFunctions.h" />
     <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />

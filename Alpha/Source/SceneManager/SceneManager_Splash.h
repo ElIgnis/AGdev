@@ -2,6 +2,7 @@
 #define SCENE_MANAGER_SPLASH_H
 
 #include "SceneManagerTransition.h"
+#include "..//Lua/LuaFileLoader.h"
 
 class SceneManager_Splash : public SceneManagerTransition
 {

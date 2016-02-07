@@ -2,6 +2,7 @@
 #define SCENE_MANAGER_GAMEOVER_H
 
 #include "SceneManagerSelection.h"
+#include "..//Lua/LuaFileLoader.h"
 
 class SceneManager_GameOver : public SceneManagerSelection
 {

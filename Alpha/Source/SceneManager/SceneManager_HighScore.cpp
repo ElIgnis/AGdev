@@ -29,7 +29,31 @@ void SceneManager_HighScore::Init(const int width, const int height, ResourcePoo
 
 void SceneManager_HighScore::Config()
 {
-	SceneManagerSelection::Config("Config\\GameStateConfig\\HighScoreConfig.txt");
+	lua_State *Lua_Init = lua_open();
+
+	//Load the libs
+	luaL_openlibs(Lua_Init);
+
+	//Initialise engine with values from Lua file
+	luaL_dofile(Lua_Init, "Lua/GameStateConfig.Lua");
+
+	if (luaL_loadfile(Lua_Init, "Lua/GameStateConfig.Lua") || lua_pcall(Lua_Init, 0, 0, 0))
+	{
+		printf("error: %s", lua_tostring(Lua_Init, -1));
+	}
+
+	//Init highscore configs
+	lua_getglobal(Lua_Init, "CONFIG_HIGHSCORE");
+	if (!lua_isstring(Lua_Init, -1))
+	{
+		printf("Invalid config file specified\n");
+	}
+
+	string configFile = (string)lua_tostring(Lua_Init, 1);
+
+	SceneManagerSelection::Config(configFile);
+	//Close the lua file
+	lua_close(Lua_Init);
 }
 
 void SceneManager_HighScore::Update(double dt)

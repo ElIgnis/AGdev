@@ -1,4 +1,4 @@
---[[  Initialise OpenGL window with config file]]--
+--[[Initialise OpenGL window with config file]]--
 TITLE = "Beyond"
 WIDTH = 1920
 HEIGHT = 1080
