@@ -311,8 +311,8 @@ void SceneManager_Play_L2::UpdateSP(double dt)
 									break;
 								}
 
-								//Death
-								if (firstNode->GetGameObject()->getName() == "Death" )
+								//Enemy_Beholder
+								if (firstNode->GetGameObject()->getName() == "Enemy_Beholder" )
 								{
 									if (secondNode->GetGameObject()->getName() == "Head"
 										|| secondNode->GetGameObject()->getName() == "Player"
@@ -324,12 +324,12 @@ void SceneManager_Play_L2::UpdateSP(double dt)
 										Player->SetIsAlive(false);
 										secondNode->setActive(false);
 										resourceManager.retrieveSoundas2D("Enemy_Attack", false, false);
-										resourceManager.retrieveSoundas2D("Player_Death", false, false);
+										resourceManager.retrieveSoundas2D("Player_Enemy_Beholder", false, false);
 										j = spatialPartitionManager->partitions[i]->nodes.begin();
 									}
 									break;
 								}
-								else if (secondNode->GetGameObject()->getName() == "Death")
+								else if (secondNode->GetGameObject()->getName() == "Enemy_Beholder")
 								{
 									if (firstNode->GetGameObject()->getName() == "Head"
 										|| firstNode->GetGameObject()->getName() == "Player"
@@ -341,7 +341,7 @@ void SceneManager_Play_L2::UpdateSP(double dt)
 										Player->SetIsAlive(false);
 										firstNode->setActive(false);
 										resourceManager.retrieveSoundas2D("Enemy_Attack", false, false);
-										resourceManager.retrieveSoundas2D("Player_Death", false, false);
+										resourceManager.retrieveSoundas2D("Player_Enemy_Beholder", false, false);
 										j = spatialPartitionManager->partitions[i]->nodes.begin();
 									}
 									break;
@@ -567,21 +567,25 @@ void SceneManager_Play_L2::UpdateEnemy(double dt)
 	spawnTimer += dt;
 
 	//Increase spawn amount
-	if (spawnTimer > DeathSpawnInterval)
+	if (spawnTimer > Enemy_BeholderSpawnInterval)
 	{
 		spawnTimer = 0.f;
 		SpawnEnemy();	
 	}
 	
-	for (int i = 0; i < enemyList_Death.size(); ++i)
+	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
 	{
 		//Only update alive enemies
-		if (enemyList_Death.at(i)->GetIsAlive())
+		if (enemyList_Enemy_Beholder.at(i)->GetIsAlive())
 		{
-			Vector3 direction = Player->GetNode()->GetGameObject()->getPosition() - enemyList_Death.at(i)->GetNode()->GetGameObject()->getPosition();
-			float angleToRotate = Math::RadianToDegree(atan2(direction.x, direction.z));
-			enemyList_Death.at(i)->SetAngle(angleToRotate);
-			enemyList_Death.at(i)->UpdateChase(Player->GetNode()->GetGameObject()->getPosition(), Player->GetIsMoving(), dt);
+			if (enemyList_Enemy_Beholder.at(i)->getCurrentState() == CEnemy_Beholder::ATTACK
+				|| enemyList_Enemy_Beholder.at(i)->getCurrentState() == CEnemy_Beholder::RUN)
+			{
+				Vector3 direction = Player->GetNode()->GetGameObject()->getPosition() - enemyList_Enemy_Beholder.at(i)->GetNode()->GetGameObject()->getPosition();
+				float angleToRotate = Math::RadianToDegree(atan2(direction.x, direction.z));
+				enemyList_Enemy_Beholder.at(i)->SetAngle(angleToRotate);
+				enemyList_Enemy_Beholder.at(i)->Update(dt, Player->GetNode()->GetGameObject()->getPosition(), enemyList_Enemy_Beholder);
+			}
 		}
 	}
 }
@@ -816,19 +820,19 @@ void SceneManager_Play_L2::Exit()
 	//	enemyList_DemonSpawner.at(i) = NULL;
 	//}
 	
-	for (int i = 0; i < enemyList_Death.size(); ++i)
+	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
 	{
-		if (enemyList_Death.at(i) != NULL)
+		if (enemyList_Enemy_Beholder.at(i) != NULL)
 		{
-			delete enemyList_Death.at(i);
-			enemyList_Death.at(i) = NULL;
+			delete enemyList_Enemy_Beholder.at(i);
+			enemyList_Enemy_Beholder.at(i) = NULL;
 		}
 	}
 
-	//if (death != NULL)
+	//if (Enemy_Beholder != NULL)
 	//{
-	//	delete death;
-	//	death = NULL;
+	//	delete Enemy_Beholder;
+	//	Enemy_Beholder = NULL;
 	//}
 	/*if (miniMap)
 	{
@@ -1172,7 +1176,6 @@ void SceneManager_Play_L2::InitStaticNodes()
 
 void SceneManager_Play_L2::InitEnvironmentNodes()
 {
-	//Init environment
 
 }
 
@@ -1181,7 +1184,7 @@ void SceneManager_Play_L2::InitDynamicNodes()
 	//All moving stuff goes here
 	InitPlayer();
 	//InitDemonSpawner();
-	InitDeath();
+	InitEnemy();
 }
 
 void SceneManager_Play_L2::InitPlayer()
@@ -1297,37 +1300,37 @@ void SceneManager_Play_L2::InitPlayer()
 	dynamicSceneGraph->AddChildNode(Player->GetNode());
 }
 
-void SceneManager_Play_L2::InitDeath()
+void SceneManager_Play_L2::InitEnemy()
 {
 	Mesh* drawMesh;
 	for (int i = 0; i < 20; ++i)
 	{
-		CDeath* death = new CDeath();
+		CEnemy_Beholder* Enemy_Beholder = new CEnemy_Beholder();
 
 		//Init player(Body is main node)
 		drawMesh = resourceManager.retrieveMesh("EYEBALL");
 		drawMesh->textureID = resourceManager.retrieveTexture("EYEBALL");
-		death->Init(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)), Vector3(0, 1, 0), drawMesh);
-		death->GetNode()->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "BodyHitbox");
+		Enemy_Beholder->Init(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)), Vector3(0, 1, 0), drawMesh);
+		Enemy_Beholder->GetNode()->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "BodyHitbox");
 		
-		float distCheck = (Player->GetNode()->GetGameObject()->getPosition() - death->GetNode()->GetGameObject()->getPosition()).LengthSquared();
+		float distCheck = (Player->GetNode()->GetGameObject()->getPosition() - Enemy_Beholder->GetNode()->GetGameObject()->getPosition()).LengthSquared();
 
 		while (distCheck < 4000)
 		{
-			death->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)));
+			Enemy_Beholder->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)));
 		}
 
-		enemyList_Death.push_back(death);
-		dynamicSceneGraph->AddChildNode(death->GetNode());
+		enemyList_Enemy_Beholder.push_back(Enemy_Beholder);
+		dynamicSceneGraph->AddChildNode(Enemy_Beholder->GetNode());
 	}
 }
 
 void SceneManager_Play_L2::DeleteEnemy(SceneNode* node)
 {
-	for (std::vector<CDeath*>::iterator it = enemyList_Death.begin(); it != enemyList_Death.end(); ++it)
+	for (std::vector<CEnemy_Beholder*>::iterator it = enemyList_Enemy_Beholder.begin(); it != enemyList_Enemy_Beholder.end(); ++it)
 	{
-		CDeath* Death = (CDeath *)*it;
-		if (Death->GetNode()->GetGameObject()->getPosition() == node->GetGameObject()->getPosition())
+		CEnemy_Beholder* Enemy_Beholder = (CEnemy_Beholder *)*it;
+		if (Enemy_Beholder->GetNode()->GetGameObject()->getPosition() == node->GetGameObject()->getPosition())
 		{
 			(*it)->SetIsAlive(false);
 		}
@@ -1336,13 +1339,13 @@ void SceneManager_Play_L2::DeleteEnemy(SceneNode* node)
 
 void SceneManager_Play_L2::SpawnEnemy(void)
 {
-	for (int i = 0; i < enemyList_Death.size(); ++i)
+	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
 	{
-		if (enemyList_Death.at(i)->GetIsAlive() == false)
+		if (enemyList_Enemy_Beholder.at(i)->GetIsAlive() == false)
 		{
-			enemyList_Death.at(i)->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)));
+			enemyList_Enemy_Beholder.at(i)->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)));
 		}
-		dynamicSceneGraph->AddChildNode(enemyList_Death.at(i)->GetNode());
+		dynamicSceneGraph->AddChildNode(enemyList_Enemy_Beholder.at(i)->GetNode());
 	}
 }
 

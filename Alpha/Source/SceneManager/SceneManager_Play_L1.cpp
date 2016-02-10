@@ -54,7 +54,6 @@ void SceneManager_Play_L1::Init(const int width, const int height, ResourcePool 
 	miniMap->Init();
 	*/
 	//Read high score into vector
-	
 }
 
 void SceneManager_Play_L1::Config()
@@ -267,6 +266,7 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 									//dynamicSceneGraph->RemoveChildNode(firstNode);
 									spatialPartitionManager->removeNode(secondNode);
 									dynamicSceneGraph->RemoveChildNode(secondNode);
+
 									DeleteEnemy(secondNode);
 									++score;
 									j = spatialPartitionManager->partitions[i]->nodes.begin();
@@ -311,8 +311,8 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 									break;
 								}
 
-								//Death
-								if (firstNode->GetGameObject()->getName() == "Death" )
+								//Enemy_Beholder
+								if (firstNode->GetGameObject()->getName() == "Enemy_Beholder")
 								{
 									if (secondNode->GetGameObject()->getName() == "Head"
 										|| secondNode->GetGameObject()->getName() == "Player"
@@ -324,12 +324,12 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 										Player->SetIsAlive(false);
 										secondNode->setActive(false);
 										resourceManager.retrieveSoundas2D("Enemy_Attack", false, false);
-										resourceManager.retrieveSoundas2D("Player_Death", false, false);
+										resourceManager.retrieveSoundas2D("Player_Enemy_Beholder", false, false);
 										j = spatialPartitionManager->partitions[i]->nodes.begin();
 									}
 									break;
 								}
-								else if (secondNode->GetGameObject()->getName() == "Death")
+								else if (secondNode->GetGameObject()->getName() == "Enemy_Beholder")
 								{
 									if (firstNode->GetGameObject()->getName() == "Head"
 										|| firstNode->GetGameObject()->getName() == "Player"
@@ -341,7 +341,7 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 										Player->SetIsAlive(false);
 										firstNode->setActive(false);
 										resourceManager.retrieveSoundas2D("Enemy_Attack", false, false);
-										resourceManager.retrieveSoundas2D("Player_Death", false, false);
+										resourceManager.retrieveSoundas2D("Player_Enemy_Beholder", false, false);
 										j = spatialPartitionManager->partitions[i]->nodes.begin();
 									}
 									break;
@@ -351,6 +351,73 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 					}
 				}
 			}
+		}
+	}
+
+	// loop through partitions when player is alive
+	if (Player->GetIsAlive())
+	{
+		vector<CEnemy_Beholder*> temp_enemyList;
+
+		//Loop through enemy list
+		for (unsigned i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
+		{
+			//std::cout << (enemyList_Enemy_Beholder.at(i)->GetNode()->GetPartitionIndex() - Player->GetNode()->GetPartitionIndex()).LengthSquared() << std::endl;
+			//Check if player nodes and together with enemy nodes are adjacent
+			if ((enemyList_Enemy_Beholder.at(i)->GetNode()->GetPartitionIndex() - Player->GetNode()->GetPartitionIndex()).LengthSquared() <= 2)
+			{
+				temp_enemyList.push_back(enemyList_Enemy_Beholder.at(i));
+			}
+		}
+
+		//3 enemies in adjacent partitions trigger attack
+		if (temp_enemyList.size() > 2)
+		{
+			for (unsigned j = 0; j < temp_enemyList.size(); ++j)
+			{
+				//Set enemy to attack state
+				temp_enemyList.at(j)->setCurrentState(CEnemy_Beholder::ATTACK);
+			}
+		}
+		//Lesser than that would cause them to flee
+		else
+		{
+			for (unsigned j = 0; j < temp_enemyList.size(); ++j)
+			{
+				//Set enemy to attack state
+				temp_enemyList.at(j)->setCurrentState(CEnemy_Beholder::RUN);
+			}
+		}
+	}
+
+	Mesh* drawMesh;
+
+	for (int i = 0; i < treeList_StaticTree.size(); ++i)
+	{
+		//High res
+		if ((treeList_StaticTree.at(i)->GetNode()->GetPartitionIndex() - Player->GetNode()->GetPartitionIndex()).LengthSquared() <= 16)
+		{
+			drawMesh = resourceManager.retrieveMesh("TREE_HR");
+			treeList_StaticTree.at(i)->GetNode()->GetGameObject()->setMesh(drawMesh);
+		}
+		//Medium res
+		if ((treeList_StaticTree.at(i)->GetNode()->GetPartitionIndex() - Player->GetNode()->GetPartitionIndex()).LengthSquared() > 16
+			&& (treeList_StaticTree.at(i)->GetNode()->GetPartitionIndex() - Player->GetNode()->GetPartitionIndex()).LengthSquared() <= 64)
+		{
+			drawMesh = resourceManager.retrieveMesh("TREE_MR");
+			treeList_StaticTree.at(i)->GetNode()->GetGameObject()->setMesh(drawMesh);
+		}
+		//Low res
+		if ((treeList_StaticTree.at(i)->GetNode()->GetPartitionIndex() - Player->GetNode()->GetPartitionIndex()).LengthSquared() > 64
+			&& (treeList_StaticTree.at(i)->GetNode()->GetPartitionIndex() - Player->GetNode()->GetPartitionIndex()).LengthSquared() <= 144)
+		{
+			drawMesh = resourceManager.retrieveMesh("TREE_LR");
+			treeList_StaticTree.at(i)->GetNode()->GetGameObject()->setMesh(drawMesh);
+		}
+		if ((treeList_StaticTree.at(i)->GetNode()->GetPartitionIndex() - Player->GetNode()->GetPartitionIndex()).LengthSquared() > 144)
+		{
+			drawMesh = resourceManager.retrieveMesh("TREE_VLR");
+			treeList_StaticTree.at(i)->GetNode()->GetGameObject()->setMesh(drawMesh);
 		}
 	}
 }
@@ -570,21 +637,21 @@ void SceneManager_Play_L1::UpdateEnemy(double dt)
 	spawnTimer += dt;
 
 	//Increase spawn amount
-	if (spawnTimer > DeathSpawnInterval)
+	if (spawnTimer > Enemy_BeholderSpawnInterval)
 	{
 		spawnTimer = 0.f;
 		SpawnEnemy();	
 	}
 	
-	for (int i = 0; i < enemyList_Death.size(); ++i)
+	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
 	{
 		//Only update alive enemies
-		if (enemyList_Death.at(i)->GetIsAlive())
+		if (enemyList_Enemy_Beholder.at(i)->GetIsAlive())
 		{
-			Vector3 direction = Player->GetNode()->GetGameObject()->getPosition() - enemyList_Death.at(i)->GetNode()->GetGameObject()->getPosition();
+			Vector3 direction = Player->GetNode()->GetGameObject()->getPosition() - enemyList_Enemy_Beholder.at(i)->GetNode()->GetGameObject()->getPosition();
 			float angleToRotate = Math::RadianToDegree(atan2(direction.x, direction.z));
-			enemyList_Death.at(i)->SetAngle(angleToRotate);
-			enemyList_Death.at(i)->UpdateChase(Player->GetNode()->GetGameObject()->getPosition(), Player->GetIsMoving(), dt);
+			enemyList_Enemy_Beholder.at(i)->SetAngle(angleToRotate);
+			enemyList_Enemy_Beholder.at(i)->Update(dt, Player->GetNode()->GetGameObject()->getPosition(), enemyList_Enemy_Beholder);
 		}
 	}
 }
@@ -819,19 +886,19 @@ void SceneManager_Play_L1::Exit()
 	//	enemyList_DemonSpawner.at(i) = NULL;
 	//}
 	
-	for (int i = 0; i < enemyList_Death.size(); ++i)
+	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
 	{
-		if (enemyList_Death.at(i) != NULL)
+		if (enemyList_Enemy_Beholder.at(i) != NULL)
 		{
-			delete enemyList_Death.at(i);
-			enemyList_Death.at(i) = NULL;
+			delete enemyList_Enemy_Beholder.at(i);
+			enemyList_Enemy_Beholder.at(i) = NULL;
 		}
 	}
 
-	//if (death != NULL)
+	//if (Enemy_Beholder != NULL)
 	//{
-	//	delete death;
-	//	death = NULL;
+	//	delete Enemy_Beholder;
+	//	Enemy_Beholder = NULL;
 	//}
 	/*if (miniMap)
 	{
@@ -1029,7 +1096,7 @@ void SceneManager_Play_L1::RenderStaticObject()
 
 	drawMesh = resourceManager.retrieveMesh("SKYPLANE");
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 2000, 0);
+	modelStack.Translate(2000, 2000, 2000);
 	RenderMesh(drawMesh, false);
 	modelStack.PopMatrix();
 
@@ -1037,8 +1104,7 @@ void SceneManager_Play_L1::RenderStaticObject()
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
-	modelStack.Translate(0, 0, -10);
-	modelStack.Rotate(-90, 0, 0, 1);
+	modelStack.Translate(2000, -2000, -10);
 	RenderMesh(drawMesh, false);
 	modelStack.PopMatrix();
 
@@ -1074,26 +1140,34 @@ void SceneManager_Play_L1::RenderMobileObject()
 	static Mesh* debugMesh = resourceManager.retrieveMesh("DEBUG_CUBE");
 	dynamicSceneGraph->Draw(this, debugMesh);
 
-	//Billboard text
-	//for (int i = 0; i < enemyList_Demon.size(); ++i)
-	//{
-	//	//Only display for active
-	//	if (enemyList_Demon.at(i)->GetNode()->getActive())
-	//	{
+	//Billboard text for partition
+	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
+	{
+		Vector3 rotation = tpCamera.getPosition() - enemyList_Enemy_Beholder.at(i)->GetNode()->GetGameObject()->getPosition();
+		float angleToRotate = Math::RadianToDegree(atan2(rotation.x, rotation.z));
+		enemyList_Enemy_Beholder.at(i)->SetAngle(angleToRotate);
+		ostringstream ss;
+		ss << enemyList_Enemy_Beholder.at(i)->GetNode()->GetPartitionIndex();
 
-	//		Vector3 rotation = tpCamera.getPosition() - enemyList_Demon.at(i)->GetNode()->GetWorldPosition();
-	//		float angleToRotate = Math::RadianToDegree(atan2(rotation.x, rotation.z));
-	//		enemyList_Demon.at(i)->SetAngle(angleToRotate);
-	//		ostringstream ss;
-	//		ss << spatialPartitionManager->generatePartitionIndex(enemyList_Demon.at(i)->GetNode()->GetWorldPosition() * 0.005);
-	//		modelStack.PushMatrix();
-	//		modelStack.Translate(enemyList_Demon.at(i)->GetNode()->GetWorldPosition().x, enemyList_Demon.at(i)->GetNode()->GetWorldPosition().y + 5, enemyList_Demon.at(i)->GetNode()->GetWorldPosition().z);
-	//		modelStack.Rotate(enemyList_Demon.at(i)->GetAngle(), 0, 1, 0);
-	//		modelStack.Scale(20, 20, 20);
-	//		RenderText(textMesh, ss.str(), Color(1, 1, 1));
-	//		modelStack.PopMatrix();
-	//	}
-	//}
+		modelStack.PushMatrix();
+		modelStack.Translate(enemyList_Enemy_Beholder.at(i)->GetNode()->GetGameObject()->getPosition().x, enemyList_Enemy_Beholder.at(i)->GetNode()->GetGameObject()->getPosition().y + 5, enemyList_Enemy_Beholder.at(i)->GetNode()->GetGameObject()->getPosition().z);
+		modelStack.Rotate(enemyList_Enemy_Beholder.at(i)->GetAngle(), 0, 1, 0);
+		modelStack.Scale(20, 20, 20);
+		RenderText(textMesh, ss.str(), Color(1, 1, 1));
+		modelStack.PopMatrix();
+	}
+	if (Player != NULL)
+	{
+		ostringstream ss1;
+		ss1 << (int)(spatialPartitionManager->getPartitionIndex_X(Player->GetNode()->GetGameObject()->getPosition().x)) << ", ";
+		ss1 << (int)(spatialPartitionManager->getPartitionIndex_Z(Player->GetNode()->GetGameObject()->getPosition().z));
+		modelStack.PushMatrix();
+		modelStack.Translate(Player->GetNode()->GetGameObject()->getPosition().x, Player->GetNode()->GetGameObject()->getPosition().y + 5, Player->GetNode()->GetGameObject()->getPosition().z);
+		modelStack.Rotate(Player->GetAngle() + 180.f, 0, 1, 0);
+		modelStack.Scale(20, 20, 20);
+		RenderText(textMesh, ss1.str(), Color(1, 1, 1));
+		modelStack.PopMatrix();
+	}
 }
 
 void SceneManager_Play_L1::RenderGUI()
@@ -1161,7 +1235,6 @@ void SceneManager_Play_L1::InitSceneGraph()
 
 	InitStaticNodes();
 	InitDynamicNodes();
-	//InitPlayer();
 
 	// Rmb to init static nodes position first
 	spatialPartitionManager->addNode(sceneGraph, spatialPartitionManager->type);
@@ -1176,15 +1249,30 @@ void SceneManager_Play_L1::InitStaticNodes()
 void SceneManager_Play_L1::InitEnvironmentNodes()
 {
 	//Init environment
+	Mesh* drawMesh;
 
+	//Init environment of trees
+	for (int i = 0; i < 100; ++i)
+	{
+		CStaticTree* StaticTree = new CStaticTree();
+
+		drawMesh = resourceManager.retrieveMesh("TREE_HR");
+		drawMesh->textureID = resourceManager.retrieveTexture("TREE");
+		
+		StaticTree->Init(Vector3(rand() % 4000 + 1, 14, rand() % 4000 + 1), Vector3(0, 1, 0), drawMesh);
+		StaticTree->GetNode()->GetGameObject()->setHitbox(Vector3(), 50, 50, 50, "TreeHitbox");
+		treeList_StaticTree.push_back(StaticTree);
+		staticSceneGraph->AddChildNode(StaticTree->GetNode());
+	}
+
+	spatialPartitionManager->addNode(staticSceneGraph, this->spatialPartitionManager->type);
 }
 
 void SceneManager_Play_L1::InitDynamicNodes()
 {
 	//All moving stuff goes here
 	InitPlayer();
-	//InitDemonSpawner();
-	InitDeath();
+	InitEnemy();
 }
 
 void SceneManager_Play_L1::InitPlayer()
@@ -1195,7 +1283,7 @@ void SceneManager_Play_L1::InitPlayer()
 	//Init player(Body is main node)
 	drawMesh = resourceManager.retrieveMesh("HUMAN_BODY");
 	drawMesh->textureID = resourceManager.retrieveTexture("PLAYER");
-	Player->Init(Vector3(50, 14, 200), Vector3(0, 1, 0), drawMesh);
+	Player->Init(Vector3(2000, 14, 2000), Vector3(0, 1, 0), drawMesh);
 	Player->GetNode()->GetGameObject()->setHitbox(Vector3(), 7, 12, 4, "BodyHitbox");
 
 	GameObject3D Pistol;
@@ -1300,37 +1388,37 @@ void SceneManager_Play_L1::InitPlayer()
 	dynamicSceneGraph->AddChildNode(Player->GetNode());
 }
 
-void SceneManager_Play_L1::InitDeath()
+void SceneManager_Play_L1::InitEnemy()
 {
 	Mesh* drawMesh;
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
-		CDeath* death = new CDeath();
+		CEnemy_Beholder* Enemy_Beholder = new CEnemy_Beholder();
 
 		//Init player(Body is main node)
 		drawMesh = resourceManager.retrieveMesh("EYEBALL");
 		drawMesh->textureID = resourceManager.retrieveTexture("EYEBALL");
-		death->Init(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)), Vector3(0, 1, 0), drawMesh);
-		death->GetNode()->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "BodyHitbox");
+		Enemy_Beholder->Init(Vector3(rand() % 4000 + 1, 14, rand() % 4000 + 1), Vector3(0, 1, 0), drawMesh);
+		Enemy_Beholder->GetNode()->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "BodyHitbox");
 		
-		float distCheck = (Player->GetNode()->GetGameObject()->getPosition() - death->GetNode()->GetGameObject()->getPosition()).LengthSquared();
+		float distCheck = (Player->GetNode()->GetGameObject()->getPosition() - Enemy_Beholder->GetNode()->GetGameObject()->getPosition()).LengthSquared();
 
 		while (distCheck < 4000)
 		{
-			death->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)));
+			Enemy_Beholder->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + 1, 14, rand() % 4000 + 1));
 		}
 
-		enemyList_Death.push_back(death);
-		dynamicSceneGraph->AddChildNode(death->GetNode());
+		enemyList_Enemy_Beholder.push_back(Enemy_Beholder);
+		dynamicSceneGraph->AddChildNode(Enemy_Beholder->GetNode());
 	}
 }
 
 void SceneManager_Play_L1::DeleteEnemy(SceneNode* node)
 {
-	for (std::vector<CDeath*>::iterator it = enemyList_Death.begin(); it != enemyList_Death.end(); ++it)
+	for (std::vector<CEnemy_Beholder*>::iterator it = enemyList_Enemy_Beholder.begin(); it != enemyList_Enemy_Beholder.end(); ++it)
 	{
-		CDeath* Death = (CDeath *)*it;
-		if (Death->GetNode()->GetGameObject()->getPosition() == node->GetGameObject()->getPosition())
+		CEnemy_Beholder* Enemy_Beholder = (CEnemy_Beholder *)*it;
+		if (Enemy_Beholder->GetNode()->GetGameObject()->getPosition() == node->GetGameObject()->getPosition())
 		{
 			(*it)->SetIsAlive(false);
 		}
@@ -1339,13 +1427,13 @@ void SceneManager_Play_L1::DeleteEnemy(SceneNode* node)
 
 void SceneManager_Play_L1::SpawnEnemy(void)
 {
-	for (int i = 0; i < enemyList_Death.size(); ++i)
+	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
 	{
-		if (enemyList_Death.at(i)->GetIsAlive() == false)
+		if (enemyList_Enemy_Beholder.at(i)->GetIsAlive() == false)
 		{
-			enemyList_Death.at(i)->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + (-2000), 14, rand() % 4000 + (-2000)));
+			enemyList_Enemy_Beholder.at(i)->GetNode()->GetGameObject()->setPosition(Vector3(rand() % 4000 + 1, 14, rand() % 4000 + 1));
 		}
-		dynamicSceneGraph->AddChildNode(enemyList_Death.at(i)->GetNode());
+		dynamicSceneGraph->AddChildNode(enemyList_Enemy_Beholder.at(i)->GetNode());
 	}
 }
 

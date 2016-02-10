@@ -6,8 +6,8 @@
 	{
 		[NAME] SpatialPartition
 		[Type] 3D
-		[WorldStart] -2000, 0, -2000
-		[WorldEnd] 2000, 2000, 2000
+		[WorldStart] 0, 0, 0
+		[WorldEnd] 4000, 4000, 4000
 		[Partitions] 20, 1, 20
 		[PartitionBased] true
 	}

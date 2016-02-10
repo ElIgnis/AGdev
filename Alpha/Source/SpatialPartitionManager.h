@@ -45,6 +45,10 @@ public:
 
 	int generatePartitionIndex(Vector3 index);
 	int generatePartitionIndex(int x, int y, int z = 0);
+	int getPartitionIndex_X(float pos_x);
+	int getPartitionIndex_Y(float pos_y);
+	int getPartitionIndex_Z(float pos_z);
+	
 private:
 	Vector3 worldDimension;
 	Vector3 partitionDimension;

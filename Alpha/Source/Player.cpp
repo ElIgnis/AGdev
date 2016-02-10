@@ -190,7 +190,6 @@ void CPlayer::RevertLimb(bool aimMode, double dt)
 //Update
 void CPlayer::Update(double dt, float CamAngle)
 {
-
 	moving = true;
 
 	playerNode->GetChildNode("Head")->SetWorldPosition(playerNode->GetGameObject()->getPosition() + playerNode->GetChildNode("Head")->GetGameObject()->getPosition());

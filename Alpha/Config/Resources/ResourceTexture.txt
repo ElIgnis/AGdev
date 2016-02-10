@@ -92,5 +92,8 @@
 		[NAME] SKYPLANE2_TOP
 		[Directory] Config\\Resources\\Texture\\Environment\\Skyplane2.tga
 	}
-
+	{
+		[NAME] TREE
+		[Directory] Config\\Resources\\Texture\\Environment\\OBJ_Tree_Tex.tga
+	}
 }

@@ -31,6 +31,21 @@ void GameObject::setPosition(Vector3 position)
 	this->TRS.translation.SetToTranslation(position);
 }
 
+void GameObject::setPositionX(float pos_X)
+{
+	this->position.x = pos_X;
+}
+
+void GameObject::setPositionY(float pos_Y)
+{
+	this->position.y = pos_Y;
+}
+
+void GameObject::setPositionZ(float pos_Z)
+{
+	this->position.z = pos_Z;
+}
+
 void GameObject::addPosition(Vector3 addPosition)
 {
 	this->position += addPosition;

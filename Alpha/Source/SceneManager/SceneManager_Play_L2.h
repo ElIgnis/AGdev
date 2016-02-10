@@ -4,9 +4,9 @@
 #include "SceneManagerGameplay.h"
 #include "..//Lua/LuaFileLoader.h"
 #include "..\Player.h"
-#include "..\Death.h"
+#include "..\Enemy_Beholder.h"
 
-#define DeathSpawnInterval 10.f
+#define Enemy_BeholderSpawnInterval 10.f
 #define AmmoSpawnInterval 30.f
 
 class SceneManager_Play_L2 : public SceneManagerGameplay
@@ -44,7 +44,7 @@ public:
 	void InitStaticNodes();
 	void InitEnvironmentNodes();
 	void InitDynamicNodes();
-	void InitDeath();
+	void InitEnemy();
 	void InitPlayer();
 	void SpawnEnemy(void);
 	void DeleteEnemy(SceneNode* node);
@@ -66,7 +66,7 @@ public:
 
 	SceneNode* getNode(void);
 	CPlayer* player;
-	vector<CDeath*> enemyList_Death;
+	vector<CEnemy_Beholder*> enemyList_Enemy_Beholder;
 
 	int score;
 	int spawnNumber;

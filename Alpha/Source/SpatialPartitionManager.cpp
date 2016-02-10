@@ -238,6 +238,7 @@ bool SpatialPartitionManager::addNode(SceneNode* node, SpatialPartitionManager::
 				}
 
 				node->GetGameObject()->updateHitbox(offset);
+				node->SetPartitionIndex(Vector3(getPartitionIndex_X(node->GetGameObject()->getPosition().x), getPartitionIndex_Y(node->GetGameObject()->getPosition().y), getPartitionIndex_Z(node->GetGameObject()->getPosition().z)));
 			}
 			//if (node->parentNode != NULL && node->parentNode->GetGameObject() != NULL)
 			//{
@@ -541,7 +542,22 @@ void SpatialPartitionManager::CleanUp(void)
 
 int SpatialPartitionManager::generatePartitionIndex(Vector3 index)
 {
-	return (int)index.x + (int)index.y * (int)numPartition.x + (int)index.z * (int)numPartition.x * (int)numPartition.y;
+	return ((int)index.x + (int)index.y * (int)numPartition.x + (int)index.z * (int)numPartition.x * (int)numPartition.y);
+}
+
+int SpatialPartitionManager::getPartitionIndex_X(float pos_x)
+{
+	return (int)pos_x / (int)partitionDimension.x;
+}
+
+int SpatialPartitionManager::getPartitionIndex_Y(float pos_y)
+{
+	return (int)pos_y / (int)partitionDimension.y;
+}
+
+int SpatialPartitionManager::getPartitionIndex_Z(float pos_z)
+{
+	return (int)pos_z / (int)partitionDimension.z;
 }
 
 int SpatialPartitionManager::generatePartitionIndex(int x, int y, int z)

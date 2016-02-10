@@ -39,6 +39,8 @@ public:
 
 	void setActive(bool active);
 	bool getActive(void);
+	void SetPartitionIndex(Vector3 partitionIndex);
+	Vector3 GetPartitionIndex(void);
 
 	void CleanUp();
 
@@ -54,6 +56,7 @@ public:
 protected:
 	GameObject3D* gameObject3D;
 	Vector3 WorldPosition;
+	Vector3 currentPartition;
 	bool active;
 };
 

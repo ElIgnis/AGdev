@@ -94,6 +94,9 @@
     <Filter Include="Lua">
       <UniqueIdentifier>{99184f9d-0f73-4fcb-9349-fab036748eaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObjects\ChildObject\Tree">
+      <UniqueIdentifier>{5b83ba89-59fd-4650-85ca-5f16f6d75909}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Utility.cpp">
@@ -267,9 +270,6 @@
     <ClCompile Include="Source\States\SplashState.cpp">
       <Filter>States</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Death.cpp">
-      <Filter>GameObjects\ChildObject\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Source\SceneManager\SceneManager_Play_L1.cpp">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClCompile>
@@ -296,6 +296,12 @@
     </ClCompile>
     <ClCompile Include="Source\Lua\LuaFunctions.cpp">
       <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EnemyBeholder.cpp">
+      <Filter>GameObjects\ChildObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StaticTree.cpp">
+      <Filter>GameObjects\ChildObject\Tree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -497,9 +503,6 @@
     <ClInclude Include="Source\States\SplashState.h">
       <Filter>States</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Death.h">
-      <Filter>GameObjects\ChildObject\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SceneManager\SceneManager_Play_L1.h">
       <Filter>Managers\SceneManagers\Managers</Filter>
     </ClInclude>
@@ -526,6 +529,12 @@
     </ClInclude>
     <ClInclude Include="Source\Lua\LuaFunctions.h">
       <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy_Beholder.h">
+      <Filter>GameObjects\ChildObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\StaticTree.h">
+      <Filter>GameObjects\ChildObject\Tree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

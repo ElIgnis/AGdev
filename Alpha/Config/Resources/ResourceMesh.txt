@@ -135,6 +135,30 @@
 		[Texture] EYEBALL
 	}
 	{
+		[NAME] TREE_HR
+		[Type] Obj
+		[Directory] Config\\Resources\\Obj\\Environment\\Tree_HighRes.obj
+		[Texture] TREE
+	}
+	{
+		[NAME] TREE_MR
+		[Type] Obj
+		[Directory] Config\\Resources\\Obj\\Environment\\Tree_MediumRes.obj
+		[Texture] TREE
+	}
+	{
+		[NAME] TREE_LR
+		[Type] Obj
+		[Directory] Config\\Resources\\Obj\\Environment\\Tree_LowRes.obj
+		[Texture] TREE
+	}
+	{
+		[NAME] TREE_VLR
+		[Type] Obj
+		[Directory] Config\\Resources\\Obj\\Environment\\Tree_VeryLowRes.obj
+		[Texture] TREE
+	}
+	{
 		[NAME] Circle
 		[Type] Circle
 		[Slices] 36

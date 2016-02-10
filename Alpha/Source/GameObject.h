@@ -59,6 +59,9 @@ public:
 	virtual void setMesh(Mesh* mesh);
 	virtual void setName(string name);
 	virtual void setPosition(Vector3 position);
+	virtual void setPositionX(float pos_X);
+	virtual void setPositionY(float pos_Y);
+	virtual void setPositionZ(float pos_Z);
 	virtual void addPosition(Vector3 addPosition);
 	virtual void setRotation(float Angle, float x, float y, float z);
 	virtual void setTRS(Properties _TRS);

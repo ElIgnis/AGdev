@@ -141,8 +141,8 @@ void SceneNode::DrawChild(SceneManager *sceneManager, Mesh* debugMesh)
 		sceneManager->RenderPop();
 	}
 #endif
-	//Only draw active death object
-	if (this->GetGameObject()->getName() == "Death" || this->GetGameObject()->getName() == "DemonSpawner")
+	//Only draw active Enemy_Beholder object
+	if (this->GetGameObject()->getName() == "Enemy_Beholder")
 	{
 		if (this->active)
 			sceneManager->RenderMesh(gameObject3D->getMesh(), true);
@@ -240,4 +240,13 @@ bool SceneNode::HasChild(void)
 		return true;
 
 	return false;
+}
+
+void SceneNode::SetPartitionIndex(Vector3 partitionIndex)
+{
+	this->currentPartition = partitionIndex;
+}
+Vector3 SceneNode::GetPartitionIndex(void)
+{
+	return currentPartition;
 }

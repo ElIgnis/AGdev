@@ -81,7 +81,7 @@ void SceneManager::Init(const int width, const int height, ResourcePool* RM, Inp
 	this->resourceManager.Init(RM);
 	this->inputManager = controls;
 
-	glClearColor(0.f, 0.f, 0.f, 1.0f);
+	glClearColor(1.f, 1.f, 1.f, 1.0f);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
@@ -101,7 +101,7 @@ string SceneManager::InitOptionSettings(int numOfOption)
 {
 	lua_getglobal(Lua_Init, "readData");
 
-	lua_pushstring(Lua_Init, "Config\\Options.txt");
+	lua_pushstring(Lua_Init, "Lua\\Options.Lua");
 	lua_pushnumber(Lua_Init, numOfOption);
 	if (lua_pcall(Lua_Init, 2, 1, 0) != 0)
 		printf("error running function `f': %s", lua_tostring(Lua_Init, -1));
@@ -113,7 +113,7 @@ int SceneManager::GetNumOptions(void)
 {
 	lua_getglobal(Lua_Init, "readDataSize");
 
-	lua_pushstring(Lua_Init, "Config\\Options.txt");
+	lua_pushstring(Lua_Init, "Lua\\Options.Lua");
 	if (lua_pcall(Lua_Init, 1, 1, 0) != 0)
 		printf("error running function `f': %s", lua_tostring(Lua_Init, -1));
 
