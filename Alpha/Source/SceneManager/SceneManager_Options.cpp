@@ -33,8 +33,6 @@ void SceneManager_Options::Config()
 	luaL_openlibs(Lua_Init);
 
 	//Initialise engine with values from Lua file
-	luaL_dofile(Lua_Init, "Lua/GameStateConfig.Lua");
-
 	if (luaL_loadfile(Lua_Init, "Lua/GameStateConfig.Lua") || lua_pcall(Lua_Init, 0, 0, 0))
 	{
 		printf("error: %s", lua_tostring(Lua_Init, -1));
@@ -74,8 +72,6 @@ void SceneManager_Options::UpdateOptions(void)
 	luaL_openlibs(Lua_Init);
 
 	//Initialise engine with values from Lua file
-	luaL_dofile(Lua_Init, "Lua/OptionsSettings.Lua");
-
 	if (luaL_loadfile(Lua_Init, "Lua/OptionsSettings.Lua") || lua_pcall(Lua_Init, 0, 0, 0))
 	{
 		printf("error: %s", lua_tostring(Lua_Init, -1));
@@ -88,21 +84,6 @@ void SceneManager_Options::UpdateOptions(void)
 	lua_pushnumber(Lua_Init, tpCamera.GetHSense());
 	if (lua_pcall(Lua_Init, 3, 1, 0) != 0)
 		printf("error running function `f': %s", lua_tostring(Lua_Init, -1));
-
-	//ofstream outFile;
-	//outFile.open("Config//Options.txt");
-	//if (outFile.good())
-	//{
-	//	outFile << brightness << std::endl;
-	//	outFile << tpCamera.GetVSense() << std::endl;
-	//	outFile << tpCamera.GetHSense() << std::endl;
-	//	outFile.close();
-	//}
-	//else
-	//	std::cout << "Load Options data failed" << std::endl;
-
-	//Close the lua file
-	lua_close(Lua_Init);
 }
 
 void SceneManager_Options::Render()

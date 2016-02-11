@@ -1,10 +1,15 @@
 #include "SceneManager_Play_L1.h"
 
+//Static members
+SceneNode* SceneManager_Play_L1::sceneGraph;
+SceneNode* SceneManager_Play_L1::staticSceneGraph;
+SceneNode* SceneManager_Play_L1::dynamicSceneGraph;
+vector<CEnemy_Beholder*> SceneManager_Play_L1::enemyList_Enemy_Beholder;
+vector<CStaticTree*> SceneManager_Play_L1::treeList_StaticTree;
+
 SceneManager_Play_L1::SceneManager_Play_L1() :
 spatialPartitionManager(NULL),
-sceneGraph(NULL),
-staticSceneGraph(NULL),
-dynamicSceneGraph(NULL),
+
 spawnNumber(0)/*,
 miniMap(NULL)*/
 {
@@ -19,6 +24,7 @@ SceneManager_Play_L1::~SceneManager_Play_L1()
 void SceneManager_Play_L1::Init(const int width, const int height, ResourcePool *RM, InputManager* controls)
 {
 	SceneManagerGameplay::Init(width, height, RM, controls);
+	
 	resourceManager.stopAllSounds();
 	resourceManager.retrieveSoundas2D("Game_BGM", true, true);
 	srand(time(NULL));
@@ -49,11 +55,35 @@ void SceneManager_Play_L1::Init(const int width, const int height, ResourcePool 
 	theLaser.setReflectLight(true);
 	theLaser.setHitbox(Vector3(0, 0, 0), 2, 2, 100, "theLaser");
 
+	InitLuaFunc();
+	
 	/*
 	miniMap = new MiniMap();
 	miniMap->Init();
 	*/
 	//Read high score into vector
+}
+
+void SceneManager_Play_L1::InitLuaFunc(void)
+{
+	lua_State *L = lua_open();
+
+	//Load the libs
+	luaL_openlibs(L);
+
+	//Register spawn enemy function
+	lua_register(L, "SpawnEnemy_Beholder", SpawnEnemy_Beholder);
+
+	//Register spawn static tree function
+	lua_register(L, "SpawnStaticTrees", SpawnStaticTrees);
+
+	if (luaL_loadfile(L, "Lua/GameInit.Lua") || lua_pcall(L, 0, 0, 0))
+	{
+		printf("error: %s", lua_tostring(L, -1));
+	}
+
+	//Close the lua file
+	lua_close(L);
 }
 
 void SceneManager_Play_L1::Config()
@@ -64,8 +94,6 @@ void SceneManager_Play_L1::Config()
 	luaL_openlibs(Lua_Init);
 
 	//Initialise engine with values from Lua file
-	luaL_dofile(Lua_Init, "Lua/GameStateConfig.Lua");
-
 	if (luaL_loadfile(Lua_Init, "Lua/GameStateConfig.Lua") || lua_pcall(Lua_Init, 0, 0, 0))
 	{
 		printf("error: %s", lua_tostring(Lua_Init, -1));
@@ -324,7 +352,7 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 										Player->SetIsAlive(false);
 										secondNode->setActive(false);
 										resourceManager.retrieveSoundas2D("Enemy_Attack", false, false);
-										resourceManager.retrieveSoundas2D("Player_Enemy_Beholder", false, false);
+										resourceManager.retrieveSoundas2D("Player_Death", false, false);
 										j = spatialPartitionManager->partitions[i]->nodes.begin();
 									}
 									break;
@@ -341,7 +369,7 @@ void SceneManager_Play_L1::UpdateSP(double dt)
 										Player->SetIsAlive(false);
 										firstNode->setActive(false);
 										resourceManager.retrieveSoundas2D("Enemy_Attack", false, false);
-										resourceManager.retrieveSoundas2D("Player_Enemy_Beholder", false, false);
+										resourceManager.retrieveSoundas2D("Player_Death", false, false);
 										j = spatialPartitionManager->partitions[i]->nodes.begin();
 									}
 									break;
@@ -640,7 +668,7 @@ void SceneManager_Play_L1::UpdateEnemy(double dt)
 	if (spawnTimer > Enemy_BeholderSpawnInterval)
 	{
 		spawnTimer = 0.f;
-		SpawnEnemy();	
+		RespawnEnemy();
 	}
 	
 	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
@@ -876,30 +904,28 @@ void SceneManager_Play_L1::Exit()
 
 	nodeList.clear();
 
-	//Clean up spawned materials
-	//for (int i = 0; i < enemyList_Demon.size(); ++i)
-	//{
-	//	delete enemyList_Demon.at(i);
-	//	enemyList_Demon.at(i) = NULL;
-
-	//	delete enemyList_DemonSpawner.at(i);
-	//	enemyList_DemonSpawner.at(i) = NULL;
-	//}
-	
-	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
+	//Clean up spawned materials	
+	for (int i = enemyList_Enemy_Beholder.size() - 1; i >= 0; --i)
 	{
 		if (enemyList_Enemy_Beholder.at(i) != NULL)
 		{
 			delete enemyList_Enemy_Beholder.at(i);
 			enemyList_Enemy_Beholder.at(i) = NULL;
+			enemyList_Enemy_Beholder.pop_back();
 		}
 	}
 
-	//if (Enemy_Beholder != NULL)
-	//{
-	//	delete Enemy_Beholder;
-	//	Enemy_Beholder = NULL;
-	//}
+	for (int i = treeList_StaticTree.size() - 1; i >= 0; --i)
+	{
+		if (treeList_StaticTree.at(i) != NULL)
+		{
+			delete treeList_StaticTree.at(i);
+			treeList_StaticTree.at(i) = NULL;
+			treeList_StaticTree.pop_back();
+		}
+	}
+	
+
 	/*if (miniMap)
 	{
 		delete miniMap;
@@ -1233,46 +1259,17 @@ void SceneManager_Play_L1::InitSceneGraph()
 	sceneGraph->AddChildNode(staticSceneGraph);
 	sceneGraph->AddChildNode(dynamicSceneGraph);
 
-	InitStaticNodes();
 	InitDynamicNodes();
 
 	// Rmb to init static nodes position first
 	spatialPartitionManager->addNode(sceneGraph, spatialPartitionManager->type);
-}
-
-void SceneManager_Play_L1::InitStaticNodes()
-{
-	//All props goes here
-	InitEnvironmentNodes();
-}
-
-void SceneManager_Play_L1::InitEnvironmentNodes()
-{
-	//Init environment
-	Mesh* drawMesh;
-
-	//Init environment of trees
-	for (int i = 0; i < 100; ++i)
-	{
-		CStaticTree* StaticTree = new CStaticTree();
-
-		drawMesh = resourceManager.retrieveMesh("TREE_HR");
-		drawMesh->textureID = resourceManager.retrieveTexture("TREE");
-		
-		StaticTree->Init(Vector3(rand() % 4000 + 1, 14, rand() % 4000 + 1), Vector3(0, 1, 0), drawMesh);
-		StaticTree->GetNode()->GetGameObject()->setHitbox(Vector3(), 50, 50, 50, "TreeHitbox");
-		treeList_StaticTree.push_back(StaticTree);
-		staticSceneGraph->AddChildNode(StaticTree->GetNode());
-	}
-
-	spatialPartitionManager->addNode(staticSceneGraph, this->spatialPartitionManager->type);
+	//spatialPartitionManager->addNode(staticSceneGraph, this->spatialPartitionManager->type);
 }
 
 void SceneManager_Play_L1::InitDynamicNodes()
 {
 	//All moving stuff goes here
 	InitPlayer();
-	InitEnemy();
 }
 
 void SceneManager_Play_L1::InitPlayer()
@@ -1388,11 +1385,13 @@ void SceneManager_Play_L1::InitPlayer()
 	dynamicSceneGraph->AddChildNode(Player->GetNode());
 }
 
-void SceneManager_Play_L1::InitEnemy()
+int SceneManager_Play_L1::SpawnEnemy_Beholder(lua_State *L)
 {
 	Mesh* drawMesh;
-	for (int i = 0; i < 30; ++i)
+	int numEnemySpawned = 0;
+	for (int i = 0; i < (int)lua_tonumber(L, 1); ++i)
 	{
+		++numEnemySpawned;
 		CEnemy_Beholder* Enemy_Beholder = new CEnemy_Beholder();
 
 		//Init player(Body is main node)
@@ -1400,7 +1399,7 @@ void SceneManager_Play_L1::InitEnemy()
 		drawMesh->textureID = resourceManager.retrieveTexture("EYEBALL");
 		Enemy_Beholder->Init(Vector3(rand() % 4000 + 1, 14, rand() % 4000 + 1), Vector3(0, 1, 0), drawMesh);
 		Enemy_Beholder->GetNode()->GetGameObject()->setHitbox(Vector3(), 5, 5, 5, "BodyHitbox");
-		
+
 		float distCheck = (Player->GetNode()->GetGameObject()->getPosition() - Enemy_Beholder->GetNode()->GetGameObject()->getPosition()).LengthSquared();
 
 		while (distCheck < 4000)
@@ -1411,6 +1410,37 @@ void SceneManager_Play_L1::InitEnemy()
 		enemyList_Enemy_Beholder.push_back(Enemy_Beholder);
 		dynamicSceneGraph->AddChildNode(Enemy_Beholder->GetNode());
 	}
+
+	lua_pushnumber(L, numEnemySpawned);
+	return 1;
+}
+
+int SceneManager_Play_L1::SpawnStaticTrees(lua_State *L)
+{
+	Mesh* drawMesh;
+	int numTreeSpawned = 0;
+
+	int rows, cols;
+	rows = cols = (int)(sqrt(lua_tonumber(L, 1)));
+
+	//Init environment of trees
+	for (int i = 0; i < rows; ++i)
+	{
+		for (int j = 0; j < cols; ++j)
+		{
+			CStaticTree* StaticTree = new CStaticTree();
+
+			drawMesh = resourceManager.retrieveMesh("TREE_HR");
+			drawMesh->textureID = resourceManager.retrieveTexture("TREE");
+
+			StaticTree->Init(Vector3(i * (175 + rand() % 25 + 1), 20, j * (175 + rand() % 25 + 1)), Vector3(0, 1, 0), drawMesh);
+			StaticTree->GetNode()->GetGameObject()->setHitbox(Vector3(), 50, 50, 50, "TreeHitbox");
+			treeList_StaticTree.push_back(StaticTree);
+			staticSceneGraph->AddChildNode(StaticTree->GetNode());
+		}
+	}
+	lua_pushnumber(L, numTreeSpawned);
+	return 1;
 }
 
 void SceneManager_Play_L1::DeleteEnemy(SceneNode* node)
@@ -1425,7 +1455,7 @@ void SceneManager_Play_L1::DeleteEnemy(SceneNode* node)
 	}
 }
 
-void SceneManager_Play_L1::SpawnEnemy(void)
+void SceneManager_Play_L1::RespawnEnemy(void)
 {
 	for (int i = 0; i < enemyList_Enemy_Beholder.size(); ++i)
 	{

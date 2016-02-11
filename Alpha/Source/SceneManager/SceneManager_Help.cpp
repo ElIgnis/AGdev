@@ -33,8 +33,6 @@ void SceneManager_Help::Config()
 	luaL_openlibs(Lua_Init);
 
 	//Initialise engine with values from Lua file
-	luaL_dofile(Lua_Init, "Lua/GameStateConfig.Lua");
-
 	if (luaL_loadfile(Lua_Init, "Lua/GameStateConfig.Lua") || lua_pcall(Lua_Init, 0, 0, 0))
 	{
 		printf("error: %s", lua_tostring(Lua_Init, -1));

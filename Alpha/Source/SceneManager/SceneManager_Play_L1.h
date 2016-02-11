@@ -15,9 +15,9 @@ class SceneManager_Play_L1 : public SceneManagerGameplay
 private:
 	vector<SceneNode*> nodeList;
 	SpatialPartitionManager* spatialPartitionManager;
-	SceneNode* sceneGraph;
-	SceneNode* staticSceneGraph;
-	SceneNode* dynamicSceneGraph;
+	static SceneNode* sceneGraph;
+	static SceneNode* staticSceneGraph;
+	static SceneNode* dynamicSceneGraph;
 	// MiniMap* miniMap;
 
 	GameObject3D playerbullet;
@@ -29,6 +29,7 @@ public:
 	~SceneManager_Play_L1();
 
 	void Init(const int width, const int height, ResourcePool* RP, InputManager* controls);
+	void InitLuaFunc(void);
 	void Config();
 	void Config(string directory);
 	void Update(double dt);
@@ -42,14 +43,15 @@ public:
 	void BindShaders();
 
 	void InitSceneGraph();
-	void InitStaticNodes();
-	void InitEnvironmentNodes();
 	void InitDynamicNodes();
-	void InitEnemy();
 	void InitPlayer();
-	void SpawnEnemy(void);
+	void RespawnEnemy(void);
 	void DeleteEnemy(SceneNode* node);
 	void UpdateMouse();
+
+	//Functions for lua
+	static int SpawnEnemy_Beholder(lua_State *L);
+	static int SpawnStaticTrees(lua_State *L);
 
 	void CollisionResponse(SceneNode* first, SceneNode* second, double dt);
 	bool CheckSelfCollide(SceneNode* first, SceneNode* second);
@@ -67,8 +69,8 @@ public:
 
 	SceneNode* getNode(void);
 	CPlayer* player;
-	vector<CEnemy_Beholder*> enemyList_Enemy_Beholder;
-	vector<CStaticTree*> treeList_StaticTree;
+	static vector<CEnemy_Beholder*> enemyList_Enemy_Beholder;
+	static vector<CStaticTree*> treeList_StaticTree;
 
 	int score;
 	int spawnNumber;

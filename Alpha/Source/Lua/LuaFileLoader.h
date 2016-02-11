@@ -11,10 +11,5 @@ class LuaFileLoader
 public:
 	LuaFileLoader();
 	~LuaFileLoader();
-
-//	lua_State* GetLuaState(void);
-//	void OpenFile(string fileName);
-//private:
-//	lua_State *Lua_;
 };
 

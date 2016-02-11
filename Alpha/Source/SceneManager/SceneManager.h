@@ -73,8 +73,6 @@ public:
 	~SceneManager();
 
 	virtual void Init(const int width, const int height, ResourcePool* RP, InputManager* controls);
-	void InitOptionSettings();
-	int GetNumOptions(void);
 	virtual void Config(string directory);
 	virtual void Update(double dt);
 	virtual void Render();
@@ -112,8 +110,8 @@ protected:
 
 	vector<Light> lights;
 
-	ResourceManager resourceManager;
-	ProjectileManager projectileManager;
+	static ResourceManager resourceManager;
+	static ProjectileManager projectileManager;
 
 	bool lightEnabled;
 	float fps;

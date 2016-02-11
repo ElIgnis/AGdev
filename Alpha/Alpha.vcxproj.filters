@@ -294,9 +294,6 @@
     <ClCompile Include="Source\Lua\LuaFileLoader.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Lua\LuaFunctions.cpp">
-      <Filter>Lua</Filter>
-    </ClCompile>
     <ClCompile Include="Source\EnemyBeholder.cpp">
       <Filter>GameObjects\ChildObject\Enemy</Filter>
     </ClCompile>
@@ -525,9 +522,6 @@
       <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="Source\Lua\LuaFileLoader.h">
-      <Filter>Lua</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Lua\LuaFunctions.h">
       <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="Source\Enemy_Beholder.h">
